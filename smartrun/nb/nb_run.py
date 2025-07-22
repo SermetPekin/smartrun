@@ -41,12 +41,11 @@ class NBOptions:
 
     def __str__(self):
         t = f"""    
-    [sphtml]
-    Options 
+    NBOptions 
    ................
     file_name : {self.file_name }   
     output_dir    : {self.output_dir }   
-    renderer : [sphtml]
+    renderer : {self.renderer}
     kernel : {self.kernel }  
     timeout : {self.timeout}
      
@@ -82,8 +81,8 @@ def convert(options: NBOptions) -> None:
     os.environ["PLOTLY_RENDERER"] = DEFAULT_RENDERER
     change_ws(options.workspace)
     # --- paths -------------------------------------------------
-    NOTEBOOK = options.file_name  #  "dfm_TR.ipynb"  # the .ipynb you want to run
-    OUTPUT_DIR = options.output_dir  #  "html_outputs2"  # folder for HTML files
+    NOTEBOOK = options.file_name   
+    OUTPUT_DIR = options.output_dir   
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     # --- read notebook ----------------------------------------
     with open(NOTEBOOK, "r", encoding="utf-8") as f:
@@ -95,7 +94,7 @@ def convert(options: NBOptions) -> None:
     # --- export to HTML ---------------------------------------
     html_exporter = HTMLExporter(
         template_name="lab"
-    )  # default template: “lab” looks nice too
+    )   
     body, _ = html_exporter.from_notebook_node(nb)
     outfile = options.out_name_func(options)
     with open(outfile, "w", encoding="utf-8") as f:
