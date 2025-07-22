@@ -43,7 +43,6 @@ def create_venv(venv_path: Path):
 def install_packages_line(packages):
     for package in packages:
         subprocess.run(
-            # ["uv", "pip", "install", "--python", str(python_path), *packages],
             ["uv", "pip", "install", package],
             check=True,
         )

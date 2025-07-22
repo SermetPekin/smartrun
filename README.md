@@ -1,4 +1,7 @@
-[![Python package](https://github.com/SermetPekin/smartrun-pro/actions/workflows/python-package.yml/badge.svg?1)](https://github.com/SermetPekin/smartrun-pro/actions/workflows/python-package.yml?1)
+[![Python Package](https://github.com/SermetPekin/smartrun/actions/workflows/python-package.yml/badge.svg?2)](https://github.com/SermetPekin/smartrun/actions/workflows/python-package.yml)
+[![PyPI](https://img.shields.io/pypi/v/smartrun)](https://img.shields.io/pypi/v/smartrun) ![PyPI Downloads](https://static.pepy.tech/badge/smartrun?2)![t](https://img.shields.io/badge/status-maintained-yellow.svg) [![](https://img.shields.io/github/license/SermetPekin/smartrun.svg)](https://github.com/SermetPekin/smartrun/blob/master/LICENSE.md) [![](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/) 
+
+
 # smartrun
 *Run any Python script in a clean, disposable virtual environment — automatically.*
 

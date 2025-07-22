@@ -10,14 +10,14 @@ class Options:
     """Runtime configuration for a single smartrun invocation."""
 
     script: Path  # required
-    venv: Path | None = None  # explicit --venv path or None for auto
+    venv: Path | None = None   
     no_uv: bool = False  # --no-uv
-    html: bool = False
-    exc: str = None
-    inc: str = None
+    html: bool = False # --no-uv
+    exc: str = None # --exc='FolderA,FolderB'
+    inc: str = None # --inc='matplotlib, rich'
     lock: bool = False  # --lock (future)
     unlock: bool = False  # --unlock (future)
-    extra_args: tuple[str, ...] = ()  # anything you want to pass to the script
+    extra_args: tuple[str, ...] = ()  
 
     # -------- convenience helpers -----------------------------------------
     @property
