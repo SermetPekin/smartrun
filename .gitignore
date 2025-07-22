@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+smartrun-*.json
+uv.lock
+sine.png
+
+# Packaging
+build/
+dist/
+*.egg-info/
+html_outputs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Pytest
+.cache/
+*.cover
+.coverage
+coverage.xml
+htmlcov/
+
+# VSCode and editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# macOS
+.DS_Store
+
+# Jupyter (just in case)
+.ipynb_checkpoints/
+
+# Envrunner output
+smartrun.log
+
+# Local test scripts or debug outputs
+scripts/__pycache__/
+scripts/*.pyc

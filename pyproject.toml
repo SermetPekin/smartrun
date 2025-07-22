@@ -1,0 +1,66 @@
+
+[project]
+name = "smartrun"
+version = "0.2.0"
+description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
+authors = [
+    { name = "Sermet Pekin", email = "Sermet.Pekin@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ipykernel>=6.30.0",
+    "nbconvert>=7.0.0",
+    "nbformat>=5.10.4",
+    "rich>=14.0.0",
+    "uv>=0.7.21",
+]
+license = { file = "LICENSE" }    
+classifiers = [
+    "License :: OSI Approved :: BSD License"
+]
+[project.urls]
+Repository = "https://github.com/SermetPekin/smartrun"
+[tool.hatch.build]
+include = ["smartrun/**"]
+exclude = [
+    "**/tests/**",
+    "**/docs/**",
+    "**/*.log",
+    "**/*.tmp",
+    "**/*.pdf",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/*.pyo",
+    "**/*.pyd",
+    "**/*.so",
+    "**/*.dll",
+    "**/*.dylib",
+    "**/*.exe",
+    "**/*.egg-info/**"
+]
+[tool.ruff]
+exclude = [
+    ".venv",           
+    "build",           
+    "docs/_build",     
+    "data/**/*.ipynb",  
+    "scripts"
+]
+[tool.setuptools]
+license-files = ["LICENSE"]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.4.1",
+    "ruff>=0.12.3",
+]
+[tool.setuptools.packages.find]
+where = ["."]
+[tool.setuptools.exclude-package-data]
+"*" = [ "*.pdf" , "*.log", "*.tmp", "tests/*", "docs/*" , "*.egg-info/*", "*.egg", "__pycache__/*", "*.pyc", "*.pyo", "*.pyd" , "*.so", "*.dll", "*.dylib", "*.exe", "*.o", "*.a", "*.lib", "*.obj", "*.pdb", "*.ilk", "*.idb", "*.idc", "*.ncb", "*.sdf", "*.suo", "*.user", "*.aps", "*.pch"] 
+[project.scripts]
+smartrun = "smartrun.cli:main"
