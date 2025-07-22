@@ -1,3 +1,8 @@
+"""
+TODO 
+Feel free to add some irregular packages here! 
+"""
+
 known_mappings = {
     # Image Processing & Computer Vision
     "cv2": "opencv-python",
