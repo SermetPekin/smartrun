@@ -42,6 +42,41 @@ smartrun your_notebook.ipynb
 
 ```
 
+## Example file that we want to run
+
+```python
+#some_file.py
+import numpy as np
+import pandas as pd
+from rich import print 
+
+df = pd.DataFrame(np.random.randn(5, 3), columns=list("ABC"))
+print("Data:")
+print(df, end="\n\n")
+print("Column means:")
+print(df.mean())
+```
+## Create an environment 
+```bash
+python -m venv .venv
+```
+✅ Activate the environment:
+Windows
+```bash
+.venv\Scripts\activate
+```
+macOS/Linux
+```bash
+source .venv/bin/activate
+```
+Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
+
+✅ Run the script:
+```bash
+smartrun some_file.py
+```
+
+
 If the dependency isn’t installed yet, `smartrun` will fetch it automatically.
 
 ## Why smartrun?
