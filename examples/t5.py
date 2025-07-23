@@ -1,8 +1,9 @@
-
 # python .\smartrun\cli.py install a.json
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
+
+
 @dataclass
 class Args:
     script: str
@@ -12,6 +13,8 @@ class Args:
     html: bool = False
     exc: str | None = None
     inc: str | None = None
+
+
 def t1():
     args = Args("install", "a.json")
     opts = Options(
@@ -24,6 +27,8 @@ def t1():
         inc=args.inc,
     )
     CLI(opts).router()
+
+
 def t2():
     args = Args("scripts/sample1.py")
     opts = Options(
@@ -36,6 +41,8 @@ def t2():
         inc=args.inc,
     )
     CLI(opts).router()
+
+
 def t3():
     args = Args("a.json")
     opts = Options(
@@ -48,6 +55,8 @@ def t3():
         inc=args.inc,
     )
     CLI(opts).router()
+
+
 def t4():
     args = Args("venv", "v6")
     opts = Options(
@@ -60,4 +69,6 @@ def t4():
         inc=args.inc,
     )
     CLI(opts).router()
+
+
 t4()

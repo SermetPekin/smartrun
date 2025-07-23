@@ -1,8 +1,9 @@
-
 # python .\smartrun\cli.py install a.json
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
+
+
 @dataclass
 class Args:
     script: str
@@ -12,6 +13,8 @@ class Args:
     html: bool = False
     exc: str | None = None
     inc: str | None = None
+
+
 def test_cli(capsys):
     with capsys.disabled():
         args = Args("install", "a.json")
@@ -25,6 +28,8 @@ def test_cli(capsys):
             inc=args.inc,
         )
         CLI(opts).router()
+
+
 def test_cli_json(capsys):
     with capsys.disabled():
         args = Args("a.json")
@@ -38,6 +43,8 @@ def test_cli_json(capsys):
             inc=args.inc,
         )
         CLI(opts).router()
+
+
 def test_cli2(capsys):
     with capsys.disabled():
         args = Args("scripts/sample1.py")

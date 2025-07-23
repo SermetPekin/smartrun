@@ -1,28 +1,37 @@
-
 import argparse
 from pathlib import Path
 import os
 from rich import print
+
 # smartrun
 from smartrun.options import Options
 from smartrun.runner import run_script, create_venv_path, just_install_these_packages
 from smartrun.scan_imports import Scan
+
+
 # CLI
 class CLI:
     def __init__(self, opts: Options):
         self.opts = opts
+
     def not_other_commands(self, x: str):
         return x not in ["install", "list"]
+
     def py_script(self, file: str):
         return self.not_other_commands(file)  # temporary
+
     def is_json_file(self, file: str):
         p = Path(file)
         return p.suffix == ".json"
+
     def help(self):
         from .help_ import Helpful
+
         Helpful().help()
+
     def version(self):
         print("version 0.2.9")
+
     def router(self):
         """router"""
         if self.opts.script == "version" or self.opts.version:
@@ -42,6 +51,7 @@ class CLI:
             return self.install()
         if self.py_script(self.opts.script):
             return self.run()
+
     def create_env(self):
         self.opts.venv = self.opts.second
         venv_path = create_venv_path(self.opts)
@@ -49,6 +59,7 @@ class CLI:
         print(
             f"[yellow]Environment `{venv_path}` is ready. You can activate with command :[/yellow] \n   [green]{cmd}[/green]"
         )
+
     def get_packages_from_console(self):
         packages_str = self.opts.second
         if not packages_str:
@@ -62,11 +73,13 @@ class CLI:
         else:
             packages = [packages_str]
         return Scan.resolve(packages)
+
     def install(self):
         from smartrun.installers.from_json_fast import (
             install_dependencies_from_json,
             install_dependencies_from_txt,
         )
+
         file_name = self.opts.second
         if not file_name:
             print(
@@ -79,12 +92,16 @@ class CLI:
             return install_dependencies_from_txt(file_name)
         packages = self.get_packages_from_console()
         just_install_these_packages(self.opts, packages)
+
     def run(self):
         run_script(self.opts)
+
     def list(self):
         root = Path.home() / ".smartrun_envs"
         for d in root.glob("*"):
             print(d)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Process a script file.")
     parser.add_argument("script", help="Path to the script file")
@@ -114,5 +131,7 @@ def main():
     )
     # print(opts)
     CLI(opts).router()
+
+
 if __name__ == "__main__":
     main()
