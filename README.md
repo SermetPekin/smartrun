@@ -71,22 +71,29 @@ print(df.mean())
 smartrun env .venv
 
 ```
-
 ✅ Activate the environment:
 
+<details>
+  <summary>🪟 Windows</summary>
 Windows
+
 ```bash
 
 .venv\Scripts\activate
 
 ```
 
+</details> 
+<details>
+ <summary>🐧 macOS/Linux</summary> 
+✅ Activate the environment:
 macOS/Linux
 ```bash
 
-source .venv/bin/activate
-
+ source .venv/bin/activate
 ```
+</details> 
+
 Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
 
 ✅ Run the script:
@@ -94,7 +101,7 @@ Tip: smartrun will automatically create and manage a virtual environment if none
 smartrun some_file.py
 ```
 
-If the dependency isn’t installed yet, `smartrun` will fetch it automatically.
+If the dependencies aren’t installed yet, `smartrun` will fetch them automatically.
 
 ## Why smartrun?
 
