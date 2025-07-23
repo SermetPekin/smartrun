@@ -72,6 +72,13 @@ smartrun env .venv
 
 ```
 ✅ Activate the environment:
+Windows
+
+```bash
+
+.venv\Scripts\activate
+
+```
 
 <details>
   <summary>🪟 Windows</summary>
