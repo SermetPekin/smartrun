@@ -129,12 +129,12 @@ Tip: smartrun will automatically create and manage a virtual environment if none
 
 ```bash
 
-smartrun iris_analysis.py
+smartrun iris.py
 
 ```
 
 ```python 
-# iris_analysis.py
+# iris.py
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
