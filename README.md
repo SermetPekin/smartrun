@@ -65,7 +65,9 @@ Tip: smartrun will automatically create and manage a virtual environment if none
 ```bash
 smartrun some_file.py
 ```
+
 If the dependency isn’t installed yet, `smartrun` will fetch it automatically.
+
 ---
 
 ## Why smartrun?
