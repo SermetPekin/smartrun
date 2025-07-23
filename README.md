@@ -76,22 +76,24 @@ Windows
 
 ```bash
 
-.venv\Scripts\activate
+ .venv\Scripts\activate
 
 ```
 <details>
  <summary>🐧 macOS/Linux</summary> 
-✅ Activate the environment:
-macOS/Linux
+✅ Activate the environment: macOS/Linux
 
 ```bash
 
  source .venv/bin/activate
+
 ```
+
 </details> 
 
 <details>
   <summary>🪟 Windows</summary>
+  ✅ Activate the environment:
 Windows
 
 ```bash
