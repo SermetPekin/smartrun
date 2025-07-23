@@ -158,7 +158,7 @@ plt.savefig('iris_pairplot.png')
 
 ```python
 
-# titanic.py
+# titanic.ipynb
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
