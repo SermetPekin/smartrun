@@ -61,6 +61,7 @@ print(df.mean())
 python -m venv .venv
 ```
 ✅ Activate the environment:
+
 Windows
 ```bash
 .venv\Scripts\activate
