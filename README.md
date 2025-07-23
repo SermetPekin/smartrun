@@ -69,15 +69,14 @@ macOS/Linux
 ```bash
 source .venv/bin/activate
 ```
-Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
+💡 Tip: smartrun handles environment creation automatically, but you’re free to manage it yourself.
 
 ✅ Run the script:
 ```bash
 smartrun some_file.py
 ```
+If any required package is missing, smartrun will install it for you.
 
-
-If the dependency isn’t installed yet, `smartrun` will fetch it automatically.
 
 ## Why smartrun?
 
