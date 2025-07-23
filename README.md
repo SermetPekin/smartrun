@@ -80,5 +80,7 @@ If you’ve got ideas, bug fixes, or improvements — feel free to open an issue
 
 ## License
 
+
 BSD 3‑Clause — see `LICENSE` for details.  
+
 ---
