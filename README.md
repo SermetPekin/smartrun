@@ -88,6 +88,7 @@ Windows
  <summary>🐧 macOS/Linux</summary> 
 ✅ Activate the environment:
 macOS/Linux
+
 ```bash
 
  source .venv/bin/activate
