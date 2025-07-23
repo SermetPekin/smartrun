@@ -79,6 +79,16 @@ Windows
 .venv\Scripts\activate
 
 ```
+<details>
+ <summary>🐧 macOS/Linux</summary> 
+✅ Activate the environment:
+macOS/Linux
+
+```bash
+
+ source .venv/bin/activate
+```
+</details> 
 
 <details>
   <summary>🪟 Windows</summary>
@@ -90,16 +100,6 @@ Windows
 
 ```
 
-</details> 
-<details>
- <summary>🐧 macOS/Linux</summary> 
-✅ Activate the environment:
-macOS/Linux
-
-```bash
-
- source .venv/bin/activate
-```
 </details> 
 
 Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
