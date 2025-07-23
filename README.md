@@ -35,12 +35,15 @@ pip install smartrun
 ## Usage
 
 ```bash
+
 smartrun your_script.py
+
 ```
 
 ## Notebook
 
 ```bash
+
 smartrun your_notebook.ipynb
 
 ```
@@ -58,21 +61,31 @@ print("Data:")
 print(df, end="\n\n")
 print("Column means:")
 print(df.mean())
+
 ```
+
 ## Create an environment 
+
 ```bash
-python -m venv .venv
+
+smartrun env .venv
+
 ```
 
 ✅ Activate the environment:
 
 Windows
 ```bash
+
 .venv\Scripts\activate
+
 ```
+
 macOS/Linux
 ```bash
+
 source .venv/bin/activate
+
 ```
 Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
 
