@@ -61,6 +61,7 @@ print(df.mean())
 python -m venv .venv
 ```
 ✅ Activate the environment:
+
 Windows
 ```bash
 .venv\Scripts\activate
@@ -71,12 +72,18 @@ source .venv/bin/activate
 ```
 💡 Tip: smartrun handles environment creation automatically, but you’re free to manage it yourself.
 
+## python script 
 ✅ Run the script:
 ```bash
 smartrun some_file.py
 ```
 If any required package is missing, smartrun will install it for you.
 
+## Notebook 
+✅ Run the script:
+```bash
+smartrun some_file.ipynb
+```
 
 ## Why smartrun?
 
