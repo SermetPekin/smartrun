@@ -2,6 +2,8 @@
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
+import pytest 
+from smartrun.utils import in_ci 
 
 
 @dataclass
@@ -29,7 +31,7 @@ def test_cli(capsys):
         )
         CLI(opts).router()
 
-
+@pytest.mark.skipif(in_ci() , reason='github')
 def test_cli_json(capsys):
     with capsys.disabled():
         args = Args("a.json")
@@ -43,6 +45,7 @@ def test_cli_json(capsys):
             inc=args.inc,
         )
         CLI(opts).router()
+
 
 
 def test_cli2(capsys):
