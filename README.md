@@ -79,5 +79,6 @@ Contributions are welcome! 🧑‍💻
 If you’ve got ideas, bug fixes, or improvements — feel free to open an issue or a pull request. Let’s make smartrun even smarter together.
 
 ## License
+
 BSD 3‑Clause — see `LICENSE` for details.  
 ---
