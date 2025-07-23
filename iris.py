@@ -1,4 +1,4 @@
-# iris_analysis.py
+# iris.py
 import seaborn as sns
 import matplotlib.pyplot as plt
 
