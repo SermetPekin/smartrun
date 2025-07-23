@@ -123,6 +123,38 @@ Tip: smartrun will automatically create and manage a virtual environment if none
 ```
 
 
+### Data Science Examples
+
+<details><summary>🌸 Iris dataset analysis</summary>
+
+```bash
+
+smartrun iris_analysis.py
+
+```
+
+```python 
+# iris_analysis.py
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load data
+df = sns.load_dataset('iris')
+
+# Show first few rows and summary
+print(df.head(), end="\n\n")
+print(df.describe(), end="\n\n")
+
+# Plot pairwise relationships
+sns.pairplot(df, hue='species')
+plt.savefig('iris_pairplot.png')
+
+```
+
+</details> <details><summary>🐼 Quick-start pandas demo</summary>
+
+
 If the dependencies aren’t installed yet, `smartrun` will fetch them automatically.
 
 ## Why smartrun?
