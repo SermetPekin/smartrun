@@ -65,7 +65,7 @@ print(df.mean())
 ```
 
 ## Create an environment 
-
+✅ Create an environment : Windows / macOS / Linux
 ```bash
 
 smartrun env .venv
