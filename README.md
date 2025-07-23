@@ -72,11 +72,17 @@ source .venv/bin/activate
 ```
 Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
 
+## python script 
 ✅ Run the script:
 ```bash
 smartrun some_file.py
 ```
 
+## Notebook 
+✅ Run the script:
+```bash
+smartrun some_file.ipynb
+```
 
 If the dependency isn’t installed yet, `smartrun` will fetch it automatically.
 
