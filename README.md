@@ -21,19 +21,27 @@
 ---
 
 ## Installation
+
 ```bash
 pip install smartrun
 ```
+
 > **Requires Python 3.10+**
 ---
 ## Usage
+
 ```bash
 smartrun your_script.py
+```
+
 ## Notebook
+
 ```bash
 smartrun your_notebook.ipynb
 ```
+
 ## Example file that we want to run
+
 ```python
 #some_file.py
 import numpy as np
@@ -47,18 +55,24 @@ print(df.mean())
 ```
 
 ## Create an environment 
+
 ```bash
 python -m venv .venv
 ```
+
 ✅ Activate the environment:
+
 Windows
+
 ```bash
 .venv\Scripts\activate
 ```
 macOS/Linux
+
 ```bash
 source .venv/bin/activate
 ```
+
 Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
 
 ✅ Run the script:
