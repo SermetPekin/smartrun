@@ -106,10 +106,22 @@ Windows
 
 Tip: smartrun will automatically create and manage a virtual environment if none is activated — but you're always free to bring your own.
 
-✅ Run the script:
+✅ Run the script: Windows / macOS / Linux
 ```bash
-smartrun some_file.py
+
+ smartrun some_file.py
+
 ```
+
+
+
+✅ Run the jupyter file: Windows / macOS / Linux
+```bash
+
+ smartrun some_file.ipynb
+
+```
+
 
 If the dependencies aren’t installed yet, `smartrun` will fetch them automatically.
 
