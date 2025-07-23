@@ -54,6 +54,7 @@ class CLI:
 
     def create_env(self):
         self.opts.venv = self.opts.second
+
         venv_path = create_venv_path(self.opts)
         cmd = Path(venv_path) / ("Scripts" if os.name == "nt" else "bin") / "activate"
         print(
@@ -63,15 +64,13 @@ class CLI:
     def get_packages_from_console(self):
         packages_str = self.opts.second
         if not packages_str:
-            raise ValueError("install needs a second argument!")
-        packages_str = packages_str.strip()
-        if "," in packages_str or ";" in packages_str or " " in packages_str:
-            packages_str = packages_str.replace(";", ",")
-            packages_str = packages_str.replace(" ", ",")
-            packages = packages_str.split(",")
-            packages = [x.strip() for x in packages if x.strip()]
-        else:
-            packages = [packages_str]
+            raise ValueError(
+                "The 'install' command requires a second argument (a package name or list)."
+            )
+
+        normalized = packages_str.replace(";", ",").replace(" ", ",")
+        packages = [pkg.strip() for pkg in normalized.split(",") if pkg.strip()]
+
         return Scan.resolve(packages)
 
     def install(self):
@@ -81,15 +80,23 @@ class CLI:
         )
 
         file_name = self.opts.second
+
         if not file_name:
-            print(
-                "Usage example \n> smartrun install somefile.json \n> smartrun install somefile.txt"
-            )
+            print("Usage: smartrun install <file.json|file.txt|pkg1,pkg2>")
+            return
+
         file_name = Path(file_name)
+        # print(file_name.suffix)
+        # exit()
+        if file_name.suffix and not file_name.exists():
+            print(f"[red]File not found:[/red] {file_name}")
+            return
+
         if file_name.suffix == ".json":
             return install_dependencies_from_json(file_name)
         if file_name.suffix == ".txt":
             return install_dependencies_from_txt(file_name)
+
         packages = self.get_packages_from_console()
         just_install_these_packages(self.opts, packages)
 
@@ -103,7 +110,12 @@ class CLI:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Process a script file.")
+
+    # parser = argparse.ArgumentParser(description="Process a script file.")
+    parser = argparse.ArgumentParser(
+        add_help=False, description="Process a script file."
+    )
+
     parser.add_argument("script", help="Path to the script file")
     parser.add_argument(
         "second", nargs="?", help="Optional second argument", default=None
@@ -115,9 +127,9 @@ def main():
     parser.add_argument("--version", action="store_true", help="Version")
     parser.add_argument("--exc", help="Except these packages")
     parser.add_argument("--inc", help="Include these packages")
+
     args = parser.parse_args()
-    # print(args)
-    # return
+
     opts = Options(
         script=args.script,
         second=args.second,
@@ -127,11 +139,12 @@ def main():
         exc=args.exc,
         inc=args.inc,
         version=args.version,
-        help=args.help,
+        help=False,  # args.help,
     )
-    # print(opts)
+
     CLI(opts).router()
 
 
 if __name__ == "__main__":
+
     main()

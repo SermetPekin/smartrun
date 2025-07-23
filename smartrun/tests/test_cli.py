@@ -2,8 +2,8 @@
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
-import pytest 
-from smartrun.utils import in_ci 
+import pytest
+from smartrun.utils import in_ci
 
 
 @dataclass
@@ -16,7 +16,8 @@ class Args:
     exc: str | None = None
     inc: str | None = None
 
-@pytest.mark.skipif(in_ci() , reason='github')
+
+@pytest.mark.skipif(in_ci(), reason="github")
 def test_cli(capsys):
     with capsys.disabled():
         args = Args("install", "a.json")
@@ -31,7 +32,8 @@ def test_cli(capsys):
         )
         CLI(opts).router()
 
-@pytest.mark.skipif(in_ci() , reason='github')
+
+@pytest.mark.skipif(in_ci(), reason="github")
 def test_cli_json(capsys):
     with capsys.disabled():
         args = Args("a.json")
@@ -47,7 +49,7 @@ def test_cli_json(capsys):
         CLI(opts).router()
 
 
-@pytest.mark.skipif(in_ci() , reason='github')
+@pytest.mark.skipif(in_ci(), reason="github")
 def test_cli2(capsys):
     with capsys.disabled():
         args = Args("scripts/sample1.py")
