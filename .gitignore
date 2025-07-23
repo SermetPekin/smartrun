@@ -10,6 +10,8 @@ env/
 smartrun-*.json
 uv.lock
 sine.png
+*.png
+*_executed.ipynb
 
 # Packaging
 build/
