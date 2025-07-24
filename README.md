@@ -127,11 +127,7 @@ Tip: smartrun will automatically create and manage a virtual environment if none
 
 <details><summary>🌸 Iris dataset analysis</summary>
 
-```bash
 
-smartrun iris.py
-
-```
 
 ```python 
 # iris.py
@@ -152,9 +148,17 @@ plt.savefig('iris_pairplot.png')
 
 ```
 
+```bash
+
+smartrun iris.py
+
+```
+
 </details> 
 
 <details><summary>🐼 Titanic Dataset demo</summary>
+
+
 
 ```python
 
@@ -181,9 +185,10 @@ print("Saved plot → titanic_survival_by_class.png")
 
 ```bash
 
-smartrun titanic_analysis.py
+smartrun titanic.ipynb
 
 ```
+
 </details> 
 
 

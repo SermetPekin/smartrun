@@ -1,7 +1,7 @@
 
 [project]
 name = "smartrun"
-version = "0.2.3"
+version = "0.2.4"
 description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
 authors = [
     { name = "Sermet Pekin", email = "Sermet.Pekin@gmail.com" }
