@@ -10,7 +10,8 @@ Welcome to SmartRun's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   home
+      home
+
 
 Indices and tables
 ==================
