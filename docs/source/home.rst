@@ -269,12 +269,12 @@ Version 1.0.0 (2025-07-24)
 - GitHub: https://github.com/SermetPekin/smartrun
 
 📄 License
-----------
+------------
 
 MIT License. See the `LICENSE` file for details.
 
 👨‍💻 Author
-----------
+-------------
 
 **Sermet Pekin**  
 GitHub: https://github.com/SermetPekin  
