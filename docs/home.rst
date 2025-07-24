@@ -5,7 +5,7 @@ SmartRun
    :target: https://pypi.org/project/smartrun/
    :alt: PyPI version
 
-.. image:: https://img.shields.io/pypi/pyversions/smartrun.svg
+.. image:: https://img.shields.io/badge/python-3.10+-blue.svg
    :target: https://pypi.org/project/smartrun/
    :alt: Supported Python versions
 
