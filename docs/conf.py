@@ -45,6 +45,16 @@ try:
 except Exception:
     # traceback.print_exc()
     ... 
+
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.todo",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.autosummary",
+    "myst_parser",  # ✅ Enable Markdown support
+]
+
 source_suffix = {
     ".rst": "restructuredtext",
     ".txt": "markdown",
