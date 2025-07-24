@@ -1,10 +1,12 @@
-
 from smartrun.envc.envc import Env
 from pathlib import Path
+
 if Env.active():
     ...  # Env.info()
 import os
 import sys
+
+
 class EnvComplete:
     @staticmethod
     def get():
@@ -46,10 +48,12 @@ class EnvComplete:
                 }
             )
         return env_info
+
     def __call__(self, *args, **kwds):
         s = self.get()
         self.env = s
         return self
+
     def display(self):
         env = self.get()
         if env["active"]:
@@ -60,6 +64,7 @@ class EnvComplete:
         else:
             print("No virtual environment is active")
             print(f"Using system Python: {sys.executable}")
+
     def is_env_active(self, p: Path):
         env = self.get()
         if not env["active"]:
@@ -67,6 +72,7 @@ class EnvComplete:
         active_path = Path(env["path"]).resolve()
         expected_path = p.resolve()
         return active_path == expected_path
+
     def is_other_env_active(self, p: Path):
         env = self.get()
         if not env["active"]:
@@ -74,16 +80,20 @@ class EnvComplete:
         active_path = Path(env["path"]).resolve()
         expected_path = p.resolve()
         return active_path != expected_path
+
     def is_env_active_name(self, name: str):
         env = self.get()
         if not env["active"]:
             return False
         return env["name"] == name
+
     def virtual_active(self):
         env = self.get()
         if env["active"] and env["type"] == "virtual_env":
             return True
         return False
+
+
 """
 # Usage
 env = EnvComplete()()

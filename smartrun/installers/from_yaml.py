@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 YAML handler for smartrun package environment management
@@ -13,10 +12,14 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 import platform
+
+
 class SmartRunYAMLHandler:
     """Handle YAML-based environment configuration for smartrun."""
+
     def __init__(self):
         self.smartrun_version = "1.0.0"  # Update with your actual version
+
     def create_yaml_from_json(
         self, json_file_path, yaml_file_path=None, include_metadata=True
     ):
@@ -34,6 +37,7 @@ class SmartRunYAMLHandler:
         self._write_yaml_file(yaml_data, yaml_file_path)
         print(f"✓ Created YAML environment file: {yaml_file_path}")
         return yaml_file_path
+
     def create_yaml_from_packages(
         self, packages_dict, source_file=None, yaml_file_path=None
     ):
@@ -52,6 +56,7 @@ class SmartRunYAMLHandler:
         self._write_yaml_file(yaml_data, yaml_file_path)
         print(f"✓ Created YAML environment file: {yaml_file_path}")
         return yaml_file_path
+
     def load_yaml_environment(self, yaml_file_path):
         """Load environment configuration from YAML file."""
         if not os.path.exists(yaml_file_path):
@@ -59,6 +64,7 @@ class SmartRunYAMLHandler:
         with open(yaml_file_path, "r", encoding="utf-8") as f:
             yaml_data = yaml.safe_load(f)
         return yaml_data
+
     def install_from_yaml(
         self, yaml_file_path, backend="auto", create_env=False, env_name=None
     ):
@@ -79,6 +85,7 @@ class SmartRunYAMLHandler:
                 return False
         # Install packages
         return self._install_packages(packages, backend)
+
     def _create_yaml_structure(self, source_data, include_metadata=True):
         """Create structured YAML data from source."""
         yaml_data = {}
@@ -113,6 +120,7 @@ class SmartRunYAMLHandler:
             "trusted_hosts": [],
         }
         return yaml_data
+
     def _write_yaml_file(self, data, file_path):
         """Write data to YAML file with proper formatting."""
         with open(file_path, "w", encoding="utf-8") as f:
@@ -124,6 +132,7 @@ class SmartRunYAMLHandler:
                 indent=2,
                 allow_unicode=True,
             )
+
     def _extract_packages_from_yaml(self, yaml_data):
         """Extract packages dictionary from YAML structure."""
         packages = {}
@@ -141,10 +150,13 @@ class SmartRunYAMLHandler:
             # Fallback to JSON-like structure
             packages = yaml_data["resolved_packages"]
         return packages
+
     def _create_virtual_environment(self, env_name, yaml_data):
         """Create virtual environment based on YAML configuration."""
         try:
-            _ = yaml_data.get("environment", {}).get("python", sys.version) # python_version
+            _ = yaml_data.get("environment", {}).get(
+                "python", sys.version
+            )  # python_version
             print(f"Creating virtual environment: {env_name}")
             subprocess.check_call(
                 [sys.executable, "-m", "venv", env_name], stdout=subprocess.DEVNULL
@@ -154,6 +166,7 @@ class SmartRunYAMLHandler:
         except subprocess.CalledProcessError as e:
             print(f"✗ Failed to create virtual environment: {e}")
             return False
+
     def _install_packages(self, packages, backend="auto"):
         """Install packages using specified backend."""
         try:
@@ -185,6 +198,7 @@ class SmartRunYAMLHandler:
         except Exception as e:
             print(f"Error during installation: {e}")
             return False
+
     def validate_yaml_file(self, yaml_file_path):
         """Validate YAML file structure."""
         try:
@@ -217,14 +231,16 @@ class SmartRunYAMLHandler:
         except Exception as e:
             print(f"Validation error: {e}")
             return False
+
+
 # Add to your existing smartrun package
 def create_environment_lock(self, packages_dict, source_file, output_format="json"):
     """Create environment lock in specified format."""
     if output_format in ["yaml", "both"]:
         yaml_handler = SmartRunYAMLHandler()
-        _  = yaml_handler.create_yaml_from_packages(
+        _ = yaml_handler.create_yaml_from_packages(
             packages_dict, source_file, yaml_file_path=f"{source_file}_lock.yaml"
-        ) # yaml_file
+        )  # yaml_file
     if output_format in ["json", "both"]:
         json_file = f"{source_file}_lock.json"
         json_data = {
@@ -235,6 +251,8 @@ def create_environment_lock(self, packages_dict, source_file, output_format="jso
         with open(json_file, "w") as f:
             json.dump(json_data, f, indent=2)
         print(f"✓ Created JSON lock file: {json_file}")
+
+
 """
 TODO
 # Install required dependency

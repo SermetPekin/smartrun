@@ -1,10 +1,11 @@
-
 # python .\smartrun\cli.py install a.json
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
 import pytest
 from smartrun.utils import in_ci
+
+
 @dataclass
 class Args:
     script: str
@@ -14,6 +15,8 @@ class Args:
     html: bool = False
     exc: str | None = None
     inc: str | None = None
+
+
 @pytest.mark.skipif(in_ci(), reason="github")
 def test_cli(capsys):
     with capsys.disabled():
@@ -28,6 +31,8 @@ def test_cli(capsys):
             inc=args.inc,
         )
         CLI(opts).router()
+
+
 @pytest.mark.skipif(in_ci(), reason="github")
 def test_cli_json(capsys):
     with capsys.disabled():
@@ -42,6 +47,8 @@ def test_cli_json(capsys):
             inc=args.inc,
         )
         CLI(opts).router()
+
+
 @pytest.mark.skipif(in_ci(), reason="github")
 def test_cli2(capsys):
     with capsys.disabled():

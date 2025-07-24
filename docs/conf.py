@@ -1,4 +1,3 @@
-
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -7,6 +6,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 from sphinx.util import logging
 import os
+
 html_build_dir = "../docs"  # Directory for HTML build output
 project = "smartrun"
 copyright = "2025, Sermet Pekin"
@@ -44,7 +44,7 @@ try:
     os.makedirs(html_static_path[0])
 except Exception:
     # traceback.print_exc()
-    ... 
+    ...
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -62,9 +62,9 @@ source_suffix = {
 }
 
 exclude_patterns = [
-    '**/_static/scripts/*.txt',
-    '**/vendor/**',
-    'requirements.txt',
+    "**/_static/scripts/*.txt",
+    "**/vendor/**",
+    "requirements.txt",
 ]
 
 logger = logging.getLogger(__name__)

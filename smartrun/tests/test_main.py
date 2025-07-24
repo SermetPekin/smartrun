@@ -1,9 +1,10 @@
-
 # python .\smartrun\cli.py install a.json
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
 import sys
+
+
 @dataclass
 class Args:
     script: str
@@ -13,6 +14,8 @@ class Args:
     html: bool = False
     exc: str | None = None
     inc: str | None = None
+
+
 def helper(args):
     opts = Options(
         script=args.script,
@@ -24,15 +27,23 @@ def helper(args):
         inc=args.inc,
     )
     CLI(opts).router()
+
+
 def t1():
     args = Args("venv", ".venv")
     return helper(args)
+
+
 def t2():
     args = Args("install", "pandas,rich;nbformat")
     return helper(args)
+
+
 def t3():
     args = Args("install", "pandas>=1.0.0,rich;nbformat")
     return helper(args)
+
+
 def test_main():
     t1()
     t2()
