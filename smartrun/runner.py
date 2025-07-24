@@ -92,6 +92,7 @@ def install_packages(
 
 
 def run_notebook_in_venv(opts: Options):
+
     script_path = Path(opts.script)
     nb_opts = NBOptions(script_path)
     if opts.html:
@@ -100,10 +101,12 @@ def run_notebook_in_venv(opts: Options):
 
 
 def run_script_in_venv(opts: Options):
+
+    venv_path = create_venv_path(opts)
     script_path = Path(opts.script)
     if script_path.suffix == ".ipynb":
         return run_notebook_in_venv(opts)
-    python_path = get_bin_path(opts.venv_path, "python")
+    python_path = get_bin_path(venv_path, "python")
     if not python_path.exists():
         print(
             f"[bold red]❌ Python executable not found in venv: {python_path}[/bold red]"
@@ -113,7 +116,7 @@ def run_script_in_venv(opts: Options):
 
 
 def check_env_active(opts: Options):
-    # Usage
+
     env = EnvComplete()()
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
@@ -123,6 +126,7 @@ def check_env_active(opts: Options):
 
 
 def check_some_other_active(opts: Options):
+
     env = EnvComplete()()
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
@@ -132,19 +136,26 @@ def check_some_other_active(opts: Options):
 
 
 def virtual_active(opts: Options):
+
     env = EnvComplete()()
     return env.virtual_active()
 
 
 def create_venv_path(opts: Options) -> Path:
+
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)
     opts.venv_path = venv_path
-    active = check_env_active(opts)
-    if active:
-        return venv_path
+
+    any_active = virtual_active(opts)
+
+    if any_active:
+        env = EnvComplete()()
+        return Path(env.get()["path"])
+
     if not venv_path.exists():
         create_venv(venv_path)
+
     return venv_path
 
 
@@ -153,6 +164,7 @@ def just_install_these_packages(opts, packages):
     env_check = check_env_before(opts)
     if not env_check:
         return
+
     venv_path = create_venv_path(opts)
     install_packages(venv_path, packages)
 
@@ -200,24 +212,31 @@ def check_script_file(script_path: Path):
 
 
 def run_script(opts: Options, run: bool = True):
+
     script_path = Path(opts.script)
     if not check_script_file(script_path):
         return
+
     packages = scan_imports_file(script_path, opts=opts)
     print(f"[green]🔍 Detected imports:[/green] {', '.join(packages)}")
     print(f"[green]📦 Resolved packages:[/green] {', '.join(packages)}")
+
     # ============================= Create envir ==================
     venv_path = create_venv_path(opts)
+
     # ============================= Check envir  ==================
     env_check = check_env_before(opts)
     if not env_check:
         return
+
     # Some environment is active now
     # ============================= Install Packages ==================
     install_packages(venv_path, packages)
+
     # ============================= Run Script ==================
     if run:
         print("[blue]▶ Running your script...[/blue]")
         run_script_in_venv(opts)
+
     # ============================= Lock File ==================
     write_lockfile(str(script_path), venv_path)

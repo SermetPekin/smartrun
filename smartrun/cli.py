@@ -55,9 +55,16 @@ class CLI:
     def create_env(self):
         self.opts.venv = self.opts.second
         venv_path = create_venv_path(self.opts)
-        cmd = Path(venv_path) / ("Scripts" if os.name == "nt" else "bin") / "activate"
+        venv_path = Path(venv_path)
+
+        activate_cmd = (
+            f"source {Path(venv_path)}/bin/activate"
+            if os.name != "nt"
+            else f"{venv_path}\\Scripts\\activate"
+        )
+
         print(
-            f"[yellow]Environment `{venv_path}` is ready. You can activate with command :[/yellow] \n   [green]{cmd}[/green]"
+            f"[yellow]Environment `{venv_path}` is ready. You can activate with command :[/yellow] \n   [green]{activate_cmd}[/green]"
         )
 
     def get_packages_from_console(self):
