@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 from sphinx.util import logging
 import os
-html_build_dir = "../docs"  # Directory for HTML build output
+# html_build_dir = "../docs"  # Directory for HTML build output
 project = "smartrun"
 copyright = "2025, Sermet Pekin"
 author = "Sermet Pekin"
