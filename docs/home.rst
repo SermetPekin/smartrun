@@ -103,7 +103,6 @@ Environment Management
 .. code-block:: bash
 
    smartrun env .venv
-   smartrun env --python python3.9 myenv
 
 Jupyter Notebook Support
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,12 +112,7 @@ Jupyter Notebook Support
    smartrun analysis.ipynb
    smartrun --html notebook.ipynb
 
-Advanced Options
-~~~~~~~~~~~~~~~~
 
-.. code-block:: bash
-
-   smartrun --verbose script.py
 
 🏗️ How It Works
 ----------------
@@ -129,32 +123,6 @@ Advanced Options
 4. **Installs** any missing packages
 5. **Executes** your script
 
-⚙️ Configuration
-----------------
-
-smartrun.toml or pyproject.toml
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: toml
-
-   [tool.smartrun]
-   python_version = "3.9"
-   virtual_env_path = ".venv"
-   auto_install = true
-   verbose = false
-
-   [tool.smartrun.package_mapping]
-   cv2 = "opencv-python"
-   sklearn = "scikit-learn"
-
-Environment Variables
-~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   export SMARTRUN_AUTO_INSTALL=false
-   export SMARTRUN_VENV_PATH=.venv
-   export SMARTRUN_VERBOSE=true
 
 🎯 Use Cases
 ------------
@@ -195,19 +163,69 @@ Machine Learning
 Command Line Interface
 ~~~~~~~~~~~~~~~~~~~~~~
 
+Run Python scripts with smart dependency handling and virtual environment management.
+
 .. code-block:: text
 
    smartrun [OPTIONS] SCRIPT
 
+   Arguments:
+     SCRIPT                    Path to the Python or Jupyter script to execute.
+
    Options:
-     --python TEXT
-     --env PATH
-     --verbose / --quiet
-     --dry-run
-     --force-install
-     --no-install
-     --convert
-     --help
+     --venv                    Show the path to the created or selected virtual environment.
+     --no_uv                   Do not use `uv`; fall back to `pip` for dependency resolution.
+     --html                    Generate and save HTML output (if applicable).
+     --exc PACKAGES            Exclude these packages from the environment (comma-separated).
+     --inc PACKAGES            Include these additional packages (comma-separated).
+     --version                 Show the current version of SmartRun.
+     --help                    Show this help message and exit.
+
+Examples
+~~~~~~~~
+
+Run a basic script:
+
+.. code-block:: bash
+
+   smartrun my_script.py
+
+Run with HTML output:
+
+.. code-block:: bash
+
+   smartrun --html my_script.py
+
+Exclude certain packages from installation:
+
+.. code-block:: bash
+
+   smartrun --exc pandas,numpy my_script.py
+
+Include additional packages temporarily:
+
+.. code-block:: bash
+
+   smartrun --inc seaborn,openpyxl my_script.py
+
+Run without using `uv`, falling back to pip:
+
+.. code-block:: bash
+
+   smartrun --no_uv my_script.py
+
+Show the venv path created for the script:
+
+.. code-block:: bash
+
+   smartrun --venv my_script.py
+
+Display version:
+
+.. code-block:: bash
+
+   smartrun --version
+
 
 Python API
 ~~~~~~~~~~
