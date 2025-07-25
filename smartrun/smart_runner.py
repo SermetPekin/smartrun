@@ -1,32 +1,25 @@
+
 import os
 from smartrun.options import Options
-from smartrun.runner import run_script, create_venv_path, just_install_these_packages
+from smartrun.runner import run_script, just_install_these_packages
 from smartrun.scan_imports import Scan
 from smartrun.cli import CLI
-
-
 class SmartRunner:
     """
     A programmatic interface for smartrun, mirroring CLI behavior.
-
     Examples:
-
         # Run a script
         runner = SmartRunner(script="myscript.py")
         runner()
-
         # Install packages
         runner = SmartRunner()
         runner.install_packages(["pandas", "numpy"])
-
         # Create environment
         runner.create_env("myenv")
-
         # Use CLI router directly
         runner = SmartRunner(script="install", second="seaborn")
         runner()
     """
-
     def __init__(
         self,
         script: str = "",
@@ -50,7 +43,6 @@ class SmartRunner:
             help=False,
         )
         self.opts.auto_install = auto_install
-
     def run(self, script: str = None):
         """
         Run the specified Python script (.py or .ipynb).
@@ -58,7 +50,6 @@ class SmartRunner:
         if script:
             self.opts.script = script
         run_script(self.opts)
-
     def install_packages(self, packages: list):
         """
         Install packages by name using SmartRun's package resolver.
@@ -66,7 +57,6 @@ class SmartRunner:
         self.opts.script = "install"
         self.opts.second = ",".join(packages)
         return self.call()
-
     def create_env(self, name: str = None):
         """
         Create a virtual environment. Defaults to self.opts.venv unless name is provided.
@@ -76,7 +66,6 @@ class SmartRunner:
             self.opts.second = name
             self.opts.venv = name
         return self.call()
-
     def resolve_imports(self, script: str = None):
         """
         Return the list of packages required by the script.
@@ -84,18 +73,15 @@ class SmartRunner:
         if script:
             self.opts.script = script
         return Scan.scan(self.opts.script)
-
     def call(self):
         """
         Dispatch the command using smartrun's CLI router.
         """
         return CLI(self.opts).router()
-
     def __call__(self, *args, **kwargs):
         """
         Allow instance to be called like a function.
         """
         return self.call()
-
     def __repr__(self):
         return f"<SmartRunner script={self.opts.script!r} second={self.opts.second!r}>"

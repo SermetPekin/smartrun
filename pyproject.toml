@@ -1,7 +1,7 @@
 
 [project]
 name = "smartrun"
-version = "0.2.5"
+version = "0.2.7"
 description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
 authors = [
     { name = "Sermet Pekin", email = "Sermet.Pekin@gmail.com" }
@@ -12,6 +12,7 @@ dependencies = [
     "ipykernel>=6.30.0",
     "nbconvert>=7.0.0",
     "nbformat>=5.10.4",
+    "pip-tools>=7.4.1",
     "pyyaml>=6.0.2",
     "rich>=14.0.0",
     "uv>=0.7.21",
@@ -23,7 +24,7 @@ classifiers = [
 [project.urls]
 Repository = "https://github.com/SermetPekin/smartrun"
 Homepage = "https://github.com/SermetPekin/smartrun"
-Documentation = "https://github.com/SermetPekin/smartrun#readme"
+Documentation = "https://smartrun.readthedocs.io/en/latest/home.html"
 Issues = "https://github.com/SermetPekin/smartrun/issues"
 Changelog = "https://github.com/SermetPekin/smartrun/releases"
 [tool.hatch.build]
