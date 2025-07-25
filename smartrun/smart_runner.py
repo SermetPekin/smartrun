@@ -1,6 +1,5 @@
-import os
 from smartrun.options import Options
-from smartrun.runner import run_script, just_install_these_packages
+from smartrun.runner import run_script
 from smartrun.scan_imports import Scan
 from smartrun.cli import CLI
 
