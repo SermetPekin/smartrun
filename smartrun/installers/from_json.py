@@ -1,12 +1,14 @@
-
 """
 Dependency installer script
 Reads a JSON file containing package dependencies and installs them with exact versions.
 """
+
 import json
 import subprocess
 import sys
 import os
+
+
 def check_python_version(required_version):
     """Check if the current Python version matches the required version."""
     current_version = (
@@ -19,6 +21,8 @@ def check_python_version(required_version):
         response = input("Continue anyway? (y/N): ")
         if response.lower() != "y":
             sys.exit(1)
+
+
 def install(package_spec):
     subprocess.check_call(
         [sys.executable, "-m", "pip", "install", package_spec],
@@ -26,6 +30,8 @@ def install(package_spec):
         stderr=subprocess.PIPE,
     )
     print(f"✓ Successfully installed {package_spec}")
+
+
 def install_package(package_name, version):
     """Install a single package with specific version."""
     package_spec = f"{package_name}=={version}"
@@ -35,6 +41,8 @@ def install_package(package_name, version):
     except subprocess.CalledProcessError as e:
         print(f"✗ Failed to install {package_spec}: {e.stderr.decode()}")
         return False
+
+
 def install_dependencies_from_txt(txt_file_path):
     """Install dependencies from a pip freeze output text file."""
     if not os.path.exists(txt_file_path):
@@ -88,6 +96,8 @@ def install_dependencies_from_txt(txt_file_path):
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
+
 def install_dependencies_from_json(json_file_path):
     """Main function to read JSON and install dependencies."""
     # Check if file exists
@@ -130,6 +140,8 @@ def install_dependencies_from_json(json_file_path):
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
+
 def main():
     """Main entry point."""
     if len(sys.argv) != 2:
@@ -150,5 +162,7 @@ def main():
         sys.exit(1)
     json_file_path = sys.argv[1]
     install_dependencies_from_json(json_file_path)
+
+
 if __name__ == "__main__":
     main()
