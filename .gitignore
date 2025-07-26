@@ -15,6 +15,10 @@ sine.png
 *.png
 *_executed.ipynb
 
+smartrun-*-req*.in
+smartrun-*-req*.txt
+
+
 # Packaging
 build/
 dist/
