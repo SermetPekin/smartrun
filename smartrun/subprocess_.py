@@ -1,5 +1,7 @@
 from pathlib import Path
 import subprocess
+import os
+
 from .options import Options
 from .runner_helpers import (
     create_venv_path_or_get_active,
@@ -10,7 +12,7 @@ from .runner_helpers import (
     NoActiveVirtualEnvironment,
 )
 from .envc.envc2 import EnvComplete
-import os
+from .utils import in_ci
 
 
 class SubprocessSmart:
@@ -27,7 +29,7 @@ class SubprocessSmart:
 
     def check(self):
         env_check = check_env_before(self.opts)
-        if not env_check:
+        if not env_check and not in_ci():
             raise NoActiveVirtualEnvironment("Activate an environment")
 
     def get(self):
