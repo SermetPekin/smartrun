@@ -145,6 +145,10 @@ def get_active_env(opts: Options):
     if any_active:
         env = EnvComplete()()
         return Path(env.get()["path"])
+    fallback = Path(".venv")
+    if fallback.exists():
+        return fallback.resolve()
+    
     raise NoActiveVirtualEnvironment("Activate an environment")
 
 
