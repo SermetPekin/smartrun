@@ -1,7 +1,7 @@
 
 [project]
 name = "smartrun"
-version = "0.2.6"
+version = "0.2.11"
 description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
 authors = [
     { name = "Sermet Pekin", email = "Sermet.Pekin@gmail.com" }
@@ -14,6 +14,7 @@ dependencies = [
     "nbformat>=5.10.4",
     "pip-tools>=7.4.1",
     "pyyaml>=6.0.2",
+    "requests>=2.32.4",
     "rich>=14.0.0",
     "uv>=0.7.21",
 ]

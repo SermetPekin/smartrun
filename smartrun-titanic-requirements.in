@@ -1,0 +1,4 @@
+# packages that are retrieved from files titanic.py
+matplotlib
+pandas
+seaborn

@@ -5,11 +5,12 @@ from rich import print
 
 # smartrun
 from smartrun.options import Options
-from smartrun.runner import (
-    run_script,
-    just_install_these_packages,
+from smartrun.runner import run_script, just_install_these_packages
+from smartrun.runner_helpers import (
     create_venv_path_pure,
 )
+
+
 from smartrun.scan_imports import Scan
 
 
@@ -34,7 +35,7 @@ class CLI:
         Helpful().help()
 
     def version(self):
-        print("version 0.2.9")
+        print("version 0.2.11")
 
     def router(self):
         """router"""

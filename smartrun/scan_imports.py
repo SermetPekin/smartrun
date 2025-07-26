@@ -1,9 +1,13 @@
 import ast
+import subprocess
+import os
+from rich import print
 from dataclasses import dataclass
 from pathlib import Path
 from smartrun.utils import is_stdlib, extract_imports_from_ipynb
 from smartrun.known_mappings import known_mappings
 from smartrun.options import Options
+
 
 PackageSet = set[str]
 
@@ -67,13 +71,44 @@ class Scan:
         return self.resolve(packages)
 
 
+def create_requirements_file_helper(packages, file_name, opts) -> None:
+    """Serial install inside the venv, after making sure pip exists."""
+    from .subprocess_ import SubprocessSmart
+
+    file_name.write_text("\n".join(sorted(packages)))
+    process = SubprocessSmart(opts)
+    result = process.run([ "piptools", "compile", str(file_name)])
+
+    if result : 
+        print("created ", file_name)
+
+    return
+ 
+def create_core_requirements(packages: list, opts: Options):
+    file_name = Path(f"smartrun-{Path(opts.script).stem }-requirements.in")
+    logo = [f"# packages that are retrieved from files {opts.script}"]
+    content = "\n".join(logo + packages)
+    with open(file_name, encoding="utf-8", mode="w+") as f:
+        f.write(content)
+        print(f"{file_name} was created!")
+        create_requirements_file_helper(packages, file_name, opts)
+
+
 def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)
     if file_path.suffix == ".ipynb":
-        return scan_imports_notebook(file_path, exc=opts.exc, inc=opts.inc)
-    with open(file_path, "r") as f:
-        s = Scan(f.read(), exc=opts.exc, path=file_path.parent, inc=opts.inc)
-        return s()
+        packages = scan_imports_notebook(file_path, exc=opts.exc, inc=opts.inc)
+    else:
+        with open(file_path, "r") as f:
+            s = Scan(f.read(), exc=opts.exc, path=file_path.parent, inc=opts.inc)
+            packages = s()
+    try:
+        create_core_requirements(packages, opts)
+    except Exception as exc:
+        raise exc
+        print("[requirements.in] file was not created!")
+
+    return packages
 
 
 def scan_imports_notebook(file_path: str, exc=None, path=None, inc=None) -> PackageSet:
