@@ -8,6 +8,8 @@ __pycache__/
 venv/
 env/
 env-*/
+.smartrun/
+
 
 smartrun-*.json
 uv.lock
