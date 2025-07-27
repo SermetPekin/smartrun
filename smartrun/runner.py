@@ -30,6 +30,7 @@ def install_packages_smart(opts: Options, packages: list, verbose=False):
 
 
 from pathlib import Path
+from smartrun.utils import SMART_FOLDER, create_dir
 
 def install_packages_smartrun_smartfiles(opts: Options, packages: tuple = tuple(), verbose=False):
     """
@@ -40,7 +41,8 @@ def install_packages_smartrun_smartfiles(opts: Options, packages: tuple = tuple(
 
     Then install them using install_packages_smart().
     """
-    base_dir = Path.cwd() / ".smartrun"
+    # from .utils import 
+    base_dir = SMART_FOLDER # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
 
     def read_package_file(filename):

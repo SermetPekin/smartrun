@@ -75,7 +75,7 @@ class Scan:
 def compile_requirements(packages, file_name, opts) -> None:
     """pip-compile"""
     from .subprocess_ import SubprocessSmart
-    file_name = Path(file_name)
+    file_name = SMART_FOLDER / file_name #   Path(file_name)
     file_name.write_text("\n".join(sorted(packages)))
     process = SubprocessSmart(opts)
     result = process.run(["-m", "piptools", "compile", str(file_name)])
