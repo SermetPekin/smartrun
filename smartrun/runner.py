@@ -15,17 +15,52 @@ from smartrun.runner_helpers import create_venv_path_or_get_active, check_env_be
 from smartrun.subprocess_ import SubprocessSmart
 
 
-
-def install_packages_smart(opts: Options, packages: list):
+def install_packages_smart(opts: Options, packages: list, verbose=False):
     process = SubprocessSmart(opts)
-    result = process.run(["-m", "uv", "pip", "install", *packages])
+
+    result = process.run(["-m", "uv", "pip", "install", *packages], verbose=verbose)
     if result:
         return
-    result = process.run(["-m", "pip", "install", *packages])
+    result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
     if result:
         return
     for package in packages:
-        result = process.run(["-m", "pip", "install", package])
+        result = process.run(["-m", "pip", "install", package], verbose=verbose)
+
+
+
+from pathlib import Path
+
+def install_packages_smartrun_smartfiles(opts: Options, packages: tuple = tuple(), verbose=False):
+    """
+    Install packages by combining:
+    - Auto-detected packages (.smartrun/packages.in)
+    - Manually added packages (.smartrun/packages.extra)
+    - Packages passed directly to this function (e.g. from CLI)
+
+    Then install them using install_packages_smart().
+    """
+    base_dir = Path.cwd() / ".smartrun"
+    all_packages = set(packages or [])
+
+    def read_package_file(filename):
+        path = base_dir / filename
+        if path.exists():
+            lines = [line.strip() for line in path.read_text().splitlines()]
+            return [line for line in lines if line and not line.startswith("#")]
+        return []
+
+    in_pkgs = read_package_file("packages.in")
+    extra_pkgs = read_package_file("packages.extra")
+
+    all_packages.update(in_pkgs)
+    all_packages.update(extra_pkgs)
+
+    if verbose:
+        print("🔍 Combined package list:", sorted(all_packages))
+
+    # final install call
+    install_packages_smart(opts, sorted(all_packages), verbose=verbose)
 
 
 def run_notebook_in_venv(opts: Options):
@@ -48,16 +83,6 @@ def run_script_in_venv(opts: Options):
         )
         return
     subprocess.run([str(python_path), script_path])
-
-
-def just_install_these_packages(opts, packages):
-    # ============================= Check envir  ==================
-    # env_check = check_env_before(opts)
-    # if not env_check:
-    #     return
-    # venv_path = create_venv_path_or_get_active(opts)
-    # install_packages(venv_path, packages)
-    install_packages_smart(opts, packages)
 
 
 def check_script_file(script_path: Path):
@@ -87,7 +112,7 @@ def run_script(opts: Options, run: bool = True):
     # ============================= Install Packages ==================
     # install_packages(venv_path, packages)
     install_packages_smart(opts, packages)
-    
+
     # ============================= Run Script ==================
     if run:
         print("[blue]▶ Running your script...[/blue]")

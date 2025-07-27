@@ -5,13 +5,17 @@ from rich import print
 
 # smartrun
 from smartrun.options import Options
-from smartrun.runner import run_script, just_install_these_packages
+from smartrun.runner import (
+    run_script,
+    install_packages_smart,
+    install_packages_smartrun_smartfiles,
+)
 from smartrun.runner_helpers import (
     create_venv_path_pure,
 )
 
 
-from smartrun.scan_imports import Scan
+from smartrun.scan_imports import Scan , create_extra_requirements
 
 
 # CLI
@@ -45,6 +49,9 @@ class CLI:
             return self.help()
         if self.opts.script == "install":
             return self.install()
+        if self.opts.script == "add":
+            return self.add()
+
         if self.opts.script == "venv":
             return self.create_env()
         if self.opts.script == "env":
@@ -84,18 +91,27 @@ class CLI:
         f = Path(second)
         return not f.suffix or "," in second or ";" in second
 
-    def install(self):
+    def install(self) -> None:
+        """
+        smartrun install . 
+        smartrun install 
+        smartrun install x.json 
+        smartrun install x.txt
+
+        """
         from smartrun.installers.from_json_fast import (
             install_dependencies_from_json,
             install_dependencies_from_txt,
         )
 
-        if not self.opts.second:
-            print("Usage: smartrun install <file.json|file.txt|pkg1,pkg2>")
+        if not self.opts.second or self.opts.second== '.':
+            # print("Usage: smartrun install <file.json|file.txt|pkg1,pkg2>")
+            install_packages_smartrun_smartfiles(self.opts , verbose = True )
             return
+        
         if self.appears_to_be_package_name(self.opts.second):
             packages = self.get_packages_from_console()
-            just_install_these_packages(self.opts, packages)
+            install_packages_smart(self.opts, packages)
             return
         file_name = Path(self.opts.second)
         if file_name.suffix and not file_name.exists():
@@ -106,6 +122,18 @@ class CLI:
         if file_name.suffix == ".txt":
             return install_dependencies_from_txt(file_name)
         raise ValueError("install was called with wrong params")
+
+    def add(self) -> None:
+
+        if not self.opts.second or not self.appears_to_be_package_name(
+            self.opts.second
+        ):
+            print("Usage: smartrun add <pkg1,pkg2>")
+            return
+        packages = self.get_packages_from_console()
+        # print("adding", ", ".join(packages))
+        create_extra_requirements(packages , self.opts )
+        install_packages_smart(self.opts, packages, verbose=True)
 
     def run(self):
         run_script(self.opts)

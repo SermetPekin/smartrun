@@ -13,6 +13,8 @@ from .runner_helpers import (
 )
 from .envc.envc2 import EnvComplete
 from .utils import in_ci
+
+
 class NoActiveVirtualEnvironment(BaseException): ...
 
 
@@ -41,7 +43,7 @@ class SubprocessSmart:
         fallback = Path(".venv")
         if fallback.exists():
             return fallback.resolve()
-       
+
         raise NoActiveVirtualEnvironment("Activate an environment")
 
     def run(self, params: list, verbose=False, return_output=False):
@@ -59,8 +61,8 @@ class SubprocessSmart:
                 check=True,
             )
             if verbose:
-                print("STDOUT:", result.stdout.strip())
-                print("STDERR:", result.stderr.strip())
+                print("[+]", result.stdout.strip())
+                print("[.]", result.stderr.strip())
 
             return result if return_output else True
 
@@ -70,7 +72,6 @@ class SubprocessSmart:
                 print("STDOUT:", exc.stdout)
                 print("STDERR:", exc.stderr)
             return False
-
 
 
 """

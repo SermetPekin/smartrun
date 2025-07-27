@@ -18,7 +18,6 @@ def create_dir(dir: Path):
         os.makedirs(dir)
 
 
-
 def extract_imports_from_ipynb(ipynb_path) -> str:
     ipynb_path = Path(ipynb_path)
     with ipynb_path.open("r", encoding="utf-8") as f:
