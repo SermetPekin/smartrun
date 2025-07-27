@@ -1,9 +1,7 @@
-import os
-import venv
 import subprocess
 from pathlib import Path
 from rich import print
-import shutil
+from pathlib import Path
 
 # smartrun
 from smartrun.scan_imports import scan_imports_file
@@ -13,26 +11,34 @@ from smartrun.nb.nb_run import NBOptions, run_and_save_notebook, convert
 from smartrun.envc.envc2 import EnvComplete
 from smartrun.runner_helpers import create_venv_path_or_get_active, check_env_before
 from smartrun.subprocess_ import SubprocessSmart
+from smartrun.utils import SMART_FOLDER
+
+
+def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
+    process = SubprocessSmart(opts)
+
+    result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
+    if result:
+        return
+
+    for package in packages:
+        result = process.run(["-m", "pip", "install", package], verbose=verbose)
 
 
 def install_packages_smart(opts: Options, packages: list, verbose=False):
     process = SubprocessSmart(opts)
 
+    if opts.no_uv:
+        return install_packages_smart_w_pip(opts, packages, verbose=verbose)
     result = process.run(["-m", "uv", "pip", "install", *packages], verbose=verbose)
     if result:
         return
-    result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
-    if result:
-        return
-    for package in packages:
-        result = process.run(["-m", "pip", "install", package], verbose=verbose)
+    return install_packages_smart_w_pip(opts, packages, verbose=verbose)
 
 
-
-from pathlib import Path
-from smartrun.utils import SMART_FOLDER, create_dir
-
-def install_packages_smartrun_smartfiles(opts: Options, packages: tuple = tuple(), verbose=False):
+def install_packages_smartrun_smartfiles(
+    opts: Options, packages: tuple = tuple(), verbose=False
+):
     """
     Install packages by combining:
     - Auto-detected packages (.smartrun/packages.in)
@@ -41,8 +47,8 @@ def install_packages_smartrun_smartfiles(opts: Options, packages: tuple = tuple(
 
     Then install them using install_packages_smart().
     """
-    # from .utils import 
-    base_dir = SMART_FOLDER # Path.cwd() / ".smartrun"
+    # from .utils import
+    base_dir = SMART_FOLDER  # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
 
     def read_package_file(filename):

@@ -101,7 +101,7 @@ def create_core_requirements(packages: list, opts: Options):
     logo = [f"# packages that are retrieved from files {opts.script}"]
     content = "\n".join(logo + packages)
     create_requirements_file(file_name , content )
-    compile_requirements(packages, file_name, opts)
+    # compile_requirements(packages, file_name, opts)
 
 def create_extra_requirements(packages: list, opts: Options):
     

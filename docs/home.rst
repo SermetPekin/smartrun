@@ -196,7 +196,7 @@ Examples
    smartrun add seaborn
    smartrun --no_uv my_app.py
 
-Why SmartRun vs uv / pip‑tools?
+Why SmartRun vs uv / pip‑tools?
 -------------------------------
 
 *SmartRun* **wraps** those tools:
