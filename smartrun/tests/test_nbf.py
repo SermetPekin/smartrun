@@ -1,7 +1,7 @@
 """
-Notebook‑related CLI tests for smartrun.
-All heavy operations are monkey‑patched so the tests run quickly and do not
-touch the network or create real virtual‑envs.
+Notebook related CLI tests for smartrun.
+All heavy operations are monkey patched so the tests run quickly and do not
+touch the network or create real virtual envs.
 """
 
 from __future__ import annotations
@@ -78,7 +78,7 @@ def dummy_script(tmp_path: Path) -> Path:
 @pytest.fixture(autouse=True)
 def patch_heavy(monkeypatch):
     """
-    Stub heavy functions so tests stay fast and side‑effect‑free.
+    Stub heavy functions so tests stay fast and side effect free.
     """
     from smartrun import cli as cli_mod
 
