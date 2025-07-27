@@ -38,7 +38,7 @@ jobs:
 
       - name: 🚀 Run a tiny Python script with smartrun
         run: |
-          echo "print('hello workflow')" > hello.py
+          echo "import rich\nprint('hello workflow')\n" > hello.py
           smartrun hello.py
 
       - name: 📥 Install packages via smartrun
