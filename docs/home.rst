@@ -17,288 +17,237 @@ SmartRun
    :target: https://github.com/SermetPekin/smartrun
    :alt: GitHub stars
 
-**SmartRun** is a Python script runner that handles dependencies and environments automatically. Whether you're writing, testing, or sharing code, SmartRun ensures your script runs smoothly—without the setup hassle.
+**SmartRun** is a Python script runner that handles *dependencies* and *virtual
+environments* automatically. Whether you’re writing, testing, or sharing code,
+SmartRun gets your script running — no manual setup.
 
 ✨ Features
 -----------
 
-🚀 **Smart Execution**
-   - Automatically detects and installs missing packages
-   - Supports both Python scripts (.py) and notebooks (.ipynb)
-   - Intelligent import scanning and resolution
+* 🚀 **Smart Execution**
 
-🏠 **Environment Management**
-   - Creates and manages virtual environments automatically
-   - Keeps your global Python clean
-   - Platform-aware activation commands
+  - Auto‑detects and installs missing packages
+  - Runs Python scripts ``.py`` *and* notebooks ``.ipynb``
+  - Intelligent import scanning (standard‑lib vs third‑party)
 
-📦 **Dependency Intelligence**
-   - Maps import names to package names using heuristics
-   - Detects standard libraries vs. third-party packages
-   - Uses `uv`, `pip`, or manual install strategies
+* 🏠 **Environment Management**
 
-🔧 **Developer Friendly**
-   - Rich CLI output with colors and clear feedback
-   - Built-in error handling and guidance
-   - Extensible configuration and API
+  - Creates or re‑uses a project‑local venv (``.venv``)
+  - Keeps your global Python clean
+  - Platform‑aware activation hints
 
-📋 Quick Start
+* 📦 **Dependency Intelligence**
+
+  - Maps import names to PyPI packages (``cv2`` → ``opencv-python``)
+  - Supports *uv* for lightning‑fast resolution, falls back to *pip*
+  - Optional extras: ``smartrun[jupyter]`` for notebook support
+
+* 🔧 **Developer Friendly**
+
+  - Colourful Rich‑powered CLI output
+  - Clear guidance when errors occur
+  - Extensible API for your own tooling
+
+📋 Quick Start
 --------------
 
-Installation
-~~~~~~~~~~~~
+**Install core**
 
 .. code-block:: bash
 
    pip install smartrun
 
-Basic Usage
-~~~~~~~~~~~
+**Install with notebook support**
+
+*(quote the extras if you use zsh)*
 
 .. code-block:: bash
 
-   smartrun script.py          # Run a Python script
-   smartrun notebook.ipynb     # Run a Jupyter notebook
-   smartrun env .venv          # Create a virtual environment
+   pip install 'smartrun[jupyter]'
+
+Run a script:
+
+.. code-block:: bash
+
+   smartrun my_script.py
+
+Run a notebook:
+
+.. code-block:: bash
+
+   smartrun analysis.ipynb
+   smartrun --html notebook.ipynb  # render to HTML as well
+
+Create an environment only:
+
+.. code-block:: bash
+
+   smartrun env .venv
+   # then:
+   source .venv/bin/activate       # Unix
+   .venv\Scripts\activate          # Windows
 
 🛠️ Installation Options
-------------------------
+-----------------------
 
-From PyPI
-~~~~~~~~~
+*Latest from PyPI*
 
 .. code-block:: bash
 
    pip install smartrun
+   pip install 'smartrun[jupyter]'  # extra deps
 
-From Source
-~~~~~~~~~~~
+*Editable from source*
 
 .. code-block:: bash
 
    git clone https://github.com/SermetPekin/smartrun.git
    cd smartrun
-   pip install -e .
-
-Development Installation
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   pip install -e ".[dev]"
+   pip install -e .                 # core
+   pip install -e '.[dev,jupyter]'  # dev + notebook extras
 
 📖 Usage Examples
 -----------------
 
-Basic Script Execution
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   smartrun my_script.py
-
-Environment Management
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   smartrun env .venv
-
-Jupyter Notebook Support
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   smartrun analysis.ipynb
-   smartrun --html notebook.ipynb
-
-
-
-🏗️ How It Works
-----------------
-
-1. **Analyzes** your script for imports
-2. **Resolves** package names (e.g., `cv2` → `opencv-python`)
-3. **Creates** or reuses a virtual environment
-4. **Installs** any missing packages
-5. **Executes** your script
-
-
-🎯 Use Cases
-------------
-
-Data Science Projects
-~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   import pandas as pd
-   import matplotlib.pyplot as plt
-   import seaborn as sns
-   import sklearn
-
-   # smartrun will install all necessary packages
-
-Web Development
-~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   from flask import Flask
-   import requests
-   import sqlalchemy
-
-Machine Learning
-~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   import torch
-   import tensorflow as tf
-   import numpy as np
-
-🔧 API Reference
-----------------
-
-Command Line Interface
-~~~~~~~~~~~~~~~~~~~~~~
-
-Run Python scripts with smart dependency handling and virtual environment management.
-
-.. code-block:: text
-
-   smartrun [OPTIONS] SCRIPT
-
-   Arguments:
-     SCRIPT                    Path to the Python or Jupyter script to execute.
-
-   Options:
-     --venv                    Show the path to the created or selected virtual environment.
-     --no_uv                   Do not use `uv`; fall back to `pip` for dependency resolution.
-     --html                    Generate and save HTML output (if applicable).
-     --exc PACKAGES            Exclude these packages from the environment (comma-separated).
-     --inc PACKAGES            Include these additional packages (comma-separated).
-     --version                 Show the current version of SmartRun.
-     --help                    Show this help message and exit.
-
-Examples
-~~~~~~~~
-
-Run a basic script:
-
-.. code-block:: bash
-
-   smartrun my_script.py
-
-Run with HTML output:
-
-.. code-block:: bash
-
-   smartrun --html my_script.py
-
-Exclude certain packages from installation:
-
-.. code-block:: bash
-
-   smartrun --exc pandas,numpy my_script.py
-
-Include additional packages temporarily:
-
-.. code-block:: bash
-
-   smartrun --inc seaborn,openpyxl my_script.py
-
-Run without using `uv`, falling back to pip:
-
-.. code-block:: bash
-
-   smartrun --no_uv my_script.py
-
-Show the venv path created for the script:
+Run a script & see venv path:
 
 .. code-block:: bash
 
    smartrun --venv my_script.py
 
-Display version:
+Install extra packages only:
 
 .. code-block:: bash
 
-   smartrun --version
+   smartrun install pandas,rich
+   smartrun add requests            # append to .smartrun/packages.extra
 
+Run with *pip* instead of *uv*:
 
-Python API
-~~~~~~~~~~
+.. code-block:: bash
 
-.. code-block:: python
+   smartrun --no_uv my_script.py
 
-   from smartrun import SmartRunner
+🏗️ How SmartRun Works
+---------------------
 
-   runner = SmartRunner(python_version="3.9", venv_path=".venv", auto_install=True)
-   runner.run_script("my_script.py")
+1. **Analyse** your file for imports  
+2. **Resolve** package names ⇢ PyPI packages  
+3. **Create / reuse** a ``.venv``  
+4. **Install** missing deps (⚡ *uv* if available)  
+5. **Execute** the file with the right Python
+
+🎯 Typical Use‑Cases
+-------------------
+
+* **Data science notebooks**
+
+  SmartRun installs *pandas*, *matplotlib*, *seaborn*, *sklearn* as needed, runs
+  the notebook, optionally converts to HTML.
+
+* **Quick CLI prototypes**
+
+  Drop a ``main.py`` somewhere, run ``smartrun main.py`` — no poetry/pyproject required.
+
+* **Teaching / workshops**
+
+  Learners clone a repo and simply run ``smartrun lesson.ipynb`` without worrying
+  about virtualenvs.
+
+🔧 API Reference (CLI)
+---------------------
+
+.. code-block:: text
+
+   smartrun [OPTIONS] SCRIPT
+
+Arguments
+~~~~~~~~~
+
+``SCRIPT``  
+  Path to a ``.py`` or ``.ipynb`` file *or* a subcommand like ``install``/``add``.
+
+Options
+~~~~~~~
+
+``--venv``  
+  Print the venv path SmartRun will use. No execution is performed.
+
+``--no_uv``  
+  Skip *uv*; use classic *pip* resolution instead.
+
+``--html``  
+  Generate and save HTML (if the runner supports it).
+
+``--exc`` • ``--inc``  
+  Exclude / include specific comma‑separated packages.
+
+``--version``  
+  Show SmartRun version.
+
+Examples
+~~~~~~~~
+
+.. code-block:: bash
+
+   smartrun my_script.py
+   smartrun --html analysis.ipynb
+   smartrun install pandas,numpy
+   smartrun add seaborn
+   smartrun --no_uv my_app.py
+
+Why SmartRun vs uv / pip‑tools?
+-------------------------------
+
+*SmartRun* **wraps** those tools:
+
+* **uv** provides ultra‑fast resolution  
+* **pip‑tools** pins versions if you need a lockfile  
+* SmartRun decides *when* to call them and builds a workflow around scripts &
+  notebooks — no ``pyproject.toml`` required.
 
 🐛 Troubleshooting
 ------------------
 
-Virtual Environment Not Activated
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*Virtual env not activated*  
+``smartrun env .venv`` → then activate as shown above.
+
+*Package not found*  
+Add a manual mapping in ``tool.smartrun.package_mapping`` inside a
+``pyproject.toml`` or create ``.smartrun/package_mapping.toml``.
+
+*Debug mode*  
 
 .. code-block:: bash
 
-   smartrun env .venv
-   source .venv/bin/activate  # Unix
-   .venv\Scripts\activate   # Windows
-
-Package Not Found
-~~~~~~~~~~~~~~~~~
-
-.. code-block:: toml
-
-   [tool.smartrun.package_mapping]
-   mymodule = "actual-package-name"
-
-Debug Mode
-~~~~~~~~~~
-
-.. code-block:: bash
-
-   smartrun --verbose script.py
+   smartrun --verbose my_script.py
 
 🤝 Contributing
 ---------------
 
-We welcome contributions! See `CONTRIBUTING.rst` for details.
+PRs and issues welcome! See ``CONTRIBUTING.rst`` for guidelines.
 
 📝 Changelog
 ------------
 
-Version 1.0.0 (2025-07-24)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+**1.0.0  (2025‑07‑24)**
 
-- Initial release with dependency scanning and environment support
-- Jupyter and Python script execution
-- CLI and Python API
-
-🔗 Links
---------
-
-- Documentation: https://smartrun.readthedocs.io
-- PyPI: https://pypi.org/project/smartrun/
-- GitHub: https://github.com/SermetPekin/smartrun
+* First public release: dependency scanning, env creation, notebook support,
+  CLI + Python API.
 
 📄 License
-------------
+----------
 
-MIT License. See the `LICENSE` file for details.
+MIT. See ``LICENSE`` for full text.
 
-👨‍💻 Author
--------------
+👤 Author
+---------
 
-**Sermet Pekin**  
-GitHub: https://github.com/SermetPekin  
-Email: sermet.pekin@gmail.com
+**Sermet Pekin** — <sermet.pekin@gmail.com>  
+GitHub: https://github.com/SermetPekin
 
-🙏 Acknowledgments
-------------------
+🙏 Acknowledgements
+-------------------
 
-Thanks to the developers behind uv, nbconvert, rich, ipykernel, and the Python ecosystem.
+Huge thanks to the maintainers of *uv*, *pip‑tools*, *nbconvert*, *rich*, and
+the wider Python ecosystem.
