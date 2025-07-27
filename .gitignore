@@ -9,6 +9,7 @@ venv/
 env/
 env-*/
 .smartrun/
+myenv*/
 
 
 smartrun-*.json
