@@ -18,14 +18,14 @@ from smartrun.subprocess_ import SubprocessSmart
 
 def install_packages_smart(opts: Options, packages: list):
     process = SubprocessSmart(opts)
-    result = process.run(["uv", "pip", "install", *packages])
+    result = process.run(["-m", "uv", "pip", "install", *packages])
     if result:
         return
-    result = process.run(["pip", "install", *packages])
+    result = process.run(["-m", "pip", "install", *packages])
     if result:
         return
     for package in packages:
-        result = process.run(["pip", "install", package])
+        result = process.run(["-m", "pip", "install", package])
 
 
 def run_notebook_in_venv(opts: Options):

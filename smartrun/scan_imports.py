@@ -7,6 +7,8 @@ from pathlib import Path
 from smartrun.utils import is_stdlib, extract_imports_from_ipynb
 from smartrun.known_mappings import known_mappings
 from smartrun.options import Options
+from smartrun.utils import SMART_FOLDER , create_dir 
+
 
 
 PackageSet = set[str]
@@ -77,15 +79,21 @@ def create_requirements_file_helper(packages, file_name, opts) -> None:
 
     file_name.write_text("\n".join(sorted(packages)))
     process = SubprocessSmart(opts)
-    result = process.run([ "piptools", "compile", str(file_name)])
+    result = process.run(["-m" , "piptools", "compile", str(file_name)] )
 
-    if result : 
+    if result:
         print("created ", file_name)
 
     return
- 
+
+
+
+
+
+
 def create_core_requirements(packages: list, opts: Options):
-    file_name = Path(f"smartrun-{Path(opts.script).stem }-requirements.in")
+    create_dir(SMART_FOLDER)
+    file_name = SMART_FOLDER / f"smartrun-{Path(opts.script).stem }-requirements.in"
     logo = [f"# packages that are retrieved from files {opts.script}"]
     content = "\n".join(logo + packages)
     with open(file_name, encoding="utf-8", mode="w+") as f:

@@ -9,6 +9,15 @@ from datetime import datetime
 from rich import print
 import re
 
+SMART_FOLDER = Path(".smartrun")
+
+
+def create_dir(dir: Path):
+    dir = Path(dir)
+    if not dir.exists():
+        os.makedirs(dir)
+
+
 
 def extract_imports_from_ipynb(ipynb_path) -> str:
     ipynb_path = Path(ipynb_path)
@@ -61,8 +70,9 @@ def get_input(msg: str) -> str:
 
 
 def name_format_json(script_path: str) -> str:
+    create_dir(SMART_FOLDER)
     stem = Path(script_path).stem
-    return f"smartrun-{stem}.lock.json"
+    return SMART_FOLDER / f"smartrun-{stem}.lock.json"
 
 
 def get_packages_uv(venv_path: str):  # TODO
@@ -152,6 +162,8 @@ def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
         "resolved_packages": dict(sorted(packages.items())),
         "timestamp": datetime.now().isoformat() + "Z",
     }
+    create_dir(SMART_FOLDER)
+
     json_file_name = name_format_json(script_path)
     with open(json_file_name, "w") as f:
         json.dump(lock_data, f, indent=2)

@@ -26,9 +26,41 @@
 
 ---
 ## Installation
+🔹 Basic usage
 ```bash
+
 pip install smartrun
+
 ```
+This includes support for:
+
+- Running standard Python scripts
+
+- Automatic environment setup
+
+- Fast dependency resolution with uv
+
+- Reproducible installs via pip-tools
+
+🔹 With Jupyter notebook support
+
+If you want to run .ipynb notebook files using smartrun, install the optional jupyter dependencies:
+```bash
+
+pip install "smartrun[jupyter]"
+
+```
+🔹 Development install (optional)
+
+For contributors and development work, install with:
+
+```bash
+
+pip install "smartrun[dev,jupyter]"
+
+```
+
+
 > **Requires Python 3.10+**
 ---
 

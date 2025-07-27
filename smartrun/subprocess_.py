@@ -13,6 +13,7 @@ from .runner_helpers import (
 )
 from .envc.envc2 import EnvComplete
 from .utils import in_ci
+class NoActiveVirtualEnvironment(BaseException): ...
 
 
 class SubprocessSmart:
@@ -33,27 +34,43 @@ class SubprocessSmart:
             raise NoActiveVirtualEnvironment("Activate an environment")
 
     def get(self):
-        return get_active_env(self.opts)
+        env = EnvComplete()()
+        any_active = env.virtual_active()
+        if any_active:
+            return Path(env.get()["path"])
+        fallback = Path(".venv")
+        if fallback.exists():
+            return fallback.resolve()
+       
+        raise NoActiveVirtualEnvironment("Activate an environment")
 
-    def run(self, params: list, verbose=True):
+    def run(self, params: list, verbose=False, return_output=False):
         params = [str(x) for x in params]
+        cmd = [str(self.python_path), *params]
+
         if verbose:
-            print(
-                "Subprocess will try to run this command : ",
-                " python -m " + " ".join(params),
-            )
+            print("Subprocess will run:", " ".join(cmd))
+
         try:
-            subprocess.run(
-                [str(self.python_path), "-m", *params],
-                stdout=subprocess.DEVNULL,
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
                 check=True,
             )
-            return True
-        except Exception as exc:
-            ...
-            # raise exc
+            if verbose:
+                print("STDOUT:", result.stdout.strip())
+                print("STDERR:", result.stderr.strip())
 
+            return result if return_output else True
+
+        except subprocess.CalledProcessError as exc:
+            if verbose:
+                print("❌ Subprocess failed:")
+                print("STDOUT:", exc.stdout)
+                print("STDERR:", exc.stderr)
             return False
+
 
 
 """
