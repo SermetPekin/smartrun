@@ -1,166 +1,179 @@
-import argparse
-from pathlib import Path
-import os
-from rich import print
+#!/usr/bin/env python
+"""
+smartrun – command‑line interface
+"""
 
-# smartrun
+from __future__ import annotations
+
+import argparse
+import os
+import sys
+from pathlib import Path
+from typing import Iterable, List
+
+from rich import print  # type: ignore
+
+# ───────────────────────────────────────── internal imports ──────────────────
 from smartrun.options import Options
 from smartrun.runner import (
-    run_script,
     install_packages_smart,
     install_packages_smartrun_smartfiles,
+    run_script,
 )
-from smartrun.runner_helpers import (
-    create_venv_path_pure,
-)
+from smartrun.runner_helpers import create_venv_path_pure
+from smartrun.scan_imports import Scan, create_extra_requirements
+
+# ────────────────────────────────────────── helpers ──────────────────────────
 
 
-from smartrun.scan_imports import Scan , create_extra_requirements
+def _normalise_pkg_list(pkg_str: str) -> List[str]:
+    """Turn 'pandas, rich;nbformat' → ['pandas', 'rich', 'nbformat']."""
+    return [
+        p.strip()
+        for p in pkg_str.replace(";", ",").replace(" ", ",").split(",")
+        if p.strip()
+    ]
 
 
-# CLI
+def _is_package_string(value: str) -> bool:
+    """Heuristic: looks like a package list, not a file path."""
+    return ("," in value) or (";" in value) or not Path(value).suffix
+
+
+def _activate_hint(venv: Path) -> str:
+    """Return the shell command to activate *venv*."""
+    if os.name == "nt":
+        return f"{venv}\\Scripts\\activate"
+    return f"source {venv}/bin/activate"
+
+
+# ────────────────────────────────────────── CLI class ─────────────────────────
+
+
 class CLI:
-    def __init__(self, opts: Options):
+    def __init__(self, opts: Options) -> None:
         self.opts = opts
+        self.commands = {
+            "install": self.install,
+            "add": self.add,
+            "venv": self.create_env,
+            "env": self.create_env,
+            "list": self.list_envs,
+            "run": self.run,  # internal helper
+        }
 
-    def not_other_commands(self, x: str):
-        return x not in ["install", "list"]
+    # ─────────────── public command handlers ────────────────
 
-    def py_script(self, file: str):
-        return self.not_other_commands(file)  # temporary
-
-    def is_json_file(self, file: str):
-        p = Path(file)
-        return p.suffix == ".json"
-
-    def help(self):
-        from .help_ import Helpful
-
-        Helpful().help()
-
-    def version(self):
-        print("version 0.2.11")
-
-    def router(self):
-        """router"""
-        if self.opts.script == "version" or self.opts.version:
-            return self.version()
-        if self.opts.script == "help" or self.opts.help:
-            return self.help()
-        if self.opts.script == "install":
-            return self.install()
-        if self.opts.script == "add":
-            return self.add()
-
-        if self.opts.script == "venv":
-            return self.create_env()
-        if self.opts.script == "env":
-            return self.create_env()
-        if self.is_json_file(self.opts.script):
-            file = self.opts.script
-            self.opts.script = "install"
-            self.opts.second = file
-            return self.install()
-        if self.py_script(self.opts.script):
-            return self.run()
-
-    def create_env(self):
+    def create_env(self) -> None:
+        """Create a venv (path given in *second* arg) and print activation hint."""
         self.opts.venv = self.opts.second
-        venv_path = create_venv_path_pure(self.opts)
-        venv_path = Path(venv_path)
-        activate_cmd = (
-            f"source {Path(venv_path)}/bin/activate"
-            if os.name != "nt"
-            else f"{venv_path}\\Scripts\\activate"
-        )
+        venv_path = Path(create_venv_path_pure(self.opts))
         print(
-            f"[yellow]Environment `{venv_path}` is ready. You can activate with command :[/yellow] \n   [green]{activate_cmd}[/green]"
+            f"[yellow]Environment “{venv_path}” is ready.[/yellow]"
+            f"\nActivate with:\n  [green]{_activate_hint(venv_path)}[/green]"
         )
-
-    def get_packages_from_console(self):
-        packages_str = self.opts.second
-        if not packages_str:
-            raise ValueError(
-                "The 'install' command requires a second argument (a package name or list)."
-            )
-        normalized = packages_str.replace(";", ",").replace(" ", ",")
-        packages = [pkg.strip() for pkg in normalized.split(",") if pkg.strip()]
-        return Scan.resolve(packages)
-
-    def appears_to_be_package_name(self, second: str):
-        f = Path(second)
-        return not f.suffix or "," in second or ";" in second
 
     def install(self) -> None:
         """
-        smartrun install . 
-        smartrun install 
-        smartrun install x.json 
-        smartrun install x.txt
+        Install packages into the active / fallback env.
 
+        Accepted *second* arg values:
+          • ``.`` or empty → use .smartrun files
+          • ``pkg1,pkg2``  → explicit package list
+          • ``file.json``  → install from JSON lock
+          • ``file.txt``   → install from requirements.txt lock
         """
         from smartrun.installers.from_json_fast import (
             install_dependencies_from_json,
             install_dependencies_from_txt,
         )
 
-        if not self.opts.second or self.opts.second== '.':
-            # print("Usage: smartrun install <file.json|file.txt|pkg1,pkg2>")
-            install_packages_smartrun_smartfiles(self.opts , verbose = True )
+        second = self.opts.second
+        if not second or second == ".":
+            install_packages_smartrun_smartfiles(self.opts, [], verbose=True)
             return
-        
-        if self.appears_to_be_package_name(self.opts.second):
-            packages = self.get_packages_from_console()
+
+        if _is_package_string(second):
+            packages = Scan.resolve(_normalise_pkg_list(second))
             install_packages_smart(self.opts, packages)
             return
-        file_name = Path(self.opts.second)
-        if file_name.suffix and not file_name.exists():
-            print(f"[red]File not found:[/red] {file_name}")
+
+        file_path = Path(second)
+        if not file_path.exists():
+            print(f"[red]File not found:[/red] {file_path}")
             return
-        if file_name.suffix == ".json":
-            return install_dependencies_from_json(file_name)
-        if file_name.suffix == ".txt":
-            return install_dependencies_from_txt(file_name)
-        raise ValueError("install was called with wrong params")
+
+        if file_path.suffix == ".json":
+            install_dependencies_from_json(file_path)
+        elif file_path.suffix == ".txt":
+            install_dependencies_from_txt(file_path)
+        else:
+            raise ValueError("Unsupported file type for install command.")
 
     def add(self) -> None:
-
-        if not self.opts.second or not self.appears_to_be_package_name(
-            self.opts.second
-        ):
+        """Add packages to .smartrun and install them."""
+        second = self.opts.second
+        if not second or not _is_package_string(second):
             print("Usage: smartrun add <pkg1,pkg2>")
             return
-        packages = self.get_packages_from_console()
-        # print("adding", ", ".join(packages))
-        create_extra_requirements(packages , self.opts )
+
+        packages = Scan.resolve(_normalise_pkg_list(second))
+        create_extra_requirements(packages, self.opts)
         install_packages_smart(self.opts, packages, verbose=True)
 
-    def run(self):
+    def run(self) -> None:
+        """Execute the provided script/notebook via smartrun workflow."""
         run_script(self.opts)
 
-    def list(self):
+    def list_envs(self) -> None:
         root = Path.home() / ".smartrun_envs"
-        for d in root.glob("*"):
-            print(d)
+        for env_dir in root.glob("*"):
+            print(env_dir)
+
+    # ─────────────── router / dispatcher ────────────────
+    def router(self) -> None:
+        return self.dispatch()
+
+    def dispatch(self) -> None:
+        cmd = self.opts.script
+        if cmd in self.commands:
+            self.commands[cmd]()  # type: ignore[misc]
+            return
+
+        # treat script path, notebook, or install‑file cases
+        if Path(cmd).suffix in {".json", ".txt"}:
+            self.opts.second = cmd
+            self.install()
+        else:
+            # default: run script or notebook
+            self.run()
 
 
-def main():
-    # parser = argparse.ArgumentParser(description="Process a script file.")
+# ────────────────────────────────────── entry point ──────────────────────────
+
+
+def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        add_help=False, description="Process a script file."
+        prog="smartrun",
+        description="Run any Python script with automatic environment management.",
     )
-    parser.add_argument("script", help="Path to the script file")
+    parser.add_argument("script", help="Command (install/add/venv) or script path")
+    parser.add_argument("second", nargs="?", default=None, help="Optional argument")
+    parser.add_argument("--venv", action="store_true", help="Treat *second* as venv")
+    parser.add_argument("--no-uv", action="store_true", help="Skip uv resolver")
+    parser.add_argument("--html", action="store_true", help="Generate HTML report")
+    parser.add_argument("--exc", help="Exclude packages")
+    parser.add_argument("--inc", help="Include packages")
     parser.add_argument(
-        "second", nargs="?", help="Optional second argument", default=None
+        "-V", "--version", action="version", version="smartrun 0.2.12"
     )
-    parser.add_argument("--venv", action="store_true", help="venv path")
-    parser.add_argument("--no_uv", action="store_true", help="Do not use uv ")
-    parser.add_argument("--html", action="store_true", help="Generate HTML output")
-    parser.add_argument("--help", action="store_true", help="Help")
-    parser.add_argument("--version", action="store_true", help="Version")
-    parser.add_argument("--exc", help="Except these packages")
-    parser.add_argument("--inc", help="Include these packages")
-    args = parser.parse_args()
+    return parser
+
+
+def main(argv: Iterable[str] | None = None) -> None:
+    parser = _build_arg_parser()
+    args = parser.parse_args(argv)
+
     opts = Options(
         script=args.script,
         second=args.second,
@@ -169,11 +182,11 @@ def main():
         html=args.html,
         exc=args.exc,
         inc=args.inc,
-        version=args.version,
-        help=False,  # args.help,
+        version=False,
+        help=False,
     )
-    CLI(opts).router()
+    CLI(opts).dispatch()
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
