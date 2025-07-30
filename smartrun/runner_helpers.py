@@ -73,7 +73,7 @@ def check_env_before(opts: Options):
             f"[yellow]💡Looks like another environment is active if you"
             f" like to activate another environment run this command : {activate_cmd}[/yellow]"
         )
-        print(env_msg)
+        # print(env_msg)
     return True
 
 
