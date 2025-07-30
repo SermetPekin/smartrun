@@ -16,7 +16,6 @@ from smartrun.envc.envc2 import EnvComplete
 def create_venv_path_or_get_active(opts: Options) -> Path:
     """
     This will create a new environment or return active envir
-
     """
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)
@@ -73,7 +72,7 @@ def check_env_before(opts: Options):
             f"[yellow]💡Looks like another environment is active if you"
             f" like to activate another environment run this command : {activate_cmd}[/yellow]"
         )
-        print(env_msg)
+        # print(env_msg)
     return True
 
 
@@ -148,14 +147,12 @@ def get_active_env(opts: Options):
     fallback = Path(".venv")
     if fallback.exists():
         return fallback.resolve()
-
     raise NoActiveVirtualEnvironment("Activate an environment")
 
 
 def create_venv_path_or_get_active(opts: Options) -> Path:
     """
     This will create a new environment or return active envir
-
     """
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)

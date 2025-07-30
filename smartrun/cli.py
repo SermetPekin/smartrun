@@ -2,15 +2,12 @@
 """
 smartrun – command‑line interface
 """
-
 from __future__ import annotations
-
 import argparse
 import os
 import sys
 from pathlib import Path
 from typing import Iterable, List
-
 from rich import print  # type: ignore
 
 # ───────────────────────────────────────── internal imports ──────────────────
@@ -22,10 +19,10 @@ from smartrun.runner import (
 )
 from smartrun.runner_helpers import create_venv_path_pure
 from smartrun.scan_imports import Scan, create_extra_requirements
+from smartrun.utils import get_last_env_file_name
+
 
 # ────────────────────────────────────────── helpers ──────────────────────────
-
-
 def _normalise_pkg_list(pkg_str: str) -> List[str]:
     """Turn 'pandas, rich;nbformat' → ['pandas', 'rich', 'nbformat']."""
     return [
@@ -48,8 +45,6 @@ def _activate_hint(venv: Path) -> str:
 
 
 # ────────────────────────────────────────── CLI class ─────────────────────────
-
-
 class CLI:
     def __init__(self, opts: Options) -> None:
         self.opts = opts
@@ -63,20 +58,27 @@ class CLI:
         }
 
     # ─────────────── public command handlers ────────────────
-
     def create_env(self) -> None:
         """Create a venv (path given in *second* arg) and print activation hint."""
         self.opts.venv = self.opts.second
         venv_path = Path(create_venv_path_pure(self.opts))
         print(
-            f"[yellow]Environment “{venv_path}” is ready.[/yellow]"
+            f"[yellow]Environment `{str(venv_path)}` is ready.[/yellow]"
             f"\nActivate with:\n  [green]{_activate_hint(venv_path)}[/green]"
         )
+        file_name = get_last_env_file_name()
+        # ✅ Fix: Handle both relative and absolute paths correctly
+        if venv_path.is_absolute():
+            # Absolute path - use as is
+            resolved_path = venv_path
+        else:
+            # Relative path - resolve relative to current directory
+            resolved_path = Path.cwd() / venv_path
+        file_name.write_text(str(resolved_path.resolve()))
 
     def install(self) -> None:
         """
         Install packages into the active / fallback env.
-
         Accepted *second* arg values:
           • ``.`` or empty → use .smartrun files
           • ``pkg1,pkg2``  → explicit package list
@@ -92,17 +94,14 @@ class CLI:
         if not second or second == ".":
             install_packages_smartrun_smartfiles(self.opts, [], verbose=True)
             return
-
         if _is_package_string(second):
             packages = Scan.resolve(_normalise_pkg_list(second))
             install_packages_smart(self.opts, packages)
             return
-
         file_path = Path(second)
         if not file_path.exists():
             print(f"[red]File not found:[/red] {file_path}")
             return
-
         if file_path.suffix == ".json":
             install_dependencies_from_json(file_path)
         elif file_path.suffix == ".txt":
@@ -116,7 +115,6 @@ class CLI:
         if not second or not _is_package_string(second):
             print("Usage: smartrun add <pkg1,pkg2>")
             return
-
         packages = Scan.resolve(_normalise_pkg_list(second))
         create_extra_requirements(packages, self.opts)
         install_packages_smart(self.opts, packages, verbose=True)
@@ -139,7 +137,6 @@ class CLI:
         if cmd in self.commands:
             self.commands[cmd]()  # type: ignore[misc]
             return
-
         # treat script path, notebook, or install‑file cases
         if Path(cmd).suffix in {".json", ".txt"}:
             self.opts.second = cmd
@@ -150,8 +147,6 @@ class CLI:
 
 
 # ────────────────────────────────────── entry point ──────────────────────────
-
-
 def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="smartrun",
@@ -164,16 +159,13 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--html", action="store_true", help="Generate HTML report")
     parser.add_argument("--exc", help="Exclude packages")
     parser.add_argument("--inc", help="Include packages")
-    parser.add_argument(
-        "-V", "--version", action="version", version="smartrun 0.2.12"
-    )
+    parser.add_argument("-V", "--version", action="version", version="smartrun 0.2.12")
     return parser
 
 
 def main(argv: Iterable[str] | None = None) -> None:
     parser = _build_arg_parser()
     args = parser.parse_args(argv)
-
     opts = Options(
         script=args.script,
         second=args.second,

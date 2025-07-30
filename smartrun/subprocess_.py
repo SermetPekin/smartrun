@@ -1,7 +1,6 @@
 from pathlib import Path
 import subprocess
 import os
-
 from .options import Options
 from .runner_helpers import (
     create_venv_path_or_get_active,
@@ -18,19 +17,22 @@ from .utils import in_ci
 class NoActiveVirtualEnvironment(BaseException): ...
 
 
+from .utils import get_bin_path
+
+
 class SubprocessSmart:
     """SubprocessSmart"""
 
     def __init__(self, opts: Options):
         self.opts = opts
+
         self.check()
         venv_path = self.get()
-        self.python_path = (
-            venv_path / ("Scripts" if os.name == "nt" else "bin") / "python"
-        )
+        self.python_path = get_bin_path(venv_path, "python")
         _ensure_pip(self.python_path)
 
     def check(self):
+
         env_check = check_env_before(self.opts)
         if not env_check and not in_ci():
             raise NoActiveVirtualEnvironment("Activate an environment")
@@ -43,16 +45,13 @@ class SubprocessSmart:
         fallback = Path(".venv")
         if fallback.exists():
             return fallback.resolve()
-
         raise NoActiveVirtualEnvironment("Activate an environment")
 
     def run(self, params: list, verbose=False, return_output=False):
         params = [str(x) for x in params]
         cmd = [str(self.python_path), *params]
-
         if verbose:
             print("Subprocess will run:", " ".join(cmd))
-
         try:
             result = subprocess.run(
                 cmd,
@@ -63,9 +62,7 @@ class SubprocessSmart:
             if verbose:
                 print("[+]", result.stdout.strip())
                 print("[.]", result.stderr.strip())
-
             return result if return_output else True
-
         except subprocess.CalledProcessError as exc:
             if verbose:
                 print("❌ Subprocess failed:")
@@ -78,8 +75,6 @@ class SubprocessSmart:
 Usage :
 -----------
 process = SubprocessSmart()
-
 process.run(['pip' , 'list'])
     => will become ..run(['python' , '-m' , 'pip' , 'list'])
-
 """

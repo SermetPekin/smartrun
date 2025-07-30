@@ -12,6 +12,11 @@ import re
 SMART_FOLDER = Path(".smartrun")
 
 
+def get_last_env_file_name() -> Path:
+    file_name = SMART_FOLDER / "last_env.txt"
+    return file_name
+
+
 def create_dir(dir: Path):
     dir = Path(dir)
     if not dir.exists():
@@ -162,7 +167,6 @@ def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
         "timestamp": datetime.now().isoformat() + "Z",
     }
     create_dir(SMART_FOLDER)
-
     json_file_name = name_format_json(script_path)
     with open(json_file_name, "w") as f:
         json.dump(lock_data, f, indent=2)
