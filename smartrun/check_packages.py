@@ -1,6 +1,5 @@
+
 import requests
-
-
 def get_top_pypi_packages(
     url="https://hugovk.github.io/top-pypi-packages/top-pypi-packages.min.json",
 ):
@@ -8,8 +7,6 @@ def get_top_pypi_packages(
     response.raise_for_status()
     data = response.json()
     return {pkg["project"].lower() for pkg in data.get("rows", [])}
-
-
 def get_installed_packages_from_file(freeze_file):
     """
     Reads a pip freeze output file and returns a set of package names.
@@ -30,8 +27,6 @@ def get_installed_packages_from_file(freeze_file):
                 name = line  # fallback: entire line is the package name
             packages.add(name.lower())
     return packages
-
-
 def check_uncommon_packages(freeze_file):
     """
     Returns a list of packages in the freeze_file that are not in the top PyPI list.
@@ -40,8 +35,6 @@ def check_uncommon_packages(freeze_file):
     installed = get_installed_packages_from_file(freeze_file)
     uncommon = sorted(installed - top_packages)
     return uncommon
-
-
 if __name__ == "__main__":
     uncommon = check_uncommon_packages("requirements.txt")
     if uncommon:

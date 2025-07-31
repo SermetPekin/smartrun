@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import subprocess
 import os
@@ -12,31 +13,20 @@ from .runner_helpers import (
 )
 from .envc.envc2 import EnvComplete
 from .utils import in_ci
-
-
 class NoActiveVirtualEnvironment(BaseException): ...
-
-
 from .utils import get_bin_path
-
-
 class SubprocessSmart:
     """SubprocessSmart"""
-
     def __init__(self, opts: Options):
         self.opts = opts
-
         self.check()
         venv_path = self.get()
         self.python_path = get_bin_path(venv_path, "python")
         _ensure_pip(self.python_path)
-
     def check(self):
-
         env_check = check_env_before(self.opts)
         if not env_check and not in_ci():
             raise NoActiveVirtualEnvironment("Activate an environment")
-
     def get(self):
         env = EnvComplete()()
         any_active = env.virtual_active()
@@ -46,7 +36,6 @@ class SubprocessSmart:
         if fallback.exists():
             return fallback.resolve()
         raise NoActiveVirtualEnvironment("Activate an environment")
-
     def run(self, params: list, verbose=False, return_output=False):
         params = [str(x) for x in params]
         cmd = [str(self.python_path), *params]
@@ -69,8 +58,6 @@ class SubprocessSmart:
                 print("STDOUT:", exc.stdout)
                 print("STDERR:", exc.stderr)
             return False
-
-
 """
 Usage :
 -----------

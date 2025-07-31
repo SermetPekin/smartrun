@@ -1,7 +1,6 @@
+
 import os
 import sys
-
-
 class Env:
     @staticmethod
     def active():
@@ -11,7 +10,6 @@ class Env:
             or "VIRTUAL_ENV" in os.environ
             or "CONDA_DEFAULT_ENV" in os.environ
         )
-
     @staticmethod
     def info():
         print("=== Python Environment Information ===")

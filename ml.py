@@ -1,3 +1,4 @@
+
 # examples/ml_test_script.py
 import numpy as np
 import pandas as pd
@@ -13,8 +14,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import joblib
 import lightgbm as lgb
-
-
 def run_classification():
     # Load dataset
     iris = load_iris()
@@ -42,7 +41,5 @@ def run_classification():
         acc = accuracy_score(y_test, preds)
         print(f"Model: {name} - Accuracy: {acc:.4f}")
         print(classification_report(y_test, preds))
-
-
 if __name__ == "__main__":
     run_classification()

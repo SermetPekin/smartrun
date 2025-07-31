@@ -1,7 +1,7 @@
+
 from smartrun.options import Options
 from smartrun.envc.envc2 import EnvComplete
 from smartrun.env_state import EnvStateManager, EnvState
-
 # smartrun
 from smartrun.scan_imports import scan_imports_file
 from smartrun.utils import write_lockfile, get_bin_path, _ensure_pip
@@ -20,11 +20,8 @@ import time
 import shutil
 from pathlib import Path
 from rich import print
-
-
 def create_venv2(venv_path: Path, max_retries=3):
     print(f"[bold yellow]🔧 Creating virtual environment at:[/bold yellow] {venv_path}")
-
     for attempt in range(max_retries):
         try:
             # Try different approaches based on the attempt
@@ -57,7 +54,6 @@ def create_venv2(venv_path: Path, max_retries=3):
                     check=True,
                 )
                 break
-
         except (OSError, PermissionError, subprocess.CalledProcessError) as e:
             if attempt < max_retries - 1:
                 print(f"[yellow]⚠️  Attempt {attempt + 1} failed: {e}[/yellow]")
@@ -65,7 +61,6 @@ def create_venv2(venv_path: Path, max_retries=3):
                     f"[yellow]   Retrying in 2 seconds... ({attempt + 2}/{max_retries})[/yellow]"
                 )
                 time.sleep(2)
-
                 # Try to clean up partially created venv
                 if venv_path.exists():
                     try:
@@ -77,16 +72,13 @@ def create_venv2(venv_path: Path, max_retries=3):
                 raise RuntimeError(
                     f"Failed to create virtual environment after {max_retries} attempts: {e}"
                 )
-
     # Verify creation and fix pip if needed
     python_path = get_bin_path(venv_path, "python")
     pip_path = get_bin_path(venv_path, "pip")
-
     if not python_path.exists():
         raise RuntimeError(
             f"❌ Python executable not found after venv creation: {python_path}"
         )
-
     # 💥 If pip doesn't exist, fix it manually
     if not pip_path.exists():
         print("[red]⚠️ pip not found! Trying to fix using ensurepip...[/red]")
@@ -113,15 +105,11 @@ def create_venv2(venv_path: Path, max_retries=3):
             )
         except subprocess.CalledProcessError as e:
             print(f"[red]⚠️ pip installation failed: {e}[/red]")
-
         if not pip_path.exists():
             raise RuntimeError(
                 "❌ Failed to install pip inside the virtual environment."
             )
-
     print(f"[green]✅ Virtual environment created successfully![/green]")
-
-
 def check_env_with_state_tracking(opts: Options) -> tuple[bool, Optional[str]]:
     """
     Enhanced environment checking with state tracking
@@ -159,8 +147,6 @@ def check_env_with_state_tracking(opts: Options) -> tuple[bool, Optional[str]]:
             )
             return True, warning_msg
     return True, None
-
-
 def create_no_env_warning(
     expected_venv_path: Path, last_env: Optional[EnvState]
 ) -> str:
@@ -187,8 +173,6 @@ def create_no_env_warning(
         )
     msg += f"Then re-run your command.[/yellow]"
     return msg
-
-
 def create_different_env_warning(
     current_env: Dict, expected_venv_path: Path, last_env: EnvState
 ) -> str:
@@ -205,8 +189,6 @@ def create_different_env_warning(
         f"  • Use last created: [cyan]{last_activate_cmd}[/cyan]\n\n"
         f"Continuing with current environment...[/yellow]"
     )
-
-
 # Update your existing function
 def check_env_before_enhanced(opts: Options) -> bool:
     """Enhanced version of check_env_before with state tracking"""
@@ -217,8 +199,6 @@ def check_env_before_enhanced(opts: Options) -> bool:
         if not is_valid:
             return False
     return True
-
-
 def create_venv_internal(venv_path: Path):
     # return create_venv2(venv_path , 1 )
     print(f"[bold yellow]🔧 Creating virtual environment at:[/bold yellow] {venv_path}")
@@ -248,8 +228,6 @@ def create_venv_internal(venv_path: Path):
                 "❌ Failed to install pip inside the virtual environment."
             )
     return venv_path
-
-
 # Update environment creation to save state
 def create_venv_with_state_tracking(venv_path: Path, opts: Options = None) -> Path:
     """Create venv and save state information"""

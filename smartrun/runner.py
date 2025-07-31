@@ -1,8 +1,8 @@
+
 import subprocess
 from pathlib import Path
 from rich import print
 from pathlib import Path
-
 # smartrun
 from smartrun.scan_imports import scan_imports_file
 from smartrun.utils import write_lockfile, get_bin_path, _ensure_pip
@@ -12,8 +12,6 @@ from smartrun.envc.envc2 import EnvComplete
 from smartrun.runner_helpers import create_venv_path_or_get_active, check_env_before
 from smartrun.subprocess_ import SubprocessSmart
 from smartrun.utils import SMART_FOLDER
-
-
 def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
     process = SubprocessSmart(opts)
     result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
@@ -21,8 +19,6 @@ def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
         return
     for package in packages:
         result = process.run(["-m", "pip", "install", package], verbose=verbose)
-
-
 def install_packages_smart(opts: Options, packages: list, verbose=False):
     process = SubprocessSmart(opts)
     if opts.no_uv:
@@ -31,8 +27,6 @@ def install_packages_smart(opts: Options, packages: list, verbose=False):
     if result:
         return
     return install_packages_smart_w_pip(opts, packages, verbose=verbose)
-
-
 def install_packages_smartrun_smartfiles(
     opts: Options, packages: tuple = tuple(), verbose=False
 ):
@@ -46,14 +40,12 @@ def install_packages_smartrun_smartfiles(
     # from .utils import
     base_dir = SMART_FOLDER  # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
-
     def read_package_file(filename):
         path = base_dir / filename
         if path.exists():
             lines = [line.strip() for line in path.read_text().splitlines()]
             return [line for line in lines if line and not line.startswith("#")]
         return []
-
     in_pkgs = read_package_file("packages.in")
     extra_pkgs = read_package_file("packages.extra")
     all_packages.update(in_pkgs)
@@ -62,16 +54,12 @@ def install_packages_smartrun_smartfiles(
         print("🔍 Combined package list:", sorted(all_packages))
     # final install call
     install_packages_smart(opts, sorted(all_packages), verbose=verbose)
-
-
 def run_notebook_in_venv(opts: Options):
     script_path = Path(opts.script)
     nb_opts = NBOptions(script_path)
     if opts.html:
         return convert(nb_opts)
     return run_and_save_notebook(nb_opts)
-
-
 def run_script_in_venv(opts: Options):
     venv_path = create_venv_path_or_get_active(opts)
     script_path = Path(opts.script)
@@ -84,8 +72,6 @@ def run_script_in_venv(opts: Options):
         )
         return
     subprocess.run([str(python_path), script_path])
-
-
 def check_script_file(script_path: Path):
     if not script_path.exists():
         print(f"[bold red]❌ File not found:[/bold red] {script_path}")
@@ -94,8 +80,6 @@ def check_script_file(script_path: Path):
         f"[bold cyan]🚀 Running {script_path} with automatic environment setup[/bold cyan]"
     )
     return True
-
-
 def run_script(opts: Options, run: bool = True):
     script_path = Path(opts.script)
     if not check_script_file(script_path):
