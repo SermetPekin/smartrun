@@ -28,7 +28,7 @@ def create_venv_path_or_get_active(opts: Options) -> Path:
     return create_venv_path_pure(opts)
 
 
-def get_relative(p: Path):
+def get_relative(p: Path) -> Path:
     p = Path(p)
     current_dir = Path.cwd()
     try:
@@ -39,7 +39,7 @@ def get_relative(p: Path):
         # raise ValueError("Cannot get relative path")
 
 
-def get_activate_cmd(venv_path: Path):
+def get_activate_cmd(venv_path: Path) -> str:
     venv_path = get_relative(venv_path)
     activate_cmd = (
         f"source {venv_path}/bin/activate"
@@ -49,7 +49,7 @@ def get_activate_cmd(venv_path: Path):
     return activate_cmd
 
 
-def check_env_before(opts: Options):
+def check_env_before(opts: Options) -> bool:
     # ============================= Check Environment ==================
     venv_path = create_venv_path_or_get_active(opts)
     _ = check_env_active(opts)
@@ -77,7 +77,7 @@ def check_env_before(opts: Options):
     return True
 
 
-def check_env_active(opts: Options):
+def check_env_active(opts: Options) -> bool:
     env = EnvComplete()()
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
@@ -86,7 +86,7 @@ def check_env_active(opts: Options):
     return active
 
 
-def check_some_other_active(opts: Options):
+def check_some_other_active(opts: Options) -> bool:
     env = EnvComplete()()
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
@@ -95,12 +95,12 @@ def check_some_other_active(opts: Options):
     return other_active
 
 
-def virtual_active(opts: Options):
+def virtual_active(opts: Options) -> bool:
     env = EnvComplete()()
     return env.virtual_active()
 
 
-def create_venv(venv_path: Path):
+def create_venv(venv_path: Path) -> None:
     print(f"[bold yellow]🔧 Creating virtual environment at:[/bold yellow] {venv_path}")
     builder = venv.EnvBuilder(with_pip=True)
     builder.create(venv_path)
@@ -140,7 +140,7 @@ def create_venv_path_pure(opts: Options) -> Path:
 class NoActiveVirtualEnvironment(BaseException): ...
 
 
-def get_active_env(opts: Options):
+def get_active_env(opts: Options) -> Path:
     any_active = virtual_active(opts)
     if any_active:
         env = EnvComplete()()

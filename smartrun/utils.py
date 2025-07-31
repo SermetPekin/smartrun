@@ -169,7 +169,7 @@ def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
     print(f"[green]📄 Created {json_file_name} with resolved package versions[/green]")
 
 
-def write_lockfile(script_path: str, venv_path: Path):
+def write_lockfile(script_path: str, venv_path: Path) -> None:
     try:
         write_lockfile_helper(script_path, venv_path)
     except Exception:

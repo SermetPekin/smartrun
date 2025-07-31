@@ -75,7 +75,8 @@ class Scan:
 def compile_requirements(packages, file_name, opts) -> None:
     """pip-compile"""
     from .subprocess_ import SubprocessSmart
-    file_name = SMART_FOLDER / file_name #   Path(file_name)
+
+    file_name = SMART_FOLDER / file_name  #   Path(file_name)
     file_name.write_text("\n".join(sorted(packages)))
     process = SubprocessSmart(opts)
     result = process.run(["-m", "piptools", "compile", str(file_name)])
@@ -86,29 +87,31 @@ def compile_requirements(packages, file_name, opts) -> None:
     return
 
 
-def create_requirements_file(file_name ,content):
+def create_requirements_file(file_name, content):
     create_dir(SMART_FOLDER)
-    
+
     file_name = SMART_FOLDER / file_name
     with open(file_name, encoding="utf-8", mode="w+") as f:
         f.write(content)
         print(f"{file_name} was created!")
 
+
 def create_core_requirements(packages: list, opts: Options):
-    
-    # file_name = SMART_FOLDER / f"smartrun-{Path(opts.script).stem }-requirements.in"
-    file_name =  "packages.in"
+
+    file_name = "packages.in"
     logo = [f"# packages that are retrieved from files {opts.script}"]
     content = "\n".join(logo + packages)
-    create_requirements_file(file_name , content )
+    create_requirements_file(file_name, content)
     # compile_requirements(packages, file_name, opts)
 
+
 def create_extra_requirements(packages: list, opts: Options):
-    
-    file_name =  "packages.extra"
+
+    file_name = "packages.extra"
     logo = [f"# packages that are added by user with command smartrun add "]
     content = "\n".join(logo + packages)
-    create_requirements_file(file_name , content )
+    create_requirements_file(file_name, content)
+
 
 def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)
@@ -128,6 +131,7 @@ def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
 
 
 def scan_imports_notebook(file_path: str, exc=None, path=None, inc=None) -> PackageSet:
+
     file_path = Path(file_path)
     path = file_path.parent
     content = extract_imports_from_ipynb(file_path)

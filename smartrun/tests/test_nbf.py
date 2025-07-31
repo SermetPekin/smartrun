@@ -20,6 +20,7 @@ import pytest
 @dataclass
 class FakeArgs:
     """Mimics argparse.Namespace for Options creation."""
+
     script: str
     second: str | None = None
     venv: bool = False
@@ -31,6 +32,7 @@ class FakeArgs:
 
     def as_options(self):
         from smartrun.options import Options
+
         return Options(
             script=self.script,
             second=self.second,
@@ -46,6 +48,7 @@ class FakeArgs:
 def run_cli(opts):
     """Invoke CLI.dispatch() with the provided Options."""
     from smartrun.cli import CLI
+
     CLI(opts).dispatch()
 
 
@@ -84,7 +87,9 @@ def patch_heavy(monkeypatch):
 
     monkeypatch.setattr(cli_mod, "run_script", lambda *a, **k: None)
     monkeypatch.setattr(cli_mod, "install_packages_smart", lambda *a, **k: None)
-    monkeypatch.setattr(cli_mod, "install_packages_smartrun_smartfiles", lambda *a, **k: None)
+    monkeypatch.setattr(
+        cli_mod, "install_packages_smartrun_smartfiles", lambda *a, **k: None
+    )
     monkeypatch.setattr(cli_mod, "create_extra_requirements", lambda *a, **k: None)
 
 
@@ -109,6 +114,7 @@ def test_add_command(monkeypatch):
     captured = {}
 
     from smartrun import cli as cli_mod
+
     monkeypatch.setattr(cli_mod.Scan, "resolve", lambda pkgs: pkgs)
 
     def fake_create(pkgs, opts):

@@ -15,6 +15,7 @@ import pytest
 # helpers                                                                     #
 # --------------------------------------------------------------------------- #
 
+
 def _opts(script: str, second: str | None = None, **kw):
     """Quick Options stub."""
     defaults = dict(
@@ -34,6 +35,7 @@ def _opts(script: str, second: str | None = None, **kw):
 # tests                                                                       #
 # --------------------------------------------------------------------------- #
 
+
 def test_install_dot(monkeypatch):
     """smartrun install ."""
     called = {}
@@ -46,7 +48,9 @@ def test_install_dot(monkeypatch):
         called["verbose"] = verbose
 
     # patch THE RE-EXPORTED SYMBOL inside smartrun.cli
-    monkeypatch.setattr(cli_mod, "install_packages_smartrun_smartfiles", fake_install_files)
+    monkeypatch.setattr(
+        cli_mod, "install_packages_smartrun_smartfiles", fake_install_files
+    )
 
     cli_mod.CLI(_opts("install", ".")).dispatch()
 
@@ -79,9 +83,15 @@ def test_add_command(monkeypatch):
     from smartrun import cli as cli_mod
 
     monkeypatch.setattr(cli_mod.Scan, "resolve", lambda pkgs: pkgs)
-    monkeypatch.setattr(cli_mod, "create_extra_requirements", lambda pkgs, opts: added.update(extra=pkgs))
     monkeypatch.setattr(
-        cli_mod, "install_packages_smart", lambda opts, packages, verbose=False: added.update(installed=packages)
+        cli_mod,
+        "create_extra_requirements",
+        lambda pkgs, opts: added.update(extra=pkgs),
+    )
+    monkeypatch.setattr(
+        cli_mod,
+        "install_packages_smart",
+        lambda opts, packages, verbose=False: added.update(installed=packages),
     )
 
     cli_mod.CLI(_opts("add", "numpy;matplotlib")).dispatch()
@@ -116,7 +126,9 @@ def test_run_script(monkeypatch, tmp_path):
 
     from smartrun import cli as cli_mod
 
-    monkeypatch.setattr(cli_mod, "run_script", lambda opts: ran.update(path=opts.script))
+    monkeypatch.setattr(
+        cli_mod, "run_script", lambda opts: ran.update(path=opts.script)
+    )
 
     script_path = tmp_path / "hello.py"
     script_path.write_text("print('hi')")
