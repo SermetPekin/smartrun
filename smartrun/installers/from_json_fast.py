@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 Fast dependency installer using uv
@@ -8,6 +7,8 @@ import subprocess
 import sys
 import os
 import tempfile
+
+
 def install_package_uv_batch(packages_dict):
     """Install all packages at once using uv."""
     try:
@@ -42,6 +43,8 @@ def install_package_uv_batch(packages_dict):
     except Exception as e:
         print(f"Error during installation: {e}")
         return False, 0, len(packages_dict)
+
+
 def install_dependencies_from_txt(txt_file_path):
     """Install dependencies from text file using uv."""
     if not os.path.exists(txt_file_path):
@@ -67,6 +70,8 @@ def install_dependencies_from_txt(txt_file_path):
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
+
+
 def install_dependencies_from_json(json_file_path):
     """Install dependencies from JSON file using uv."""
     if not os.path.exists(json_file_path):

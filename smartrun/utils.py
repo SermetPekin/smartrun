@@ -1,4 +1,3 @@
-
 # smartrun/utils.py
 import importlib.util
 import sys
@@ -10,11 +9,14 @@ from datetime import datetime
 from rich import print
 import re
 from .options import Options
+
 SMART_FOLDER = Path(".smartrun")
 from pathlib import Path
 from typing import Union, List, Set
 import sys
 import pkgutil
+
+
 def get_problematic_module_names(
     path_or_opts: Union[Options, str, Path],
     check_stdlib: bool = True,
@@ -102,11 +104,14 @@ def get_problematic_module_names(
                 {"name": module, "conflicts_with": conflicts, "path": folder / module}
             )
     return problematic_modules
+
+
 def _is_stdlib_module(module_name: str) -> bool:
     """Check if module name conflicts with standard library."""
     try:
         # Try importing - if it works and is in stdlib, it's a conflict
         import importlib.util
+
         spec = importlib.util.find_spec(module_name)
         if spec and spec.origin:
             # Check if it's in the standard library path
@@ -115,15 +120,20 @@ def _is_stdlib_module(module_name: str) -> bool:
         return False
     except (ImportError, ModuleNotFoundError, AttributeError):
         return False
+
+
 def _is_installed_module(module_name: str) -> bool:
     """Check if module name conflicts with installed packages."""
     try:
         # Check if module can be found in installed packages
         import importlib.util
+
         spec = importlib.util.find_spec(module_name)
         return spec is not None
     except (ImportError, ModuleNotFoundError):
         return False
+
+
 def print_conflict_report(problematic_modules: List[dict], folder: Path = None) -> None:
     """
     Print a formatted report of potential module conflicts.
@@ -149,14 +159,20 @@ def print_conflict_report(problematic_modules: List[dict], folder: Path = None) 
         print(f"   Suggestion: Rename to avoid shadowing")
         print()
     print("💡 Consider renaming these modules to prevent import issues!")
+
+
 #
 def get_last_env_file_name() -> Path:
     file_name = SMART_FOLDER / "last_env.txt"
     return file_name
+
+
 def create_dir(dir: Path):
     dir = Path(dir)
     if not dir.exists():
         os.makedirs(dir)
+
+
 def extract_imports_from_ipynb(ipynb_path) -> str:
     ipynb_path = Path(ipynb_path)
     with ipynb_path.open("r", encoding="utf-8") as f:
@@ -170,6 +186,8 @@ def extract_imports_from_ipynb(ipynb_path) -> str:
             if re.match(r"^(import\s+\w|from\s+\w)", stripped):
                 imports.append(stripped)
     return "\n".join(imports)
+
+
 def in_pytest() -> bool:
     """
     Return True when the code is running inside a pytest session.
@@ -180,6 +198,8 @@ def in_pytest() -> bool:
     Either signal alone is enough, and both are absent in normal runs.
     """
     return "PYTEST_CURRENT_TEST" in os.environ or "pytest" in sys.modules
+
+
 def in_ci() -> bool:
     """
     Return True when running inside a CI system (GitHub Actions, Azure, etc.)
@@ -190,17 +210,25 @@ def in_ci() -> bool:
     ci_env = os.getenv("CI", "").lower() == "true"
     gha = os.getenv("GITHUB_ACTIONS", "").lower() == "true"
     return ci_env or gha
+
+
 def get_input_default(msg: str, default="y") -> str:
     print(msg)
     return default
+
+
 def get_input(msg: str) -> str:
     if in_ci() or in_pytest():
         return get_input_default(msg, "y")
     return input(msg)
+
+
 def name_format_json(script_path: str) -> str:
     create_dir(SMART_FOLDER)
     stem = Path(script_path).stem
     return SMART_FOLDER / f"smartrun-{stem}.lock.json"
+
+
 def get_packages_uv(venv_path: str):  # TODO
     print("venv_path:", venv_path)
     python_path = get_bin_path(venv_path, "python")
@@ -217,6 +245,8 @@ def get_packages_uv(venv_path: str):  # TODO
         print(e.stderr)
         return
     return result
+
+
 # ---------------------------------------------------------------------------#
 # Helpers                                                                    #
 # ---------------------------------------------------------------------------#
@@ -244,11 +274,15 @@ def _ensure_pip(python_path: Path) -> None:
                 "wheel",
             ]
         )
+
+
 def get_bin_path(venv: Path, exe: str) -> Path:
     """Return the full path to a binary inside the venv (POSIX & Windows)."""
     sub = "Scripts" if sys.platform.startswith("win") else "bin"
     exe = f"{exe}.exe" if sys.platform.startswith("win") else exe
     return Path(venv) / sub / exe
+
+
 def get_packages_pip(venv_path: Path) -> dict[str, str]:
     """
     Return a mapping {package_name: version} for the given virtual‑env.
@@ -271,6 +305,8 @@ def get_packages_pip(venv_path: Path) -> dict[str, str]:
     # Parse JSON directly instead of splitting lines
     pkg_list = json.loads(result.stdout)
     return {pkg["name"]: pkg["version"] for pkg in pkg_list}
+
+
 def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
     # packages = get_packages_uv(venv_path)
     packages: dict[str, str] = get_packages_pip(venv_path)
@@ -285,15 +321,21 @@ def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
     with open(json_file_name, "w") as f:
         json.dump(lock_data, f, indent=2)
     print(f"[green]📄 Created {json_file_name} with resolved package versions[/green]")
+
+
 def write_lockfile(script_path: str, venv_path: Path):
     try:
         write_lockfile_helper(script_path, venv_path)
     except Exception:
         ...
+
+
 def is_stdlib(module_name: str) -> bool:
     spec = importlib.util.find_spec(module_name)
     if spec is None or spec.origin is None:
         return False
     return "site-packages" not in spec.origin
+
+
 def is_venv_active() -> bool:
     return sys.prefix != sys.base_prefix

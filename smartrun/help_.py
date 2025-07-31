@@ -1,6 +1,7 @@
-
 import os
 import shutil
+
+
 class Helpful:
     def help(self):
         """Display comprehensive help information for smartrun."""
@@ -128,6 +129,7 @@ class Helpful:
     LICENSE: MIT
         """
         print(help_text)
+
     def help_command(self, command=None):
         """Show help for specific command."""
         if command is None:
@@ -224,6 +226,7 @@ class Helpful:
             print(f"Unknown command: {command}")
             print("Available commands: run, install, convert, validate")
             print("Use 'smartrun help' for general help")
+
     def show_examples(self):
         """Show practical examples and use cases."""
         examples_text = """
@@ -288,10 +291,12 @@ class Helpful:
     • Keep environment files in version control
         """
         print(examples_text)
+
     def show_version(self):
         """Show version and system information."""
         import platform
         import sys
+
         version_info = f"""
     ╭─────────────────────────────────────────────────────────────────────────────╮
     │                         SMARTRUN VERSION INFO                              │

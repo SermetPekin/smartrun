@@ -84,7 +84,8 @@ smartrun = "smartrun.cli:main"
 [tool.black]
 exclude = '''
 /(
-    venv
+    \.venv
+    \.venv2
   | build
   | migrations
   | data
