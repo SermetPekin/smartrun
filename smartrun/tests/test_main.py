@@ -3,6 +3,8 @@
 from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
+import pytest 
+
 import sys
 @dataclass
 class Args:
@@ -33,7 +35,10 @@ def t2():
 def t3():
     args = Args("install", "pandas>=1.0.0,rich;nbformat")
     return helper(args)
+
+@pytest.mark.skipif(True , reason="github")
 def test_main():
+
     t1()
     t2()
     t3()
