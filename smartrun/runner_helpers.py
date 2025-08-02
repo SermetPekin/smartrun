@@ -20,7 +20,7 @@ def create_venv_path_or_get_active(opts: Options) -> Path:
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)
     opts.venv_path = venv_path
-    any_active = virtual_active(opts)
+    any_active = is_any_env_active(opts)
     if any_active:
         env = EnvComplete()()
         return Path(env.get()["path"])
@@ -53,7 +53,7 @@ def check_env_before(opts: Options) -> bool:
     venv_path = create_venv_path_or_get_active(opts)
     _ = check_env_active(opts)
     other_active = check_some_other_active(opts)
-    any_active = virtual_active(opts)
+    any_active = is_any_env_active(opts)
     activate_cmd = get_activate_cmd(venv_path)
     if not any_active:
         env_msg = (
@@ -81,7 +81,7 @@ def check_env_active(opts: Options) -> bool:
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
     venv_path = current_dir / venv
-    active = env.is_env_active(venv_path.absolute())  # env.virtual_active()
+    active = env.is_env_active(venv_path.absolute())   
     return active
 
 
@@ -90,13 +90,13 @@ def check_some_other_active(opts: Options) -> bool:
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
     venv_path = current_dir / venv
-    other_active = env.is_other_env_active(venv_path.absolute())  # env.virtual_active()
+    other_active = env.is_other_env_active(venv_path.absolute())   
     return other_active
 
 
-def virtual_active(opts: Options) -> bool:
+def is_any_env_active(opts: Options) -> bool:
     env = EnvComplete()()
-    return env.virtual_active()
+    return env.is_any_env_active()
 
 
 def create_venv(venv_path: Path) -> None:
@@ -140,7 +140,7 @@ class NoActiveVirtualEnvironment(BaseException): ...
 
 
 def get_active_env(opts: Options) -> Path:
-    any_active = virtual_active(opts)
+    any_active = is_any_env_active(opts)
     if any_active:
         env = EnvComplete()()
         return Path(env.get()["path"])
@@ -157,7 +157,7 @@ def create_venv_path_or_get_active(opts: Options) -> Path:
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)
     opts.venv_path = venv_path
-    any_active = virtual_active(opts)
+    any_active = is_any_env_active(opts)
     if any_active:
         env = EnvComplete()()
         return Path(env.get()["path"])

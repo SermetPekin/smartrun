@@ -67,6 +67,9 @@ class EnvComplete:
                     "path": sys.prefix,
                 }
             )
+        from smartrun.utils import is_verbose 
+        if is_verbose():
+            print(env_info)
         return env_info
 
     def __call__(self, *args, **kwargs) -> "EnvComplete":
@@ -175,6 +178,9 @@ class EnvComplete:
         """
         env = self.get()
         return env["active"] and env["name"] == name
+
+    def is_any_env_active(self) -> bool : 
+        return self.virtual_active() or self.conda_active()
 
     def virtual_active(self) -> bool:
         """

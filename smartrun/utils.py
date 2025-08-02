@@ -276,11 +276,24 @@ def _ensure_pip(python_path: Path) -> None:
         )
 
 
+def get_bin_path_conda(venv: Path, exe: str) -> Path:
+    """(conda) Return the full path to a binary inside the venv (POSIX & Windows)."""
+    exe = f"{exe}.exe" if sys.platform.startswith("win") else exe
+    return Path(venv) / exe
+
+
 def get_bin_path(venv: Path, exe: str) -> Path:
     """Return the full path to a binary inside the venv (POSIX & Windows)."""
+    from smartrun.envc.envc2 import EnvComplete
+    e = EnvComplete()
+    b = e.get()
+    if b["type"] == "conda" and exe == "pip":
+        return get_bin_path_conda(venv, exe)
     sub = "Scripts" if sys.platform.startswith("win") else "bin"
     exe = f"{exe}.exe" if sys.platform.startswith("win") else exe
     return Path(venv) / sub / exe
+
+
 
 
 def get_packages_pip(venv_path: Path) -> dict[str, str]:
@@ -339,3 +352,14 @@ def is_stdlib(module_name: str) -> bool:
 
 def is_venv_active() -> bool:
     return sys.prefix != sys.base_prefix
+
+
+def is_verbose(verbose = False )-> bool :
+    if verbose: 
+        return True 
+    val = os.getenv("SMARTRUN_VERBOSE" , "0").lower()
+    return val in {"1" , "true" , "yes" , "on"}
+
+def set_verbose( )-> bool :
+    os.environ["SMARTRUN_VERBOSE"] = "1"
+    print("set verbose")

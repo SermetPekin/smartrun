@@ -34,7 +34,7 @@ def _normalise_pkg_list(pkg_str: str) -> List[str]:
 
 def _is_package_string(value: str) -> bool:
     """Heuristic: looks like a package list, not a file path."""
-    return ("," in value) or (";" in value) or not Path(value).suffix or ("=" in value)
+    return ("," in value) or (";" in value) or not Path(value).suffix or ("=" in value) or (">" in value ) or ("<" in value )
 
 
 def _activate_hint(venv: Path) -> str:
@@ -42,6 +42,7 @@ def _activate_hint(venv: Path) -> str:
     if os.name == "nt":
         return f"{venv}\\Scripts\\activate"
     return f"source {venv}/bin/activate"
+
 
 
 # ────────────────────────────────────────── CLI class ─────────────────────────
@@ -66,15 +67,21 @@ class CLI:
             f"[yellow]Environment `{str(venv_path)}` is ready.[/yellow]"
             f"\nActivate with:\n  [green]{_activate_hint(venv_path)}[/green]"
         )
-        file_name = get_last_env_file_name()
-        # ✅ Fix: Handle both relative and absolute paths correctly
         if venv_path.is_absolute():
-            # Absolute path - use as is
             resolved_path = venv_path
         else:
-            # Relative path - resolve relative to current directory
             resolved_path = Path.cwd() / venv_path
-        file_name.write_text(str(resolved_path.resolve()))
+        try:
+            file_name = get_last_env_file_name()   
+            file_path = Path(file_name)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            file_path.write_text(str(resolved_path.resolve()))
+        except Exception as e:
+            
+            from smartrun.utils import get_verbose
+            if get_verbose() :
+                print(f"[smartrun] Warning: failed to write environment file: {e}")
+            pass
 
     def install(self) -> None:
         """
@@ -92,7 +99,7 @@ class CLI:
 
         second = self.opts.second
         if not second or second == ".":
-            install_packages_smartrun_smartfiles(self.opts, [], verbose=True)
+            install_packages_smartrun_smartfiles(self.opts, [], verbose=False)
             return
         if _is_package_string(second):
             packages = Scan.resolve(_normalise_pkg_list(second))
@@ -117,7 +124,7 @@ class CLI:
             return
         packages = Scan.resolve(_normalise_pkg_list(second))
         create_extra_requirements(packages, self.opts)
-        install_packages_smart(self.opts, packages, verbose=True)
+        install_packages_smart(self.opts, packages, verbose=False)
 
     def run(self) -> None:
         """Execute the provided script/notebook via smartrun workflow."""
@@ -133,6 +140,10 @@ class CLI:
         return self.dispatch()
 
     def dispatch(self) -> None:
+        if self.opts.verbose : 
+            from .utils import set_verbose 
+            set_verbose()
+         
         cmd = self.opts.script
         if cmd in self.commands:
             self.commands[cmd]()  # type: ignore[misc]
@@ -155,6 +166,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("script", help="Command (install/add/venv) or script path")
     parser.add_argument("second", nargs="?", default=None, help="Optional argument")
     parser.add_argument("--venv", action="store_true", help="Treat *second* as venv")
+    parser.add_argument("--verbose", action="store_true", help="Verbose")
     parser.add_argument("--no-uv", action="store_true", help="Skip uv resolver")
     parser.add_argument("--html", action="store_true", help="Generate HTML report")
     parser.add_argument("--exc", help="Exclude packages")
@@ -170,6 +182,7 @@ def main(argv: Iterable[str] | None = None) -> None:
         script=args.script,
         second=args.second,
         venv=args.venv,
+        verbose=args.verbose,
         no_uv=args.no_uv,
         html=args.html,
         exc=args.exc,
@@ -177,6 +190,8 @@ def main(argv: Iterable[str] | None = None) -> None:
         version=False,
         help=False,
     )
+
+
     CLI(opts).dispatch()
 
 

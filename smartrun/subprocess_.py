@@ -4,7 +4,7 @@ import os
 from .options import Options
 from .runner_helpers import (
     create_venv_path_or_get_active,
-    virtual_active,
+    is_any_env_active,
     _ensure_pip,
     get_active_env,
     check_env_before,
@@ -37,7 +37,7 @@ class SubprocessSmart:
 
     def get(self):
         env = EnvComplete()()
-        any_active = env.virtual_active()
+        any_active = env.is_any_env_active()
         if any_active:
             return Path(env.get()["path"])
         fallback = Path(".venv")
@@ -46,6 +46,10 @@ class SubprocessSmart:
         raise NoActiveVirtualEnvironment("Activate an environment")
 
     def run(self, params: list, verbose=False, return_output=False):
+        from .utils import is_verbose 
+        verbose = is_verbose(verbose) 
+        if self.opts.verbose : 
+            verbose = True  
         params = [str(x) for x in params]
         cmd = [str(self.python_path), *params]
         if verbose:

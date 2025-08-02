@@ -109,27 +109,6 @@ def create_extra_requirements(packages: list, opts: Options):
     create_requirements_file(file_name, content)
 
 
-def scan_imports_fileOLDDD(file_path: str, opts: Options) -> PackageSet:
-    file_path = Path(file_path)
-    except_these_packages = get_problematic_module_names(opts)
-    except_these = opts.exc
-    if opts.exc is None:
-        except_these = ""
-    if except_these_packages:
-        except_these = except_these + ",".join(except_these_packages)
-    if file_path.suffix == ".ipynb":
-        packages = scan_imports_notebook(file_path, exc=except_these, inc=opts.inc)
-    else:
-        with open(file_path, "r") as f:
-            s = Scan(f.read(), exc=except_these, path=file_path.parent, inc=opts.inc)
-            packages = s()
-    try:
-        create_core_requirements(packages, opts)
-    except Exception as exc:
-        raise exc
-        print("[requirements.in] file was not created!")
-    return packages
-
 
 def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)

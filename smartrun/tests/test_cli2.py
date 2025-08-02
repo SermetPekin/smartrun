@@ -21,6 +21,7 @@ def _opts(script: str, second: str | None = None, **kw):
     defaults = dict(
         venv=False,
         no_uv=False,
+        verbose = True  , 
         html=False,
         exc=None,
         inc=None,
@@ -53,7 +54,7 @@ def test_install_dot(monkeypatch):
 
     cli_mod.CLI(_opts("install", ".")).dispatch()
     assert called["packages"] == []
-    assert called["verbose"] is True
+    assert called["verbose"] is False
 
 
 def test_install_explicit_packages(monkeypatch):

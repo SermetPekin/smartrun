@@ -10,6 +10,7 @@ class Args:
     script: str
     second: str = None
     venv: bool = False
+    verbose : bool = True  
     no_uv: bool = False
     html: bool = False
     exc: str | None = None
@@ -21,6 +22,7 @@ def helper(args):
         script=args.script,
         second=args.second,
         venv=args.venv,
+        verbose = args.verbose ,
         no_uv=args.no_uv,
         html=args.html,
         exc=args.exc,

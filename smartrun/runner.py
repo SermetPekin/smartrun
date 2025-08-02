@@ -11,10 +11,13 @@ from smartrun.nb.nb_run import NBOptions, run_and_save_notebook, convert
 from smartrun.envc.envc2 import EnvComplete
 from smartrun.runner_helpers import create_venv_path_or_get_active, check_env_before
 from smartrun.subprocess_ import SubprocessSmart
-from smartrun.utils import SMART_FOLDER
+from smartrun.utils import SMART_FOLDER, is_verbose
 
 
 def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
+    verbose = is_verbose(verbose)
+    if opts.verbose : 
+        verbose = True  
     process = SubprocessSmart(opts)
     result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
     if result:
@@ -24,6 +27,9 @@ def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
 
 
 def install_packages_smart(opts: Options, packages: list, verbose=False):
+    verbose = is_verbose(verbose)
+    if opts.verbose : 
+        verbose = True  
     process = SubprocessSmart(opts)
     if opts.no_uv:
         return install_packages_smart_w_pip(opts, packages, verbose=verbose)
@@ -44,6 +50,10 @@ def install_packages_smartrun_smartfiles(
     Then install them using install_packages_smart().
     """
     # from .utils import
+    verbose = is_verbose(verbose)
+    if opts.verbose : 
+            verbose = True  
+    
     base_dir = SMART_FOLDER  # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
 
