@@ -16,18 +16,15 @@ from smartrun.utils import SMART_FOLDER
 
 def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
     process = SubprocessSmart(opts)
-
     result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
     if result:
         return
-
     for package in packages:
         result = process.run(["-m", "pip", "install", package], verbose=verbose)
 
 
 def install_packages_smart(opts: Options, packages: list, verbose=False):
     process = SubprocessSmart(opts)
-
     if opts.no_uv:
         return install_packages_smart_w_pip(opts, packages, verbose=verbose)
     result = process.run(["-m", "uv", "pip", "install", *packages], verbose=verbose)
@@ -44,7 +41,6 @@ def install_packages_smartrun_smartfiles(
     - Auto-detected packages (.smartrun/packages.in)
     - Manually added packages (.smartrun/packages.extra)
     - Packages passed directly to this function (e.g. from CLI)
-
     Then install them using install_packages_smart().
     """
     # from .utils import
@@ -60,13 +56,10 @@ def install_packages_smartrun_smartfiles(
 
     in_pkgs = read_package_file("packages.in")
     extra_pkgs = read_package_file("packages.extra")
-
     all_packages.update(in_pkgs)
     all_packages.update(extra_pkgs)
-
     if verbose:
         print("🔍 Combined package list:", sorted(all_packages))
-
     # final install call
     install_packages_smart(opts, sorted(all_packages), verbose=verbose)
 
@@ -120,7 +113,6 @@ def run_script(opts: Options, run: bool = True):
     # ============================= Install Packages ==================
     # install_packages(venv_path, packages)
     install_packages_smart(opts, packages)
-
     # ============================= Run Script ==================
     if run:
         print("[blue]▶ Running your script...[/blue]")

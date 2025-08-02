@@ -1,0 +1,41 @@
+
+# smartrun environment configuration
+metadata:
+  created_at: "2025-07-23T12:28:54Z"
+  created_by: "SermetPekin"
+  smartrun_version: "1.0.0"
+  python_version: "3.13.2"
+  platform: "linux-x86_64"
+  source_file: "scripts/sample1.py"
+  
+# Core dependencies with exact versions
+dependencies:
+  runtime:
+    Jinja2: "3.1.6"
+    Markdown: "3.8.2"
+    MarkupSafe: "3.0.2"
+    Pygments: "2.19.2"
+    requests: "2.31.0"
+    numpy: "1.24.3"
+  
+  # Optional: development dependencies
+  dev:
+    pytest: "7.4.0"
+    black: "23.7.0"
+    flake8: "6.0.0"
+# Environment settings
+environment:
+  name: "smartrun-env-sample1"
+  python: "3.13.2"
+  activate_script: "scripts/activate.sh"
+  
+# Optional: pip configuration
+pip:
+  index_url: "https://pypi.org/simple"
+  extra_index_urls: []
+  trusted_hosts: []
+  
+# Optional: environment variables
+env_vars:
+  PYTHONPATH: "./src"
+  DEBUG: "false"

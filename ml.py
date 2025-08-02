@@ -1,5 +1,4 @@
 # examples/ml_test_script.py
-
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_iris
@@ -21,17 +20,14 @@ def run_classification():
     iris = load_iris()
     X = iris.data
     y = iris.target
-
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
-
     # Standardize
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
-
     # Initialize models
     models = {
         "RandomForest": RandomForestClassifier(n_estimators=100, random_state=42),
@@ -40,7 +36,6 @@ def run_classification():
         "XGBoost": xgb.XGBClassifier(use_label_encoder=False, eval_metric="mlogloss"),
         "LightGBM": lgb.LGBMClassifier(),
     }
-
     for name, model in models.items():
         model.fit(X_train_scaled, y_train)
         preds = model.predict(X_test_scaled)

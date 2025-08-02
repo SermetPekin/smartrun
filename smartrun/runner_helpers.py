@@ -16,7 +16,6 @@ from smartrun.envc.envc2 import EnvComplete
 def create_venv_path_or_get_active(opts: Options) -> Path:
     """
     This will create a new environment or return active envir
-
     """
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)
@@ -148,14 +147,12 @@ def get_active_env(opts: Options) -> Path:
     fallback = Path(".venv")
     if fallback.exists():
         return fallback.resolve()
-
     raise NoActiveVirtualEnvironment("Activate an environment")
 
 
 def create_venv_path_or_get_active(opts: Options) -> Path:
     """
     This will create a new environment or return active envir
-
     """
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     venv_path = Path(venv)

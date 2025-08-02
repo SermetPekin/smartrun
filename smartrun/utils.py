@@ -8,8 +8,163 @@ import subprocess
 from datetime import datetime
 from rich import print
 import re
+from .options import Options
 
 SMART_FOLDER = Path(".smartrun")
+from pathlib import Path
+from typing import Union, List, Set
+import sys
+import pkgutil
+
+
+def get_problematic_module_names(
+    path_or_opts: Union[Options, str, Path],
+    check_stdlib: bool = True,
+    check_installed: bool = True,
+    exclude_patterns: Set[str] = None,
+) -> List[str]:
+    """
+    Identify local Python files/folders that could cause import conflicts.
+    This function scans a directory for .py files and Python packages that might
+    shadow built-in or installed modules, potentially causing import issues.
+    Args:
+        path_or_opts: Either an Options object with a 'script' attribute,
+                     or a string/Path to a Python file or directory
+        check_stdlib: Whether to check against standard library modules
+        check_installed: Whether to check against installed packages
+        exclude_patterns: Set of patterns to exclude from conflict checking
+                         (e.g., {'__pycache__', '.git', 'venv'})
+    Returns:
+        List of local module names that could cause import conflicts
+    Example:
+        >>> problematic = get_problematic_module_names('/path/to/project')
+        >>> if problematic:
+        ...     print(f"Warning: These local modules may shadow imports: {problematic}")
+    """
+    if exclude_patterns is None:
+        exclude_patterns = {
+            "__pycache__",
+            ".git",
+            ".venv",
+            "venv",
+            "env",
+            ".pytest_cache",
+            "node_modules",
+            ".idea",
+            ".vscode",
+        }
+    # Determine the folder to scan
+    try:
+        if hasattr(path_or_opts, "script"):
+            # Assume it's an Options object
+            folder = Path(path_or_opts.script).parent
+        else:
+            # Assume it's a string or Path
+            path = Path(path_or_opts)
+            folder = path.parent if path.is_file() else path
+        folder = folder.resolve()  # Get absolute path
+    except (AttributeError, TypeError, OSError) as e:
+        raise ValueError(f"Invalid path or options object: {e}")
+    if not folder.exists():
+        raise FileNotFoundError(f"Directory does not exist: {folder}")
+    # Get local Python modules
+    local_modules = set()
+    try:
+        for item in folder.iterdir():
+            if item.name.startswith(".") or item.name in exclude_patterns:
+                continue
+            # Python files (excluding __init__.py in some contexts)
+            if item.is_file() and item.suffix == ".py":
+                module_name = item.stem
+                if module_name != "__init__":  # Usually not imported directly
+                    local_modules.add(module_name)
+            # Python packages (directories with __init__.py)
+            elif item.is_dir():
+                if (item / "__init__.py").exists():
+                    local_modules.add(item.name)
+                # Also check directories that could be imported as namespace packages
+                elif any(
+                    child.suffix == ".py" for child in item.iterdir() if child.is_file()
+                ):
+                    local_modules.add(item.name)
+    except PermissionError:
+        print(f"Warning: Permission denied accessing some files in {folder}")
+    # Find potential conflicts
+    problematic_modules = []
+    for module in local_modules:
+        conflicts = []
+        # Check against standard library
+        if check_stdlib and _is_stdlib_module(module):
+            conflicts.append("stdlib")
+        # Check against installed packages
+        if check_installed and _is_installed_module(module):
+            conflicts.append("installed")
+        if conflicts:
+            problematic_modules.append(
+                {"name": module, "conflicts_with": conflicts, "path": folder / module}
+            )
+    return problematic_modules
+
+
+def _is_stdlib_module(module_name: str) -> bool:
+    """Check if module name conflicts with standard library."""
+    try:
+        # Try importing - if it works and is in stdlib, it's a conflict
+        import importlib.util
+
+        spec = importlib.util.find_spec(module_name)
+        if spec and spec.origin:
+            # Check if it's in the standard library path
+            stdlib_path = Path(sys.executable).parent.parent / "lib"
+            return str(stdlib_path) in spec.origin
+        return False
+    except (ImportError, ModuleNotFoundError, AttributeError):
+        return False
+
+
+def _is_installed_module(module_name: str) -> bool:
+    """Check if module name conflicts with installed packages."""
+    try:
+        # Check if module can be found in installed packages
+        import importlib.util
+
+        spec = importlib.util.find_spec(module_name)
+        return spec is not None
+    except (ImportError, ModuleNotFoundError):
+        return False
+
+
+def print_conflict_report(problematic_modules: List[dict], folder: Path = None) -> None:
+    """
+    Print a formatted report of potential module conflicts.
+    Args:
+        problematic_modules: List returned by get_problematic_module_names()
+        folder: Optional folder path for context in the report
+    """
+    if not problematic_modules:
+        print("✅ No potential import conflicts detected!")
+        return
+    print("⚠️  POTENTIAL IMPORT CONFLICTS DETECTED:")
+    print("=" * 50)
+    if folder:
+        print(f"Scanning folder: {folder}")
+        print()
+    for module_info in problematic_modules:
+        name = module_info["name"]
+        conflicts = module_info["conflicts_with"]
+        path = module_info["path"]
+        conflict_types = " & ".join(conflicts)
+        print(f"📦 '{name}' conflicts with {conflict_types}")
+        print(f"   Local path: {path}")
+        print(f"   Suggestion: Rename to avoid shadowing")
+        print()
+    print("💡 Consider renaming these modules to prevent import issues!")
+
+
+#
+def get_last_env_file_name() -> Path:
+    file_name = SMART_FOLDER / "last_env.txt"
+    return file_name
 
 
 def create_dir(dir: Path):
@@ -162,7 +317,6 @@ def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
         "timestamp": datetime.now().isoformat() + "Z",
     }
     create_dir(SMART_FOLDER)
-
     json_file_name = name_format_json(script_path)
     with open(json_file_name, "w") as f:
         json.dump(lock_data, f, indent=2)

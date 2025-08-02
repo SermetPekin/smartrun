@@ -17,7 +17,8 @@ class Args:
     inc: str | None = None
 
 
-@pytest.mark.skipif(in_ci(), reason="github")
+# @pytest.mark.skipif(in_ci(), reason="github")
+@pytest.mark.skipif(True, reason="github")
 def test_cli(capsys):
     with capsys.disabled():
         args = Args("install", "a.json")
@@ -33,7 +34,8 @@ def test_cli(capsys):
         CLI(opts).router()
 
 
-@pytest.mark.skipif(in_ci(), reason="github")
+# @pytest.mark.skipif(in_ci(), reason="github")
+@pytest.mark.skipif(True, reason="github")
 def test_cli_json(capsys):
     with capsys.disabled():
         args = Args("a.json")

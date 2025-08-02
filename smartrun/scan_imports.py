@@ -7,8 +7,7 @@ from pathlib import Path
 from smartrun.utils import is_stdlib, extract_imports_from_ipynb
 from smartrun.known_mappings import known_mappings
 from smartrun.options import Options
-from smartrun.utils import SMART_FOLDER, create_dir
-
+from smartrun.utils import SMART_FOLDER, create_dir, get_problematic_module_names
 
 PackageSet = set[str]
 
@@ -80,10 +79,8 @@ def compile_requirements(packages, file_name, opts) -> None:
     file_name.write_text("\n".join(sorted(packages)))
     process = SubprocessSmart(opts)
     result = process.run(["-m", "piptools", "compile", str(file_name)])
-
     if result:
         print("created ", file_name)
-
     return
 
 
@@ -106,27 +103,58 @@ def create_core_requirements(packages: list, opts: Options):
 
 
 def create_extra_requirements(packages: list, opts: Options):
-
     file_name = "packages.extra"
     logo = [f"# packages that are added by user with command smartrun add "]
     content = "\n".join(logo + packages)
     create_requirements_file(file_name, content)
 
 
-def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
+def scan_imports_fileOLDDD(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)
+    except_these_packages = get_problematic_module_names(opts)
+    except_these = opts.exc
+    if opts.exc is None:
+        except_these = ""
+    if except_these_packages:
+        except_these = except_these + ",".join(except_these_packages)
     if file_path.suffix == ".ipynb":
-        packages = scan_imports_notebook(file_path, exc=opts.exc, inc=opts.inc)
+        packages = scan_imports_notebook(file_path, exc=except_these, inc=opts.inc)
     else:
         with open(file_path, "r") as f:
-            s = Scan(f.read(), exc=opts.exc, path=file_path.parent, inc=opts.inc)
+            s = Scan(f.read(), exc=except_these, path=file_path.parent, inc=opts.inc)
             packages = s()
     try:
         create_core_requirements(packages, opts)
     except Exception as exc:
         raise exc
         print("[requirements.in] file was not created!")
+    return packages
 
+
+def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
+    file_path = Path(file_path)
+    # Get problematic module names and build exclusion list
+    problematic_modules = get_problematic_module_names(opts)
+    problematic_names = (
+        [module["name"] for module in problematic_modules]
+        if problematic_modules
+        else []
+    )
+    # Build exclusions string
+    exclusions = []
+    if opts.exc:
+        exclusions.extend([pkg.strip() for pkg in opts.exc.split(",")])
+    exclusions.extend(problematic_names)
+    except_these = ",".join(exclusions) if exclusions else ""
+    # Scan based on file type
+    if file_path.suffix == ".ipynb":
+        packages = scan_imports_notebook(file_path, exc=except_these, inc=opts.inc)
+    else:
+        with open(file_path, "r", encoding="utf-8") as f:
+            s = Scan(f.read(), exc=except_these, path=file_path.parent, inc=opts.inc)
+            packages = s()
+    # Create requirements file
+    create_core_requirements(packages, opts)
     return packages
 
 

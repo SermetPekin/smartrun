@@ -5,18 +5,14 @@ touch the network or create real virtual envs.
 """
 
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
-
 import nbformat as nbf
 import pytest
 
 
 # ───────────────────────────────────── helper dataclass ──────────────────────
-
-
 @dataclass
 class FakeArgs:
     """Mimics argparse.Namespace for Options creation."""
@@ -53,8 +49,6 @@ def run_cli(opts):
 
 
 # ───────────────────────────────────────── fixtures ──────────────────────────
-
-
 @pytest.fixture()
 def dummy_notebook(tmp_path: Path) -> Path:
     """Create a very small .ipynb file in a tmp directory."""
@@ -76,8 +70,6 @@ def dummy_script(tmp_path: Path) -> Path:
 
 
 # ─────────────────────────── monkey‑patch heavy helpers ──────────────────────
-
-
 @pytest.fixture(autouse=True)
 def patch_heavy(monkeypatch):
     """
@@ -94,8 +86,6 @@ def patch_heavy(monkeypatch):
 
 
 # ────────────────────────────────────────── tests ────────────────────────────
-
-
 @pytest.mark.parametrize("html_flag", [False, True])
 def test_notebook_run(dummy_notebook: Path, html_flag):
     """CLI should accept a notebook path directly (run mode)."""
@@ -112,7 +102,6 @@ def test_python_script_run(dummy_script: Path):
 def test_add_command(monkeypatch):
     """smartrun add pandas;rich should call create_extra_requirements()."""
     captured = {}
-
     from smartrun import cli as cli_mod
 
     monkeypatch.setattr(cli_mod.Scan, "resolve", lambda pkgs: pkgs)
@@ -121,10 +110,8 @@ def test_add_command(monkeypatch):
         captured["pkgs"] = pkgs
 
     monkeypatch.setattr(cli_mod, "create_extra_requirements", fake_create)
-
     args = FakeArgs(script="add", second="pandas;rich")
     run_cli(args.as_options())
-
     assert captured["pkgs"] == ["pandas", "rich"]
 
 

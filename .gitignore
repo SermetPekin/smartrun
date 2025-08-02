@@ -12,9 +12,13 @@ env/
 env-*/
 .smartrun/
 myenv*/
+.venv*/
 
+
+ignore_*.*
 ignore*.*
 
+*hist*.json
 smartrun-*.json
 uv.lock
 sine.png
