@@ -97,11 +97,9 @@ def run_and_save_notebook(nb_opts: NBOptions, output_suffix="_executed"):
 
 def change_ws(ws: str | Path) -> None:
     if str(ws) == ".":
-        print(f"Current working directory: {os.getcwd()}")
         return
     project_root = os.path.abspath(os.path.join(os.getcwd(), ws))
     os.chdir(project_root)
-    print(f"Current working directory: {os.getcwd()}")
 
 
 def convert(options: NBOptions) -> None:

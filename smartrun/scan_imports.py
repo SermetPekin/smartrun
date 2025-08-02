@@ -86,6 +86,7 @@ def compile_requirements(packages, file_name, opts) -> None:
 
 def create_requirements_file(file_name, content):
     create_dir(SMART_FOLDER)
+
     file_name = SMART_FOLDER / file_name
     with open(file_name, encoding="utf-8", mode="w+") as f:
         f.write(content)
@@ -93,7 +94,7 @@ def create_requirements_file(file_name, content):
 
 
 def create_core_requirements(packages: list, opts: Options):
-    # file_name = SMART_FOLDER / f"smartrun-{Path(opts.script).stem }-requirements.in"
+
     file_name = "packages.in"
     logo = [f"# packages that are retrieved from files {opts.script}"]
     content = "\n".join(logo + packages)
@@ -106,7 +107,6 @@ def create_extra_requirements(packages: list, opts: Options):
     logo = [f"# packages that are added by user with command smartrun add "]
     content = "\n".join(logo + packages)
     create_requirements_file(file_name, content)
-
 
 def scan_imports_fileOLDDD(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)
@@ -158,6 +158,7 @@ def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
 
 
 def scan_imports_notebook(file_path: str, exc=None, path=None, inc=None) -> PackageSet:
+
     file_path = Path(file_path)
     path = file_path.parent
     content = extract_imports_from_ipynb(file_path)
