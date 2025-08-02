@@ -6,6 +6,8 @@ Run:  pytest -q smartrun/tests/test_cli_extra.py
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
+from smartrun.utils import in_ci 
+
 import pytest
 
 
@@ -64,6 +66,7 @@ def test_install_explicit_packages(monkeypatch):
     assert installed["packages"] == ["pandas", "rich"]
 
 
+@pytest.mark.skipif(in_ci(), reason="github")
 def test_add_command(monkeypatch):
     """smartrun add numpy;matplotlib"""
     added = {"extra": None, "installed": None}

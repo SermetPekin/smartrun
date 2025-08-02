@@ -14,6 +14,8 @@ env-*/
 myenv*/
 .venv*/
 
+ignore_*.*
+
 *hist*.json
 smartrun-*.json
 uv.lock
