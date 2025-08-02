@@ -1,7 +1,0 @@
-
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-jinja2==3.1.2
-python-json-logger==2.0.7
-aiofiles==23.2.1
