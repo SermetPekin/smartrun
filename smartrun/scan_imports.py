@@ -108,6 +108,7 @@ def create_extra_requirements(packages: list, opts: Options):
     content = "\n".join(logo + packages)
     create_requirements_file(file_name, content)
 
+
 def scan_imports_fileOLDDD(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)
     except_these_packages = get_problematic_module_names(opts)

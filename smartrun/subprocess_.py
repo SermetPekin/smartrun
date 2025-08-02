@@ -67,4 +67,3 @@ class SubprocessSmart:
                 print("STDOUT:", exc.stdout)
                 print("STDERR:", exc.stderr)
             return False
-

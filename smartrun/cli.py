@@ -34,7 +34,7 @@ def _normalise_pkg_list(pkg_str: str) -> List[str]:
 
 def _is_package_string(value: str) -> bool:
     """Heuristic: looks like a package list, not a file path."""
-    return ("," in value) or (";" in value) or not Path(value).suffix
+    return ("," in value) or (";" in value) or not Path(value).suffix or ("=" in value)
 
 
 def _activate_hint(venv: Path) -> str:

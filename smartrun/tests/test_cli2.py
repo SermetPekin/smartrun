@@ -6,7 +6,7 @@ Run:  pytest -q smartrun/tests/test_cli_extra.py
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
-from smartrun.utils import in_ci 
+from smartrun.utils import in_ci
 
 import pytest
 
@@ -14,6 +14,7 @@ import pytest
 # --------------------------------------------------------------------------- #
 # helpers                                                                     #
 # --------------------------------------------------------------------------- #
+
 
 def _opts(script: str, second: str | None = None, **kw):
     """Quick Options stub."""
@@ -33,6 +34,7 @@ def _opts(script: str, second: str | None = None, **kw):
 # --------------------------------------------------------------------------- #
 # tests                                                                       #
 # --------------------------------------------------------------------------- #
+
 
 def test_install_dot(monkeypatch):
     """smartrun install ."""
@@ -122,3 +124,22 @@ def test_run_script(monkeypatch, tmp_path):
     script_path.write_text("print('hi')")
     cli_mod.CLI(_opts(str(script_path))).dispatch()
     assert ran["path"] == str(script_path)
+
+
+from smartrun.cli import _is_package_string
+
+
+def test_package_string(capsys):
+    with capsys.disabled():
+
+        items = [
+            "pandas",
+            "pandas<=1.0.0",
+            "pandas<=1.0.0,scipy",
+            "pandas==1.0.0",
+            "pandas==1.0.0,scipy",
+        ]
+        for x in items:
+            a = _is_package_string(x)
+            print(a, x)
+            # assert a
