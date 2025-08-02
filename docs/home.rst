@@ -104,7 +104,7 @@ Create an environment only:
    git clone https://github.com/SermetPekin/smartrun.git
    cd smartrun
    pip install -e .                 # core
-   pip install -e '.[dev,jupyter]'  # dev + notebook extras
+   pip install -e ".[dev,jupyter]"  # dev + notebook extras
 
 📖 Usage Examples
 -----------------

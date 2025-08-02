@@ -68,11 +68,3 @@ class SubprocessSmart:
                 print("STDERR:", exc.stderr)
             return False
 
-
-"""
-Usage :
------------
-process = SubprocessSmart()
-process.run(['pip' , 'list'])
-    => will become ..run(['python' , '-m' , 'pip' , 'list'])
-"""
