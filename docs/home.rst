@@ -63,7 +63,7 @@ SmartRun gets your script running — no manual setup.
 
 .. code-block:: bash
 
-   pip install 'smartrun[jupyter]'
+   pip install "smartrun[jupyter]"
 
 Run a script:
 
@@ -95,7 +95,7 @@ Create an environment only:
 .. code-block:: bash
 
    pip install smartrun
-   pip install 'smartrun[jupyter]'  # extra deps
+   pip install "smartrun[jupyter]"  # extra deps
 
 *Editable from source*
 
