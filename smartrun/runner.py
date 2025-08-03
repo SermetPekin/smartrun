@@ -118,7 +118,16 @@ def run_script(opts: Options, run: bool = True):
     # ============================= Check envir  ==================
     env_check = check_env_before(opts)
     if not env_check:
-        return
+
+        msg = """It looks like environment is not active. 
+              If you want to continue with python base environment or if any environment is active type yes"""
+        print(msg)
+        from smartrun.utils import get_input
+
+        ans = get_input()
+        if not str(ans).lower() in {"yes", "y"}:
+            return
+
     # Some environment is active now
     # ============================= Install Packages ==================
     # install_packages(venv_path, packages)
