@@ -40,7 +40,7 @@ jobs:
           python --version
           which pip
           pip list
-          pip install smartrun pytest
+          pip install "smartrun[jupyter,dev]" pytest
 
       - name: Install requirements.txt if present
         run: |
