@@ -40,6 +40,7 @@ jobs:
           python --version
           which pip
           pip list
+          pip install smartrun 
 
       - name: Install requirements.txt if present
         run: |
