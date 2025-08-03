@@ -287,7 +287,6 @@ def _ensure_pip(python_path: Path) -> bool:
             return True
         except Exception as exc:
             import traceback
-
             traceback.print_exc()
             print("pip module not found and ensurepip did not work")
             return False
