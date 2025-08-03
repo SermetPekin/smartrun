@@ -36,12 +36,12 @@ jobs:
         cache-downloads: true
 
     - name: Install project dependencies (requirements.txt if available)
-      shell: micromamba-shell
+      shell: bash -l {0}
       run: |
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Run tests and examples
-      shell: micromamba-shell
+      shell: bash -l {0}
       run: |
         PYTHONPATH=. pytest
         PYTHONPATH=. python examples/t1.py 
@@ -49,3 +49,4 @@ jobs:
         PYTHONPATH=. python examples/t3.py
         # PYTHONPATH=. python examples/t4c.py
         # PYTHONPATH=. python examples/t4d.py
+
