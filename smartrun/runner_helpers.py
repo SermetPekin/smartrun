@@ -1,12 +1,12 @@
 import os
 import venv
-import subprocess
+# import subprocess
 from pathlib import Path
 from rich import print
 import shutil
 
 # smartrun
-from smartrun.utils import get_bin_path
+from smartrun.utils import get_bin_path, is_verbose
 from smartrun.options import Options
 from smartrun.envc.envc2 import EnvComplete
 
@@ -46,6 +46,7 @@ def get_activate_cmd(venv_path: Path) -> str:
     return activate_cmd
 
 
+
 def check_env_before(opts: Options) -> bool:
     # ============================= Check Environment ==================
     venv_path = create_venv_path_or_get_active(opts)
@@ -63,14 +64,16 @@ def check_env_before(opts: Options) -> bool:
             f"  2. Activate virtual environment: [cyan]{activate_cmd}[/cyan]\n\n"
             f"Then re-run your command.[/yellow]"
         )
-        print(env_msg)
+        if is_verbose():
+            print(env_msg)
         return False
     if other_active:
         env_msg = (
             f"[yellow]💡Looks like another environment is active if you"
             f" like to activate another environment run this command : {activate_cmd}[/yellow]"
         )
-        # print(env_msg)
+        if is_verbose():
+            print(env_msg)
     return True
 
 
@@ -97,12 +100,15 @@ def is_any_env_active(opts: Options) -> bool:
     return env.is_any_env_active()
 
 
+
 def create_venv(venv_path: Path) -> None:
     print(f"[bold yellow]🔧 Creating virtual environment at:[/bold yellow] {venv_path}")
     builder = venv.EnvBuilder(with_pip=True)
     builder.create(venv_path)
+    return 
     python_path = get_bin_path(venv_path, "python")
     pip_path = get_bin_path(venv_path, "pip")
+    
     # 💥 If pip doesn't exist, fix it manually
     if not pip_path.exists():
         print("[red]⚠️ pip not found! Trying to fix using ensurepip...[/red]")

@@ -18,30 +18,35 @@ class NoActiveVirtualEnvironment(BaseException): ...
 from .utils import get_bin_path
 
 
+from dataclasses import dataclass 
+
+@dataclass 
+class PyPip(object):
+    python_path: str 
+    pip_path : str 
+
+
+def create_pypip_with_opts(opts: Options):
+    venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
+    venv_path = Path(venv)
+    python_path = get_bin_path(venv_path, "python")
+    pip_path = get_bin_path(venv_path, "pip")
+    return PyPip(python_path , pip_path)
+
 class SubprocessSmart:
     """SubprocessSmart"""
 
     def __init__(self, opts: Options):
         self.opts = opts
-        self.check()
-        venv_path = self.get()
-        self.python_path = get_bin_path(venv_path, "python")
-        _ensure_pip(self.python_path)
+        p :  PyPip= self.get()
+        self.python_path = p.python_path 
+        # _ensure_pip(self.python_path)
 
-    def check(self):
-        env_check = check_env_before(self.opts)
-        if not env_check and not in_ci():
-            raise NoActiveVirtualEnvironment("Activate an environment")
+
 
     def get(self):
-        env = EnvComplete()()
-        any_active = env.is_any_env_active()
-        if any_active:
-            return Path(env.get()["path"])
-        fallback = Path(".venv")
-        if fallback.exists():
-            return fallback.resolve()
-        raise NoActiveVirtualEnvironment("Activate an environment")
+        return create_pypip_with_opts(self.opts) 
+
 
     def run(self, params: list, verbose=False, return_output=False):
         from .utils import is_verbose
