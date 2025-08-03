@@ -18,7 +18,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Micromamba with Python ${{ matrix.python-version }}
+      - name: Setup Micromamba
         uses: mamba-org/setup-micromamba@v2
         with:
           environment-name: test-env
@@ -33,10 +33,8 @@ jobs:
             nbconvert
           cache-environment: true
           cache-downloads: true
-          post-cleanup: 'all'
 
       - name: Confirm environment
-        shell: bash -el {0}
         run: |
           which python
           python --version
@@ -44,12 +42,10 @@ jobs:
           pip list
 
       - name: Install requirements.txt if present
-        shell: bash -el {0}
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run tests and examples
-        shell: bash -el {0}
         run: |
           PYTHONPATH=. pytest
           PYTHONPATH=. python examples/t1.py 
