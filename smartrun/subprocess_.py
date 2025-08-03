@@ -1,15 +1,13 @@
 from pathlib import Path
 import subprocess
-import os
+
+# smartrun
 from .options import Options
 from .runner_helpers import (
-    create_venv_path_or_get_active,
-    is_any_env_active,
-    _ensure_pip,
-    get_active_env,
     check_env_before,
     NoActiveVirtualEnvironment,
 )
+from .utils import _ensure_pip
 from .envc.envc2 import EnvComplete
 from .utils import in_ci
 
@@ -46,10 +44,11 @@ class SubprocessSmart:
         raise NoActiveVirtualEnvironment("Activate an environment")
 
     def run(self, params: list, verbose=False, return_output=False):
-        from .utils import is_verbose 
-        verbose = is_verbose(verbose) 
-        if self.opts.verbose : 
-            verbose = True  
+        from .utils import is_verbose
+
+        verbose = is_verbose(verbose)
+        if self.opts.verbose:
+            verbose = True
         params = [str(x) for x in params]
         cmd = [str(self.python_path), *params]
         if verbose:

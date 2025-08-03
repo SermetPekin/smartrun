@@ -6,10 +6,8 @@ from rich import print
 import shutil
 
 # smartrun
-from smartrun.scan_imports import scan_imports_file
-from smartrun.utils import write_lockfile, get_bin_path, _ensure_pip
+from smartrun.utils import get_bin_path
 from smartrun.options import Options
-from smartrun.nb.nb_run import NBOptions, run_and_save_notebook, convert
 from smartrun.envc.envc2 import EnvComplete
 
 
@@ -81,7 +79,7 @@ def check_env_active(opts: Options) -> bool:
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
     venv_path = current_dir / venv
-    active = env.is_env_active(venv_path.absolute())   
+    active = env.is_env_active(venv_path.absolute())
     return active
 
 
@@ -90,7 +88,7 @@ def check_some_other_active(opts: Options) -> bool:
     venv = ".venv" if not isinstance(opts.venv, str) else opts.venv
     current_dir = Path.cwd()
     venv_path = current_dir / venv
-    other_active = env.is_other_env_active(venv_path.absolute())   
+    other_active = env.is_other_env_active(venv_path.absolute())
     return other_active
 
 

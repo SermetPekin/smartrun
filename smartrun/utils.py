@@ -250,30 +250,47 @@ def get_packages_uv(venv_path: str):  # TODO
 # ---------------------------------------------------------------------------#
 # Helpers                                                                    #
 # ---------------------------------------------------------------------------#
-def _ensure_pip(python_path: Path) -> None:
+def _ensure_pip(python_path: Path) -> bool:
     """Guarantee that `pip` is available inside the venv."""
+    first_cmd = [str(python_path), "-m", "pip", "--version"]
+
+    if is_verbose():
+        print("will try calling ", " ".join(first_cmd))
     try:
         subprocess.check_call(
-            [str(python_path), "-m", "pip", "--version"],
+            first_cmd,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
+        return True
     except subprocess.CalledProcessError:
-        # pip not present → bootstrap it
-        subprocess.check_call([str(python_path), "-m", "ensurepip", "--upgrade"])
-        # Upgrade to latest pip, wheel, setuptools
-        subprocess.check_call(
-            [
-                str(python_path),
-                "-m",
-                "pip",
-                "install",
-                "--upgrade",
-                "pip",
-                "setuptools",
-                "wheel",
-            ]
-        )
+        ensurepip_cmd = [str(python_path), "-m", "ensurepip", "--upgrade"]
+        upgrade_pip_cmd = [
+            str(python_path),
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "pip",
+            "setuptools",
+            "wheel",
+        ]
+        if is_verbose():
+            print("will try calling ", " ".join(first_cmd))
+
+        try:
+
+            # pip not present → bootstrap it
+            subprocess.check_call(ensurepip_cmd)
+            # Upgrade to latest pip, wheel, setuptools
+            subprocess.check_call(upgrade_pip_cmd)
+            return True
+        except Exception as exc:
+            import traceback
+
+            traceback.print_exc()
+            print("pip module not found and ensurepip did not work")
+            return False
 
 
 def get_bin_path_conda(venv: Path, exe: str) -> Path:
@@ -285,6 +302,7 @@ def get_bin_path_conda(venv: Path, exe: str) -> Path:
 def get_bin_path(venv: Path, exe: str) -> Path:
     """Return the full path to a binary inside the venv (POSIX & Windows)."""
     from smartrun.envc.envc2 import EnvComplete
+
     e = EnvComplete()
     b = e.get()
     if b["type"] == "conda" and exe == "pip":
@@ -294,15 +312,9 @@ def get_bin_path(venv: Path, exe: str) -> Path:
     return Path(venv) / sub / exe
 
 
-
-
-def get_packages_pip(venv_path: Path) -> dict[str, str]:
-    """
-    Return a mapping {package_name: version} for the given virtual‑env.
-    Uses `pip list --format json` so we get a structured result.
-    """
-    python_path = get_bin_path(venv_path, "python")
-    _ensure_pip(python_path)
+def get_packages_pip_helper(python_path: Path):
+    if is_verbose():
+        print(f"Running pip from: {python_path}")
     try:
         result = subprocess.run(
             [str(python_path), "-m", "pip", "list", "--format=json"],
@@ -311,18 +323,67 @@ def get_packages_pip(venv_path: Path) -> dict[str, str]:
             text=True,
             check=True,
         )
+        if is_verbose():
+            print("STDOUT:", result.stdout[:500])
+        pkg_list = json.loads(result.stdout)
+        return {pkg["name"]: pkg["version"] for pkg in pkg_list}
+
     except subprocess.CalledProcessError as exc:
-        print("❌  Failed to list packages with pip")
-        print(exc.stderr)
-        return None  # or {} if you prefer an empty dict
-    # Parse JSON directly instead of splitting lines
+        if is_verbose():
+            print("❌  Failed to list packages with pip")
+            print("STDERR:", exc.stderr)
+        return None
+    except PermissionError as e:
+        if is_verbose():
+            print("❌  Permission error:", e)
+        return None
+
+
+def get_packages_pip_direct_helper(pip_path: Path):
+    try:
+        result = subprocess.run(
+            [str(pip_path), "list", "--format=json"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        if is_verbose():
+            print("❌  Failed to list packages with pip")
+            print(exc.stderr)
+        return None
     pkg_list = json.loads(result.stdout)
     return {pkg["name"]: pkg["version"] for pkg in pkg_list}
 
 
+def get_packages_pip(venv_path: Path) -> dict[str, str]:
+    """
+    Return a mapping {package_name: version} for the given virtual‑env.
+    Uses `pip list --format json` so we get a structured result.
+    """
+    python_path = get_bin_path(venv_path, "python")
+    pip_ok = _ensure_pip(python_path)
+    if pip_ok:
+        result = get_packages_pip_helper(python_path)
+        if result:
+            return result
+
+    pip_path = get_bin_path(venv_path, "pip")
+    return get_packages_pip_direct_helper(pip_path)
+
+
+def get_packages_uv_or_pip(venv_path: Path):
+    packages = get_packages_uv(venv_path)
+    if packages:
+        return packages
+    return get_packages_pip(venv_path)
+
+
 def write_lockfile_helper(script_path: str, venv_path: Path) -> None:
-    # packages = get_packages_uv(venv_path)
-    packages: dict[str, str] = get_packages_pip(venv_path)
+    packages: dict[str, str] = get_packages_uv_or_pip(venv_path)
+    if not packages:
+        return
     lock_data = {
         "script": script_path,
         "python": sys.version.split()[0],
@@ -354,12 +415,18 @@ def is_venv_active() -> bool:
     return sys.prefix != sys.base_prefix
 
 
-def is_verbose(verbose = False )-> bool :
-    if verbose: 
-        return True 
-    val = os.getenv("SMARTRUN_VERBOSE" , "0").lower()
-    return val in {"1" , "true" , "yes" , "on"}
+def is_verbose(verbose=False) -> bool:
+    if verbose:
+        return True
+    val = os.getenv("SMARTRUN_VERBOSE", "0").lower()
+    return val in {"1", "true", "yes", "on"}
 
-def set_verbose( )-> bool :
+
+def set_verbose() -> bool:
     os.environ["SMARTRUN_VERBOSE"] = "1"
     print("set verbose")
+
+
+def set_verbose_off() -> bool:
+    os.environ["SMARTRUN_VERBOSE"] = "0"
+    print("set verbose off")

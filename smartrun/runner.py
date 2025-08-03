@@ -16,8 +16,8 @@ from smartrun.utils import SMART_FOLDER, is_verbose
 
 def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
     verbose = is_verbose(verbose)
-    if opts.verbose : 
-        verbose = True  
+    if opts.verbose:
+        verbose = True
     process = SubprocessSmart(opts)
     result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
     if result:
@@ -28,8 +28,8 @@ def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
 
 def install_packages_smart(opts: Options, packages: list, verbose=False):
     verbose = is_verbose(verbose)
-    if opts.verbose : 
-        verbose = True  
+    if opts.verbose:
+        verbose = True
     process = SubprocessSmart(opts)
     if opts.no_uv:
         return install_packages_smart_w_pip(opts, packages, verbose=verbose)
@@ -51,9 +51,9 @@ def install_packages_smartrun_smartfiles(
     """
     # from .utils import
     verbose = is_verbose(verbose)
-    if opts.verbose : 
-            verbose = True  
-    
+    if opts.verbose:
+        verbose = True
+
     base_dir = SMART_FOLDER  # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
 

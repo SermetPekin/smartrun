@@ -12,7 +12,7 @@ class Options:
     script: Path  # required
     second: str | None = None
     venv: Path | None = None
-    verbose : bool = False 
+    verbose: bool = False
     no_uv: bool = False  # --no-uv
     html: bool = False  # --no-uv
     exc: str = None  # --exc='FolderA,FolderB'
@@ -22,7 +22,6 @@ class Options:
     lock: bool = False  # --lock (future)
     unlock: bool = False  # --unlock (future)
     extra_args: tuple[str, ...] = ()
-
 
     # -------- convenience helpers -----------------------------------------
     @property

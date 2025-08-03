@@ -34,7 +34,14 @@ def _normalise_pkg_list(pkg_str: str) -> List[str]:
 
 def _is_package_string(value: str) -> bool:
     """Heuristic: looks like a package list, not a file path."""
-    return ("," in value) or (";" in value) or not Path(value).suffix or ("=" in value) or (">" in value ) or ("<" in value )
+    return (
+        ("," in value)
+        or (";" in value)
+        or not Path(value).suffix
+        or ("=" in value)
+        or (">" in value)
+        or ("<" in value)
+    )
 
 
 def _activate_hint(venv: Path) -> str:
@@ -42,7 +49,6 @@ def _activate_hint(venv: Path) -> str:
     if os.name == "nt":
         return f"{venv}\\Scripts\\activate"
     return f"source {venv}/bin/activate"
-
 
 
 # ────────────────────────────────────────── CLI class ─────────────────────────
@@ -72,14 +78,15 @@ class CLI:
         else:
             resolved_path = Path.cwd() / venv_path
         try:
-            file_name = get_last_env_file_name()   
+            file_name = get_last_env_file_name()
             file_path = Path(file_name)
             file_path.parent.mkdir(parents=True, exist_ok=True)
             file_path.write_text(str(resolved_path.resolve()))
         except Exception as e:
-            
+
             from smartrun.utils import get_verbose
-            if get_verbose() :
+
+            if get_verbose():
                 print(f"[smartrun] Warning: failed to write environment file: {e}")
             pass
 
@@ -140,10 +147,11 @@ class CLI:
         return self.dispatch()
 
     def dispatch(self) -> None:
-        if self.opts.verbose : 
-            from .utils import set_verbose 
+        if self.opts.verbose:
+            from .utils import set_verbose
+
             set_verbose()
-         
+
         cmd = self.opts.script
         if cmd in self.commands:
             self.commands[cmd]()  # type: ignore[misc]
@@ -190,7 +198,6 @@ def main(argv: Iterable[str] | None = None) -> None:
         version=False,
         help=False,
     )
-
 
     CLI(opts).dispatch()
 
