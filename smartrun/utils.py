@@ -217,7 +217,7 @@ def get_input_default(msg: str, default="y") -> str:
     return default
 
 
-def get_input(msg: str = '?') -> str:
+def get_input(msg: str = "?") -> str:
     if in_ci() or in_pytest():
         return get_input_default(msg, "y")
     return input(msg)
@@ -232,14 +232,14 @@ def name_format_json(script_path: str) -> str:
 def get_packages_uv(venv_path: str):  # TODO
 
     python_path = get_bin_path(venv_path, "python")
-    cmd =  ["uv", "pip", "freeze", "--python", str(python_path)]
+    cmd = ["uv", "pip", "freeze", "--python", str(python_path)]
 
     if is_verbose():
         print("venv_path:", venv_path)
-        print('cmd:' , ' '.join( cmd) )
+        print("cmd:", " ".join(cmd))
     try:
         result = subprocess.run(
-            cmd ,
+            cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -258,13 +258,14 @@ def get_packages_uv(venv_path: str):  # TODO
 import subprocess
 from pathlib import Path
 
+
 def _ensure_pip(python_path: Path) -> bool:
     """
     Guarantee that `pip` is available in the given Python environment.
-    
+
     If `pip` is missing, attempts to install it via `ensurepip`, and then upgrades pip,
     setuptools, and wheel.
-    
+
     Returns:
         bool: True if pip is available or was successfully installed; False otherwise.
     """
@@ -289,31 +290,42 @@ def _ensure_pip(python_path: Path) -> bool:
     ensurepip_cmd = [str(python_path), "-m", "ensurepip", "--upgrade"]
     upgrade_pip_cmd = [
         str(python_path),
-        "-m", "pip", "install", "--upgrade", "pip", "setuptools", "wheel"
+        "-m",
+        "pip",
+        "install",
+        "--upgrade",
+        "pip",
+        "setuptools",
+        "wheel",
     ]
 
     if is_verbose():
         print("🚧 Running:", " ".join(ensurepip_cmd))
 
     try:
-        subprocess.run(ensurepip_cmd ,
+        subprocess.run(
+            ensurepip_cmd,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            check=False)
-        subprocess.run(upgrade_pip_cmd,
+            check=False,
+        )
+        subprocess.run(
+            upgrade_pip_cmd,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            check=False)
+            check=False,
+        )
         return True
     except Exception:
         if is_verbose():
             import traceback
+
             traceback.print_exc()
             print("❌ pip module not found, and ensurepip failed to install it.")
         return False
 
 
-def get_bin_path_conda(venv: Path, exe: str , b :dict ) -> Path:
+def get_bin_path_conda(venv: Path, exe: str, b: dict) -> Path:
     """(conda) Return the full path to a binary inside the venv (POSIX & Windows)."""
     exe = f"{exe}.exe" if sys.platform.startswith("win") else exe
     p = b["path"]
@@ -327,7 +339,7 @@ def get_bin_path(venv: Path, exe: str) -> Path:
     e = EnvComplete()
     b = e.get()
     if b["type"] == "conda" and exe == "python":
-        return get_bin_path_conda(venv, exe , b )
+        return get_bin_path_conda(venv, exe, b)
     sub = "Scripts" if sys.platform.startswith("win") else "bin"
     exe = f"{exe}.exe" if sys.platform.startswith("win") else exe
     return Path(venv) / sub / exe

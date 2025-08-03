@@ -1,5 +1,6 @@
 import os
 import venv
+
 # import subprocess
 from pathlib import Path
 from rich import print
@@ -44,7 +45,6 @@ def get_activate_cmd(venv_path: Path) -> str:
         else f"{venv_path}\\Scripts\\activate"
     )
     return activate_cmd
-
 
 
 def check_env_before(opts: Options) -> bool:
@@ -100,15 +100,14 @@ def is_any_env_active(opts: Options) -> bool:
     return env.is_any_env_active()
 
 
-
 def create_venv(venv_path: Path) -> None:
     print(f"[bold yellow]🔧 Creating virtual environment at:[/bold yellow] {venv_path}")
     builder = venv.EnvBuilder(with_pip=True)
     builder.create(venv_path)
-    return 
+    return
     python_path = get_bin_path(venv_path, "python")
     pip_path = get_bin_path(venv_path, "pip")
-    
+
     # 💥 If pip doesn't exist, fix it manually
     if not pip_path.exists():
         print("[red]⚠️ pip not found! Trying to fix using ensurepip...[/red]")

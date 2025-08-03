@@ -18,12 +18,13 @@ class NoActiveVirtualEnvironment(BaseException): ...
 from .utils import get_bin_path
 
 
-from dataclasses import dataclass 
+from dataclasses import dataclass
 
-@dataclass 
+
+@dataclass
 class PyPip(object):
-    python_path: str 
-    pip_path : str 
+    python_path: str
+    pip_path: str
 
 
 def create_pypip_with_opts(opts: Options):
@@ -31,22 +32,20 @@ def create_pypip_with_opts(opts: Options):
     venv_path = Path(venv)
     python_path = get_bin_path(venv_path, "python")
     pip_path = get_bin_path(venv_path, "pip")
-    return PyPip(python_path , pip_path)
+    return PyPip(python_path, pip_path)
+
 
 class SubprocessSmart:
     """SubprocessSmart"""
 
     def __init__(self, opts: Options):
         self.opts = opts
-        p :  PyPip= self.get()
-        self.python_path = p.python_path 
+        p: PyPip = self.get()
+        self.python_path = p.python_path
         # _ensure_pip(self.python_path)
 
-
-
     def get(self):
-        return create_pypip_with_opts(self.opts) 
-
+        return create_pypip_with_opts(self.opts)
 
     def run(self, params: list, verbose=False, return_output=False):
         from .utils import is_verbose

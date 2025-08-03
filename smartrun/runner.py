@@ -50,7 +50,6 @@ def install_packages_smartrun_smartfiles(
     # from .utils import
     verbose = is_verbose(verbose) or opts.verbose
 
-
     base_dir = SMART_FOLDER  # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
 
@@ -120,7 +119,8 @@ def run_script(opts: Options, run: bool = True):
               If you want to continue with python base environment or if any environment is active type yes"""
         print(msg)
         from smartrun.utils import get_input
-        ans = get_input('')
+
+        ans = get_input("")
         if not str(ans).lower() in {"yes", "y"}:
             return
 
