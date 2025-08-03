@@ -1,0 +1,51 @@
+name: Conda Matrix Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        # You can try "3.13" if Conda has released it
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Set up Micromamba with Python ${{ matrix.python-version }}
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-name: test-env
+        create-args: >-
+          python=${{ matrix.python-version }}
+          pip
+          pytest
+          flake8
+          rich
+          nbformat
+          ipykernel
+          nbconvert
+        cache-environment: true
+        cache-downloads: true
+
+    - name: Install project dependencies (requirements.txt if available)
+      shell: micromamba-shell
+      run: |
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Run tests and examples
+      shell: micromamba-shell
+      run: |
+        PYTHONPATH=. pytest
+        PYTHONPATH=. python examples/t1.py 
+        PYTHONPATH=. python examples/t2.py
+        PYTHONPATH=. python examples/t3.py
+        # PYTHONPATH=. python examples/t4c.py
+        # PYTHONPATH=. python examples/t4d.py
