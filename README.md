@@ -120,7 +120,9 @@ No requirements.txt. No pip install. Just run the file.
 
 ### Data Science Examples
 <details><summary>🌸 Iris dataset analysis</summary>
+
 ```python 
+
 # iris.py
 import seaborn as sns
 import pandas as pd
@@ -133,14 +135,20 @@ print(df.describe(), end="\n\n")
 # Plot pairwise relationships
 sns.pairplot(df, hue='species')
 plt.savefig('iris_pairplot.png')
+
 ```
 ```bash
+
 smartrun iris.py
+
 ```
 </details> 
 <details><summary>🐼 Titanic Dataset demo</summary>
+
 ```python
+
 # titanic.ipynb
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -154,11 +162,16 @@ sns.countplot(data=df, x='Pclass', hue='Survived')
 plt.title('Survival Count by Passenger Class')
 plt.savefig('titanic_survival_by_class.png')
 print("Saved plot → titanic_survival_by_class.png")
+
 ```
+
 ```bash
+
 smartrun titanic.ipynb
+
 ```
 </details> 
+
 If the dependencies aren’t installed yet, `smartrun` will fetch them automatically.
 ## Why smartrun?
 Because setup should never block you from running great code.

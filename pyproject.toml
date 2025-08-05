@@ -2,7 +2,7 @@
 [project]
 name = "smartrun"
  
-version = "0.2.38"
+version = "0.2.39"
  
 description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
 authors = [
