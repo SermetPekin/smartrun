@@ -1,8 +1,9 @@
+
 # titanic.py
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+from example import * 
 # Load dataset from GitHub
 url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
 df = pd.read_csv(url)

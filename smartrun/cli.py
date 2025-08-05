@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python
 """
 smartrun – command‑line interface
@@ -9,7 +10,6 @@ import sys
 from pathlib import Path
 from typing import Iterable, List
 from rich import print  # type: ignore
-
 # ───────────────────────────────────────── internal imports ──────────────────
 from smartrun.options import Options
 from smartrun.runner import (
@@ -20,8 +20,6 @@ from smartrun.runner import (
 from smartrun.runner_helpers import create_venv_path_pure
 from smartrun.scan_imports import Scan, create_extra_requirements
 from smartrun.utils import get_last_env_file_name
-
-
 # ────────────────────────────────────────── helpers ──────────────────────────
 def _normalise_pkg_list(pkg_str: str) -> List[str]:
     """Turn 'pandas, rich;nbformat' → ['pandas', 'rich', 'nbformat']."""
@@ -30,8 +28,6 @@ def _normalise_pkg_list(pkg_str: str) -> List[str]:
         for p in pkg_str.replace(";", ",").replace(" ", ",").split(",")
         if p.strip()
     ]
-
-
 def _is_package_string(value: str) -> bool:
     """Heuristic: looks like a package list, not a file path."""
     return (
@@ -42,15 +38,11 @@ def _is_package_string(value: str) -> bool:
         or (">" in value)
         or ("<" in value)
     )
-
-
 def _activate_hint(venv: Path) -> str:
     """Return the shell command to activate *venv*."""
     if os.name == "nt":
         return f"{venv}\\Scripts\\activate"
     return f"source {venv}/bin/activate"
-
-
 # ────────────────────────────────────────── CLI class ─────────────────────────
 class CLI:
     def __init__(self, opts: Options) -> None:
@@ -63,7 +55,6 @@ class CLI:
             "list": self.list_envs,
             "run": self.run,  # internal helper
         }
-
     # ─────────────── public command handlers ────────────────
     def create_env(self) -> None:
         """Create a venv (path given in *second* arg) and print activation hint."""
@@ -83,13 +74,10 @@ class CLI:
             file_path.parent.mkdir(parents=True, exist_ok=True)
             file_path.write_text(str(resolved_path.resolve()))
         except Exception as e:
-
             from smartrun.utils import get_verbose
-
             if get_verbose():
                 print(f"[smartrun] Warning: failed to write environment file: {e}")
             pass
-
     def install(self) -> None:
         """
         Install packages into the active / fallback env.
@@ -103,7 +91,6 @@ class CLI:
             install_dependencies_from_json,
             install_dependencies_from_txt,
         )
-
         second = self.opts.second
         if not second or second == ".":
             install_packages_smartrun_smartfiles(self.opts, [], verbose=False)
@@ -122,7 +109,6 @@ class CLI:
             install_dependencies_from_txt(file_path)
         else:
             raise ValueError("Unsupported file type for install command.")
-
     def add(self) -> None:
         """Add packages to .smartrun and install them."""
         second = self.opts.second
@@ -132,26 +118,20 @@ class CLI:
         packages = Scan.resolve(_normalise_pkg_list(second))
         create_extra_requirements(packages, self.opts)
         install_packages_smart(self.opts, packages, verbose=False)
-
     def run(self) -> None:
         """Execute the provided script/notebook via smartrun workflow."""
         run_script(self.opts)
-
     def list_envs(self) -> None:
         root = Path.home() / ".smartrun_envs"
         for env_dir in root.glob("*"):
             print(env_dir)
-
     # ─────────────── router / dispatcher ────────────────
     def router(self) -> None:
         return self.dispatch()
-
     def dispatch(self) -> None:
         if self.opts.verbose:
             from .utils import set_verbose
-
             set_verbose()
-
         cmd = self.opts.script
         if cmd in self.commands:
             self.commands[cmd]()  # type: ignore[misc]
@@ -163,8 +143,6 @@ class CLI:
         else:
             # default: run script or notebook
             self.run()
-
-
 # ────────────────────────────────────── entry point ──────────────────────────
 def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -181,8 +159,6 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--inc", help="Include packages")
     parser.add_argument("-V", "--version", action="version", version="smartrun 0.2.12")
     return parser
-
-
 def main(argv: Iterable[str] | None = None) -> None:
     parser = _build_arg_parser()
     args = parser.parse_args(argv)
@@ -198,9 +174,6 @@ def main(argv: Iterable[str] | None = None) -> None:
         version=False,
         help=False,
     )
-
     CLI(opts).dispatch()
-
-
 if __name__ == "__main__":
     main(sys.argv[1:])
