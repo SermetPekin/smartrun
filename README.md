@@ -105,18 +105,39 @@ print(df.mean())
 
 
 ```
-✅ What SmartRun Does
 
-    Parses the comment for package names: numpy, pandas, rich
+🚀 Example: Auto-Detect Imports (No Comment Needed)
 
-    Creates or reuses a .venv
+Even if you don’t include any inline comment, SmartRun will:
 
-    Installs any missing packages (via uv or pip)
+    Parse the script or notebook for import statements
 
-    Runs the script
+    Detect which are standard libraries vs third-party packages
+
+    Automatically correct package names (e.g. sklearn → scikit-learn, cv2 → opencv-python)
+
+    Install missing packages using uv (or pip fallback)
+
+    Run the file in an isolated virtual environment
 
 No requirements.txt. No pip install. Just run the file.
 
+✅ What SmartRun Does
+
+    Recognizes sklearn as scikit-learn
+
+    Installs numpy, pandas, and scikit-learn if not found
+
+    Runs the script safely inside a virtual environment
+🧠 Bonus: Comment Overrides
+
+You can still override versions or add constraints with an optional comment:
+
+```python 
+
+# smartrun: numpy>=1.24 pandas>=2.0 scikit-learn>=1.4
+
+```
 
 ### Data Science Examples
 <details><summary>🌸 Iris dataset analysis</summary>
@@ -173,12 +194,15 @@ smartrun titanic.ipynb
 </details> 
 
 If the dependencies aren’t installed yet, `smartrun` will fetch them automatically.
+
 ## Why smartrun?
 Because setup should never block you from running great code.
 Whether you're experimenting, prototyping, or sharing — smartrun ensures your script runs smoothly, without dependency drama.
+
 ## Contributing
 Contributions are welcome! 🧑‍💻
 If you’ve got ideas, bug fixes, or improvements — feel free to open an issue or a pull request. Let’s make smartrun even smarter together.
+
 ## License
 BSD 3‑Clause — see `LICENSE` for details.  
 ---
