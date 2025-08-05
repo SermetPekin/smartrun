@@ -1,4 +1,4 @@
-SmartRun
+Example
 ========
 
 Example: Titanic Survival Analysis
