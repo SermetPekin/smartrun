@@ -2,7 +2,7 @@
 [project]
 name = "smartrun"
  
-version = "0.2.37"
+version = "0.2.38"
  
 description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
 authors = [
@@ -13,7 +13,6 @@ requires-python = ">=3.10"
 dependencies = [
     "pip-tools>=7.4.1",
     "pyyaml>=6.0.2",
-    "requests>=2.32.4",
     "rich>=14.0.0",
     "uv>=0.7.21",
 ]
@@ -82,7 +81,5 @@ where = ["."]
 "*" = [ "*.pdf" , "*.log", "*.tmp", "tests/*", "docs/*" , "*.egg-info/*", "*.egg", "__pycache__/*", "*.pyc", "*.pyo", "*.pyd" , "*.so", "*.dll", "*.dylib", "*.exe", "*.o", "*.a", "*.lib", "*.obj", "*.pdb", "*.ilk", "*.idb", "*.idc", "*.ncb", "*.sdf", "*.suo", "*.user", "*.aps", "*.pch"] 
 [project.scripts]
 smartrun = "smartrun.cli:main"
-
-
 [tool.black]
 exclude = '/(\.venv|\.venv2)/'

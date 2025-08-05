@@ -3,7 +3,6 @@ from smartrun.options import Options
 from smartrun.cli import CLI
 from dataclasses import dataclass
 import pytest
-
 import sys
 
 
@@ -48,7 +47,6 @@ def t3():
 
 @pytest.mark.skipif(True, reason="github")
 def test_main():
-
     t1()
     t2()
     t3()

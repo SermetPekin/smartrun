@@ -4,9 +4,8 @@ from smartrun.utils import (
     get_packages_pip,
     get_packages_pip_helper,
 )
-from smartrun.envc.envc import EnvComplete
+from smartrun.envc.envc2 import EnvComplete
 from smartrun.utils import in_ci
-
 from pathlib import Path
 import pytest
 
@@ -20,7 +19,6 @@ def _get_path() -> Path:
 def test_get_packages_pip(capsys):
     with capsys.disabled():
         venv_path = _get_path()
-
         a = get_packages_pip(venv_path)
         print(a)
         assert a
@@ -34,5 +32,4 @@ def test_get_packages_pip_direct_helper(capsys):
         a = get_packages_pip_direct_helper(pip_path)
         print(a)
         assert a
-
         a = get_packages_pip_helper(venv_path)

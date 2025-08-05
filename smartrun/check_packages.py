@@ -1,12 +1,60 @@
-import requests
+from abc import ABC, abstractmethod
+
+try:
+    import requests
+
+    print("✓ requests library is available")
+    HAS_REQUESTS = True
+except ImportError as e:
+    print(f"⚠️  requests library not found: {e}")
+    print("   Install with: pip install requests")
+    HAS_REQUESTS = False
+except Exception as e:
+    print(f"❌ Unexpected error importing requests: {e}")
+    HAS_REQUESTS = False
+
+
+class RequestAbs(ABC):
+    @abstractmethod
+    def get(url: str): ...
+    @abstractmethod
+    def json(self, url: str): ...
+
+
+# Use the flag to determine behavior
+if HAS_REQUESTS:
+
+    class RequestRequests(RequestAbs):
+        def get(url: str):
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            return response
+
+        def json(self, url: str):
+            response = self.get()
+            data = response.json()
+            return data
+
+    request_object = RequestRequests()
+else:
+    from .local_requests import local_requests
+    import json
+
+    class RequestBase(RequestAbs):
+        def get(url: str):
+            return local_requests(url)
+
+        def json(self, url: str):
+            data = self.get()
+            return json.loads(data)
+
+    request_object = RequestBase()
 
 
 def get_top_pypi_packages(
     url="https://hugovk.github.io/top-pypi-packages/top-pypi-packages.min.json",
 ):
-    response = requests.get(url, timeout=10)
-    response.raise_for_status()
-    data = response.json()
+    data = request_object.json(url)
     return {pkg["project"].lower() for pkg in data.get("rows", [])}
 
 

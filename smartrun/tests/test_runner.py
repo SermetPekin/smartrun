@@ -1,6 +1,7 @@
 import tempfile
 from smartrun.scan_imports import scan_imports_file, Scan
 from smartrun.options import Options
+from smartrun.package_name import PackageName
 
 
 def test_scan_imports_simple():
@@ -9,14 +10,14 @@ def test_scan_imports_simple():
         f.write(script)
         f.flush()
         imports = scan_imports_file(f.name, opts=Options(f.file.name))
-    assert "numpy" in imports
-    assert "pandas" in imports
-    assert "scikit-learn" in imports
+    assert PackageName("numpy") in imports
+    assert PackageName("pandas") in imports
+    assert PackageName("scikit-learn") in imports
 
 
 def test_resolve():
     imports = ["cv2", "sklearn", "yaml"]
     pkgs = Scan.resolve(imports)
-    assert "opencv-python" in pkgs
-    assert "scikit-learn" in pkgs
-    assert "PyYAML" in pkgs
+    assert PackageName("opencv-python") in pkgs
+    assert PackageName("scikit-learn") in pkgs
+    assert PackageName("PyYAML") in pkgs

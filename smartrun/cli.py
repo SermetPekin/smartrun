@@ -83,7 +83,6 @@ class CLI:
             file_path.parent.mkdir(parents=True, exist_ok=True)
             file_path.write_text(str(resolved_path.resolve()))
         except Exception as e:
-
             from smartrun.utils import get_verbose
 
             if get_verbose():
@@ -151,7 +150,6 @@ class CLI:
             from .utils import set_verbose
 
             set_verbose()
-
         cmd = self.opts.script
         if cmd in self.commands:
             self.commands[cmd]()  # type: ignore[misc]
@@ -198,7 +196,6 @@ def main(argv: Iterable[str] | None = None) -> None:
         version=False,
         help=False,
     )
-
     CLI(opts).dispatch()
 
 

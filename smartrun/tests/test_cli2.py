@@ -7,15 +7,12 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 from smartrun.utils import in_ci
-
 import pytest
 
 
 # --------------------------------------------------------------------------- #
 # helpers                                                                     #
 # --------------------------------------------------------------------------- #
-
-
 def _opts(script: str, second: str | None = None, **kw):
     """Quick Options stub."""
     defaults = dict(
@@ -35,8 +32,6 @@ def _opts(script: str, second: str | None = None, **kw):
 # --------------------------------------------------------------------------- #
 # tests                                                                       #
 # --------------------------------------------------------------------------- #
-
-
 def test_install_dot(monkeypatch):
     """smartrun install ."""
     called = {}
@@ -51,7 +46,6 @@ def test_install_dot(monkeypatch):
     monkeypatch.setattr(
         cli_mod, "install_packages_smartrun_smartfiles", fake_install_files
     )
-
     cli_mod.CLI(_opts("install", ".")).dispatch()
     assert called["packages"] == []
     assert called["verbose"] is False
@@ -120,7 +114,6 @@ def test_run_script(monkeypatch, tmp_path):
     monkeypatch.setattr(
         cli_mod, "run_script", lambda opts: ran.update(path=opts.script)
     )
-
     script_path = tmp_path / "hello.py"
     script_path.write_text("print('hi')")
     cli_mod.CLI(_opts(str(script_path))).dispatch()
@@ -132,7 +125,6 @@ from smartrun.cli import _is_package_string
 
 def test_package_string(capsys):
     with capsys.disabled():
-
         items = [
             "pandas",
             "pandas<=1.0.0",
