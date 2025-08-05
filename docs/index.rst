@@ -9,6 +9,7 @@ Welcome to smartrun’s documentation!
    :caption: Contents
 
    home
+   example
 
 Indices and tables
 ==================
