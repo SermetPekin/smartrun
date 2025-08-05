@@ -1,21 +1,17 @@
 import subprocess
 from pathlib import Path
 from rich import print
-from pathlib import Path
 
 # smartrun
 from smartrun.scan_imports import scan_imports_file
-from smartrun.utils import write_lockfile, get_bin_path, _ensure_pip
+from smartrun.utils import write_lockfile, get_bin_path, SMART_FOLDER, is_verbose
 from smartrun.options import Options
 from smartrun.nb.nb_run import NBOptions, run_and_save_notebook, convert
-from smartrun.envc.envc2 import EnvComplete
 from smartrun.runner_helpers import create_venv_path_or_get_active, check_env_before
 from smartrun.subprocess_ import SubprocessSmart
-from smartrun.utils import SMART_FOLDER, is_verbose
 
 
 def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
-    verbose = is_verbose(verbose) or opts.verbose
 
     process = SubprocessSmart(opts)
     result = process.run(["-m", "pip", "install", *packages], verbose=verbose)
@@ -26,7 +22,6 @@ def install_packages_smart_w_pip(opts: Options, packages: list, verbose=False):
 
 
 def install_packages_smart(opts: Options, packages: list, verbose=False):
-    verbose = is_verbose(verbose) or opts.verbose
 
     process = SubprocessSmart(opts)
     if opts.no_uv:
@@ -47,9 +42,8 @@ def install_packages_smartrun_smartfiles(
     - Packages passed directly to this function (e.g. from CLI)
     Then install them using install_packages_smart().
     """
-    # from .utils import
-    verbose = is_verbose(verbose) or opts.verbose
 
+    verbose = is_verbose(verbose) or opts.verbose
     base_dir = SMART_FOLDER  # Path.cwd() / ".smartrun"
     all_packages = set(packages or [])
 
@@ -103,6 +97,7 @@ def check_script_file(script_path: Path):
 
 
 def run_script(opts: Options, run: bool = True):
+
     script_path = Path(opts.script)
     if not check_script_file(script_path):
         return
@@ -121,12 +116,10 @@ def run_script(opts: Options, run: bool = True):
         from smartrun.utils import get_input
 
         ans = get_input("")
-        if not str(ans).lower() in {"yes", "y"}:
+        if str(ans).lower() not in {"yes", "y"}:
             return
 
-    # Some environment is active now
     # ============================= Install Packages ==================
-    # install_packages(venv_path, packages)
     install_packages_smart(opts, packages)
     # ============================= Run Script ==================
     if run:

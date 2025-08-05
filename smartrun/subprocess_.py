@@ -1,24 +1,15 @@
 from pathlib import Path
 import subprocess
+from dataclasses import dataclass
 
 # smartrun
 from .options import Options
-from .runner_helpers import (
-    check_env_before,
-    NoActiveVirtualEnvironment,
-)
-from .utils import _ensure_pip
-from .envc.envc2 import EnvComplete
-from .utils import in_ci
+
+# from .utils import _ensure_pip
+from .utils import get_bin_path, is_verbose
 
 
 class NoActiveVirtualEnvironment(BaseException): ...
-
-
-from .utils import get_bin_path
-
-
-from dataclasses import dataclass
 
 
 @dataclass
@@ -48,11 +39,7 @@ class SubprocessSmart:
         return create_pypip_with_opts(self.opts)
 
     def run(self, params: list, verbose=False, return_output=False):
-        from .utils import is_verbose
-
-        verbose = is_verbose(verbose)
-        if self.opts.verbose:
-            verbose = True
+        verbose = is_verbose(verbose) or self.opts.verbose
         params = [str(x) for x in params]
         cmd = [str(self.python_path), *params]
         if verbose:

@@ -9,12 +9,9 @@ from datetime import datetime
 from rich import print
 import re
 from .options import Options
+from typing import Union, List, Set
 
 SMART_FOLDER = Path(".smartrun")
-from pathlib import Path
-from typing import Union, List, Set
-import sys
-import pkgutil
 
 
 def get_problematic_module_names(
@@ -156,7 +153,7 @@ def print_conflict_report(problematic_modules: List[dict], folder: Path = None) 
         conflict_types = " & ".join(conflicts)
         print(f"📦 '{name}' conflicts with {conflict_types}")
         print(f"   Local path: {path}")
-        print(f"   Suggestion: Rename to avoid shadowing")
+        print("   Suggestion: Rename to avoid shadowing")
         print()
     print("💡 Consider renaming these modules to prevent import issues!")
 
@@ -255,8 +252,6 @@ def get_packages_uv(venv_path: str):  # TODO
 # ---------------------------------------------------------------------------#
 # Helpers                                                                    #
 # ---------------------------------------------------------------------------#
-import subprocess
-from pathlib import Path
 
 
 def _ensure_pip(python_path: Path) -> bool:
@@ -282,7 +277,7 @@ def _ensure_pip(python_path: Path) -> bool:
             check=False,  # Don't raise exception; we check manually
         )
         return True
-    except Exception as e:
+    except Exception:
         if is_verbose():
             print("🔍 pip not available. Attempting to install using ensurepip...")
 
@@ -334,7 +329,7 @@ def get_bin_path_conda(venv: Path, exe: str, b: dict) -> Path:
 
 def get_bin_path(venv: Path, exe: str) -> Path:
     """Return the full path to a binary inside the venv (POSIX & Windows)."""
-    from smartrun.envc.envc2 import EnvComplete
+    from smartrun.envc.envc import EnvComplete
 
     e = EnvComplete()
     b = e.get()

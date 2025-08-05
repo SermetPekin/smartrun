@@ -4,7 +4,7 @@ from smartrun.utils import (
     get_packages_pip,
     get_packages_pip_helper,
 )
-from smartrun.envc.envc2 import EnvComplete
+from smartrun.envc.envc import EnvComplete
 from smartrun.utils import in_ci
 
 from pathlib import Path

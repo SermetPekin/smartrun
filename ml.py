@@ -1,6 +1,4 @@
 # examples/ml_test_script.py
-import numpy as np
-import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -9,9 +7,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
 import xgboost as xgb
-import matplotlib.pyplot as plt
-import seaborn as sns
-import joblib
 import lightgbm as lgb
 
 
