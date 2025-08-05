@@ -90,7 +90,7 @@ smartrun your_notebook.ipynb
 
 ```python
 
-# smartrun: numpy pandas rich
+# smartrun: numpy>=1.24 pandas>=2.0 rich>=13.0
 
 import numpy as np
 import pandas as pd
@@ -101,6 +101,7 @@ print("Data:")
 print(df, end="\n\n")
 print("Column means:")
 print(df.mean())
+
 
 
 ```
