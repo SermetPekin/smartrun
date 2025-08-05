@@ -51,7 +51,6 @@ class SmartRunCommentRequirements:
                 requirements.extend(deps)
         return list(set(requirements))  # Remove duplicates
 
-
     def _parse_requirements(self) -> List[str]:
         """Parse all smartrun requirements from the content."""
         content = self._get_content()
@@ -66,11 +65,10 @@ class SmartRunCommentRequirements:
         for pattern in patterns:
             matches = re.findall(pattern, content, re.IGNORECASE)
             for match in matches:
-                
+
                 deps = re.split(r"[,\s]+", match)
                 requirements.extend(dep.strip() for dep in deps if dep.strip())
         return list(set(requirements))  # Remove duplicates
-
 
     def get_requirements_near_imports(self) -> Dict[str, str]:
         """Extract requirements that are near import statements."""
@@ -178,4 +176,3 @@ def parse_requirements(source: Union[str, Path], is_content: bool = False) -> Li
         return extract_smartrun_requirements_from_content(source)
     else:
         return extract_smartrun_requirements_from_file(source)
-

@@ -38,26 +38,8 @@ pip install "smartrun[dev,jupyter]"
 ```
 > **Requires Python 3.10+**
 ---
-## Usage
-```bash
-smartrun your_script.py
-```
-## Notebook
-```bash
-smartrun your_notebook.ipynb
-```
-## Example file that we want to run
-```python
-#some_file.py
-import numpy as np
-import pandas as pd
-from rich import print 
-df = pd.DataFrame(np.random.randn(5, 3), columns=list("ABC"))
-print("Data:")
-print(df, end="\n\n")
-print("Column means:")
-print(df.mean())
-```
+
+
 ## Create an environment 
 ✅ Create an environment : Windows / macOS / Linux
 ```bash
@@ -92,6 +74,49 @@ Tip: smartrun will automatically create and manage a virtual environment if none
 ```bash
  smartrun some_file.ipynb
 ```
+
+
+
+## Usage
+```bash
+smartrun your_script.py
+```
+## Notebook
+```bash
+smartrun your_notebook.ipynb
+```
+## Example file that we want to run
+📄 some_file.py
+
+```python
+
+# smartrun: numpy pandas rich
+
+import numpy as np
+import pandas as pd
+from rich import print
+
+df = pd.DataFrame(np.random.randn(5, 3), columns=list("ABC"))
+print("Data:")
+print(df, end="\n\n")
+print("Column means:")
+print(df.mean())
+
+
+```
+✅ What SmartRun Does
+
+    Parses the comment for package names: numpy, pandas, rich
+
+    Creates or reuses a .venv
+
+    Installs any missing packages (via uv or pip)
+
+    Runs the script
+
+No requirements.txt. No pip install. Just run the file.
+
+
 ### Data Science Examples
 <details><summary>🌸 Iris dataset analysis</summary>
 ```python 
