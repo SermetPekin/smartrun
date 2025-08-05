@@ -1,5 +1,6 @@
-
 from smartrun.package_name import PackageName, split_package_name
+
+
 def t_split_package_name():
     # Test examples
     test_cases = [
@@ -11,11 +12,13 @@ def t_split_package_name():
         "requests!=2.28.0",
         "django<4.0",
         "flask>2.0",
-        "python>3.8"
+        "python>3.8",
     ]
     for case in test_cases:
         p = PackageName(case)
         print(p)
         # name, version = split_package_name(case)
         # print(f"{case:15} -> name: '{name}', version: '{version}'")
+
+
 t_split_package_name()

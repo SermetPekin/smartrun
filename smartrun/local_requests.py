@@ -1,4 +1,3 @@
-
 import ssl
 from urllib.request import urlopen, Request, ProxyHandler, build_opener, HTTPSHandler
 from urllib.error import URLError, HTTPError
@@ -6,26 +5,30 @@ from pprint import pprint
 from pathlib import Path
 import time
 from typing import Dict, Tuple, Optional, Union
+
+
 def local_requests(url: str) -> Dict[str, Union[bool, str, int, float, dict]]:
     """
     Simplified interface to fetch URLs with automatic configuration loading.
-    
+
     Args:
         url: URL to fetch
-        
+
     Returns:
         Dict containing response data or error information
     """
     proxy_url, verify_ssl, timeout = load_env()
     result = fetch_url(url, proxy_url, verify_ssl, timeout)
-    return result 
+    return result
+
+
 def load_env(env_file: str = ".env") -> Tuple[Optional[str], bool, int]:
     """
     Load proxy URL from .env file with improved parsing.
-    
+
     Args:
         env_file: Path to environment file
-        
+
     Returns:
         Tuple of (proxy_url, verify_ssl, timeout)
     """
@@ -62,7 +65,7 @@ timeout=30
             env_vars[key.strip().lower()] = value.strip().strip("\"'")
         proxy_url = env_vars.get("http_proxy") or env_vars.get("proxy_url")
         verify_ssl = env_vars.get("verify_ssl", "false").lower() == "true"
-        
+
         # Add validation for timeout
         try:
             timeout = int(env_vars.get("timeout", "30"))
@@ -76,14 +79,18 @@ timeout=30
     except Exception as e:
         print(f"Error loading {env_file}: {e}")
         return None, False, 30
-def create_browser_request(url: str, custom_headers: Optional[Dict[str, str]] = None) -> Request:
+
+
+def create_browser_request(
+    url: str, custom_headers: Optional[Dict[str, str]] = None
+) -> Request:
     """
     Create request with browser-like headers to avoid blocking.
-    
+
     Args:
         url: URL to request
         custom_headers: Optional custom headers to override defaults
-        
+
     Returns:
         urllib Request object
     """
@@ -100,19 +107,23 @@ def create_browser_request(url: str, custom_headers: Optional[Dict[str, str]] = 
         "Sec-Fetch-Site": "none",
         "Cache-Control": "max-age=0",
     }
-    
+
     # Merge custom headers if provided
     if custom_headers:
         default_headers.update(custom_headers)
     return Request(url, headers=default_headers)
-def create_secure_opener(proxy_url: Optional[str] = None, verify_ssl: bool = False) -> build_opener:
+
+
+def create_secure_opener(
+    proxy_url: Optional[str] = None, verify_ssl: bool = False
+) -> build_opener:
     """
     Create URL opener with SSL and proxy configuration.
-    
+
     Args:
         proxy_url: Optional proxy URL
         verify_ssl: Whether to verify SSL certificates
-        
+
     Returns:
         urllib opener object
     """
@@ -135,31 +146,33 @@ def create_secure_opener(proxy_url: Optional[str] = None, verify_ssl: bool = Fal
     else:
         print("ℹ️  No proxy configured")
     return build_opener(*handlers)
+
+
 def fetch_url(
-    url: str, 
-    proxy_url: Optional[str] = None, 
-    verify_ssl: bool = False, 
+    url: str,
+    proxy_url: Optional[str] = None,
+    verify_ssl: bool = False,
     timeout: int = 30,
-    custom_headers: Optional[Dict[str, str]] = None
+    custom_headers: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Union[bool, str, int, float, dict]]:
     """
     Fetch URL with all configurations applied.
-    
+
     Args:
         url: URL to fetch
         proxy_url: Optional proxy URL
         verify_ssl: Whether to verify SSL certificates
         timeout: Request timeout in seconds
         custom_headers: Optional custom headers
-        
+
     Returns:
         Dict containing response data or error information
     """
     # Input validation
     if not url:
         return {"success": False, "error": "URL cannot be empty"}
-    
-    if not url.startswith(('http://', 'https://')):
+
+    if not url.startswith(("http://", "https://")):
         return {"success": False, "error": "URL must start with http:// or https://"}
     # Create opener and request
     opener = create_secure_opener(proxy_url, verify_ssl)
@@ -175,7 +188,7 @@ def fetch_url(
                 "url": response.url,
                 "headers": dict(response.headers),
                 "response_time": round(end_time - start_time, 2),
-                "content_length": response.headers.get('content-length', 'unknown')
+                "content_length": response.headers.get("content-length", "unknown"),
             }
     except HTTPError as e:
         return {
@@ -185,56 +198,62 @@ def fetch_url(
         }
     except URLError as e:
         return {
-            "success": False, 
+            "success": False,
             "error": f"URL Error: {e.reason}",
-            "details": "Check network connection, proxy settings, or URL validity"
+            "details": "Check network connection, proxy settings, or URL validity",
         }
     except Exception as e:
         return {
-            "success": False, 
+            "success": False,
             "error": f"Unexpected error: {e}",
-            "type": type(e).__name__
+            "type": type(e).__name__,
         }
+
+
 # Convenience functions for common use cases
 def get_content(url: str) -> Optional[str]:
     """
     Simple function to get content from URL.
-    
+
     Args:
         url: URL to fetch
-        
+
     Returns:
         Content as string or None if failed
     """
     result = local_requests(url)
-    
-    if result['success']:
+
+    if result["success"]:
         try:
-            return result['response'].read().decode('utf-8')
+            return result["response"].read().decode("utf-8")
         except Exception as e:
             print(f"Error reading content: {e}")
             return None
     else:
         print(f"Failed to fetch {url}: {result['error']}")
         return None
+
+
 def check_url_status(url: str) -> Dict[str, Union[bool, int, str]]:
     """
     Quick function to check if URL is accessible.
-    
+
     Args:
         url: URL to check
-        
+
     Returns:
         Dict with status information
     """
     result = local_requests(url)
-    
+
     return {
-        "accessible": result['success'],
-        "status": result.get('status', 'unknown'),
-        "response_time": result.get('response_time', 'unknown'),
-        "error": result.get('error', None)
+        "accessible": result["success"],
+        "status": result.get("status", "unknown"),
+        "response_time": result.get("response_time", "unknown"),
+        "error": result.get("error", None),
     }
+
+
 """
     # Test URL
     test_url = "https://httpbin.org/get"

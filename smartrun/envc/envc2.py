@@ -1,20 +1,24 @@
-
 """
 Environment detection and management utilities for Python virtual environments.
 """
+
 import os
 import sys
 from pathlib import Path
 from typing import Dict, Optional, Union
+
+
 class EnvComplete:
     """
     A utility class for detecting and managing Python virtual environments.
     Supports detection of conda environments, venv/virtualenv environments,
     and provides methods to compare and validate environment states.
     """
+
     def __init__(self):
         """Initialize the EnvComplete instance."""
         self.env: Optional[Dict[str, Union[bool, str, None]]] = None
+
     @staticmethod
     def get() -> Dict[str, Union[bool, str, None]]:
         """
@@ -64,9 +68,11 @@ class EnvComplete:
                 }
             )
         from smartrun.utils import is_verbose
+
         if is_verbose():
             print(env_info)
         return env_info
+
     def __call__(self, *args, **kwargs) -> "EnvComplete":
         """
         Make the instance callable, refreshing environment information.
@@ -75,6 +81,7 @@ class EnvComplete:
         """
         self.env = self.get()
         return self
+
     def display(self) -> None:
         """Display current environment information to stdout."""
         env = self.get()
@@ -86,6 +93,7 @@ class EnvComplete:
         else:
             print("No virtual environment is active")
             print(f"Using system Python: {sys.executable}")
+
     def is_env_active(self, path: Path) -> bool:
         """
         Check if the specified path matches the currently active environment.
@@ -103,6 +111,7 @@ class EnvComplete:
             return active_path == expected_path
         except (OSError, ValueError):
             return False
+
     def is_other_env_active(self, path: Path) -> bool:
         """
         Check if a different environment than the specified path is active.
@@ -120,6 +129,7 @@ class EnvComplete:
             return active_path != expected_path
         except (OSError, ValueError):
             return False
+
     def last_created(self) -> Optional[Path]:
         """
         Get the path to the last created environment file.
@@ -128,6 +138,7 @@ class EnvComplete:
         """
         try:
             from smartrun.utils import get_last_env_file_name
+
             path = get_last_env_file_name()
             return path if path.exists() else None
         except ImportError:
@@ -136,6 +147,7 @@ class EnvComplete:
         except Exception as e:
             print(f"Error getting last created environment: {e}")
             return None
+
     def last_created_active(self) -> bool:
         """
         Check if the last created environment is currently active.
@@ -156,6 +168,7 @@ class EnvComplete:
         except (OSError, ValueError) as e:
             print(f"Could not read or process environment file: {e}")
             return False
+
     def is_env_active_name(self, name: str) -> bool:
         """
         Check if an environment with the specified name is active.
@@ -166,8 +179,10 @@ class EnvComplete:
         """
         env = self.get()
         return env["active"] and env["name"] == name
+
     def is_any_env_active(self) -> bool:
         return self.virtual_active() or self.conda_active()
+
     def virtual_active(self) -> bool:
         """
         Check if a virtual environment (not conda) is currently active.
@@ -176,6 +191,7 @@ class EnvComplete:
         """
         env = self.get()
         return env["active"] and env["type"] == "virtual_env"
+
     def conda_active(self) -> bool:
         """
         Check if a conda environment is currently active.
@@ -184,6 +200,7 @@ class EnvComplete:
         """
         env = self.get()
         return env["active"] and env["type"] == "conda"
+
     @property
     def info(self) -> Dict[str, Union[bool, str, None]]:
         """

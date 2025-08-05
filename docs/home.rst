@@ -65,6 +65,16 @@ SmartRun gets your script running — no manual setup.
 
    pip install "smartrun[jupyter]"
 
+Create an environment :
+
+.. code-block:: bash
+
+   smartrun env .venv
+   # then:
+   source .venv/bin/activate       # Unix
+   .venv\Scripts\activate          # Windows
+
+
 Run a script:
 
 .. code-block:: bash
@@ -78,14 +88,6 @@ Run a notebook:
    smartrun analysis.ipynb
    smartrun --html notebook.ipynb  # render to HTML as well
 
-Create an environment only:
-
-.. code-block:: bash
-
-   smartrun env .venv
-   # then:
-   source .venv/bin/activate       # Unix
-   .venv\Scripts\activate          # Windows
 
 🛠️ Installation Options
 -----------------------

@@ -1,33 +1,41 @@
-
 import re
 from typing import Tuple, Optional
 from dataclasses import dataclass
 from smartrun.known_mappings import known_mappings
+
+
 @dataclass
 class PackageName:
     name_version: str
     name: str = None
     version: str = None
+
     def __hash__(self):
         return hash((self.name, self.version))
+
     def __eq__(self, other):
         if isinstance(other, PackageName):
             return self.name == other.name and self.version == other.version
         return False
-    
+
     def __post_init__(self):
         self.name, self.version = split_package_name(self.name_version)
         self.resolve()
+
     def resolve(self):
         self.name = known_mappings.get(self.name, self.name)
         if self.version:
             self.name_version = self.name + self.version
         else:
             self.name_version = self.name
+
     def __str__(self):
         return self.name_version
+
     def __repr__(self):
         return f"PackageName('{self.name_version}')"
+
+
 def split_package_name(requirement: str) -> Tuple[str, Optional[str]]:
     """
     Split a requirement string into package name and version specifier.
@@ -51,6 +59,8 @@ def split_package_name(requirement: str) -> Tuple[str, Optional[str]]:
             parts = requirement.split(operator, 1)
             return parts[0].strip(), operator + parts[1].strip()
     return requirement, None
+
+
 def test_split_package_name():
     # Test examples
     test_cases = [
