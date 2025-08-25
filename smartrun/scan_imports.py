@@ -147,6 +147,7 @@ def create_core_requirements(packages: list, opts: Options):
 def create_extra_requirements(packages: list, opts: Options):
     file_name = "packages.extra"
     logo = [f"# packages that are added by user with command smartrun add "]
+    packages = [str(x) for x in packages]
     content = "\n".join(logo + packages)
     create_requirements_file(file_name, content)
 
