@@ -129,6 +129,7 @@ No requirements.txt. No pip install. Just run the file.
     Installs numpy, pandas, and scikit-learn if not found
 
     Runs the script safely inside a virtual environment
+    
 🧠 Bonus: Comment Overrides
 
 You can still override versions or add constraints with an optional comment:
