@@ -152,6 +152,7 @@ def create_extra_requirements(packages: list, opts: Options):
     create_requirements_file(file_name, content)
 
 
+
 def scan_imports_file(file_path: str, opts: Options) -> PackageSet:
     file_path = Path(file_path)
     # Get problematic module names and build exclusion list
