@@ -25,7 +25,7 @@ jobs:
       - name: 📦 Install latest smartrun from PyPI
         run: |
           python -m pip install --upgrade pip
-          python -m pip install 'smartrun[jupyter]'
+          python -m pip install "smartrun[jupyter]"
 
       - name: 🔎 Show versions
         run: |
