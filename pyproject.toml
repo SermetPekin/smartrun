@@ -2,7 +2,7 @@
 [project]
 name = "smartrun"
  
-version = "1.1.0"
+version = "1.1.1"
  
 description = "Run any Python script with automatic environment setup, fast package resolution via uv, and reproducible lockfile generation"
 authors = [
@@ -11,6 +11,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "nbformat>=5.10.4",
     "pip-tools>=7.4.1",
     "pyyaml>=6.0.2",
     "rich>=14.0.0",
@@ -74,6 +75,7 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "fastapi>=0.116.1",
+    "pytest>=8.4.1",
 ]
 [tool.setuptools.packages.find]
 where = ["."]
