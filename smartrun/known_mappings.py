@@ -4,6 +4,8 @@ Feel free to add some irregular packages here!
 """
 
 known_mappings = {
+    # ML Classifification
+    "spml2" : "spml2-mltools" ,
     # Image Processing & Computer Vision
     "cv2": "opencv-python",
     "PIL": "Pillow",
