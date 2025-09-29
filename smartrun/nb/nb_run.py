@@ -56,6 +56,7 @@ class NBOptions:
     """
 
     file_name: Path | str = "daily_report.ipynb"
+
     workspace: Path | str = "."
     output_dir: Path | str = "html_outputs"
     out_name: str = "daily_report"
@@ -84,8 +85,10 @@ class NBOptions:
 """
         return t
 
+from smartrun.options import Options
 
-def run_and_save_notebook(nb_opts: NBOptions, output_suffix="_executed"):
+
+def run_and_save_notebook(nb_opts: NBOptions, opts: Options = None, output_suffix="_executed"):
     notebook_path = Path(nb_opts.file_name)
     nb = nbformat.read(notebook_path.open(encoding="utf-8"), as_version=4)
     ep = ExecutePreprocessor(timeout=600, kernel_name="python3")
@@ -101,30 +104,40 @@ def change_ws(ws: str | Path) -> None:
     project_root = os.path.abspath(os.path.join(os.getcwd(), ws))
     os.chdir(project_root)
 
+from smartrun.options import Options
 
-def convert(options: NBOptions) -> None:
+def decide_output_dir(opts: Options) -> Path:
+    if opts.out is not None:
+        return Path(opts.out)
+    return Path("./html_outputs")
+
+def convert(nb_options: NBOptions , opts: Options=None ) -> None:
     """convert"""
     DEFAULT_RENDERER = (
-        options.renderer
+        nb_options.renderer
     )  #  "notebook"  #   "plotly_mimetype"  # "iframe"  #  "plotly_mimetype" #
     # pio.renderers.default = DEFAULT_RENDERER  #
     os.environ["PLOTLY_RENDERER"] = DEFAULT_RENDERER
-    change_ws(options.workspace)
+    change_ws(nb_options.workspace)
     # --- paths -------------------------------------------------
-    NOTEBOOK = options.file_name
-    OUTPUT_DIR = options.output_dir
+    NOTEBOOK = nb_options.file_name
+    OUTPUT_DIR =  decide_output_dir(opts) if opts else nb_options.output_dir
+    # ensure output dir exists
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     # --- read notebook ----------------------------------------
     with open(NOTEBOOK, "r", encoding="utf-8") as f:
         nb = nbformat.read(f, as_version=4)
     # --- run notebook -----------------------------------------
     # Change kernel_name if you use a different kernel
-    ep = ExecutePreprocessor(timeout=options.timeout, kernel_name=options.kernel)
+    ep = ExecutePreprocessor(timeout=nb_options.timeout, kernel_name=nb_options.kernel)
     ep.preprocess(nb, {"metadata": {"path": os.path.dirname(NOTEBOOK) or "."}})
     # --- export to HTML ---------------------------------------
     html_exporter = HTMLExporter(template_name="lab")
     body, _ = html_exporter.from_notebook_node(nb)
-    outfile = options.out_name_func(options)
+    
+    nb_options.output_dir = OUTPUT_DIR
+    outfile = nb_options.out_name_func(nb_options)
+
     with open(outfile, "w", encoding="utf-8") as f:
         f.write(body)
     print(f"✅ Saved executed notebook as {outfile}")
