@@ -18,8 +18,8 @@ jobs:
         run: pip install build twine
       - name: Install test dependencies
         run: |
-          pip install pytest
-          pip install .[test] || pip install .
+          pip install pytest rich
+          pip install .[dev] || pip install .
       - name: Build package
         run: python -m build
       - name: Run tests
