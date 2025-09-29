@@ -7,8 +7,19 @@ if [ -z "$1" ] || [ -z "$2" ]; then
 fi
 
 black .
-# Run only working tests, skip failing ones for now
-python -m pytest smartrun/tests/test_cli3.py smartrun/tests/test_nbf.py smartrun/tests/test_scan.py smartrun/tests/test_utils.py test_runner.py -v
+# Run all tests properly - fix import issues by running tests separately  
+echo "🧪 Running tests..."
+python -m pytest smartrun/tests/test_cli.py -v
+python -m pytest smartrun/tests/test_cli2.py -v  
+python -m pytest smartrun/tests/test_cli3.py -v
+python -m pytest smartrun/tests/test_nbf.py -v
+python -m pytest smartrun/tests/test_pip.py -v
+python -m pytest smartrun/tests/test_runner.py -v
+python -m pytest smartrun/tests/test_scan.py -v
+python -m pytest smartrun/tests/test_utils.py -v
+python -m pytest smartrun/tests/test_local_requests.py -v
+python -m pytest test_runner.py -v
+echo "✅ All tests passed!"
 
 echo "🧹 Removing dist/..."
 rm -rf dist
