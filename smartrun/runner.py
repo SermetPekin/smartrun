@@ -72,8 +72,8 @@ def run_notebook_in_venv(opts: Options):
     script_path = Path(opts.script)
     nb_opts = NBOptions(script_path)
     if opts.html:
-        return convert(nb_opts)
-    return run_and_save_notebook(nb_opts)
+        return convert(nb_opts , opts)
+    return run_and_save_notebook(nb_opts ,opts)
 
 
 def run_script_in_venv(opts: Options):
