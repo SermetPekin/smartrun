@@ -15,7 +15,7 @@ class Args:
     html: bool = False
     exc: str | None = None
     inc: str | None = None
-
+    out: str | None = None
 
 def helper(args):
     opts = Options(
@@ -27,6 +27,7 @@ def helper(args):
         html=args.html,
         exc=args.exc,
         inc=args.inc,
+        out=args.out,
     )
     CLI(opts).router()
 
@@ -40,11 +41,14 @@ def t2():
     args = Args("install", "pandas")
     return helper(args)
 
+def html():
+    args = Args("titanic.ipynb", html=True, out="SomeReports")
+    return helper(args)
 
-def main():
-    args = Args(*sys.argv[1:])
+def html_no():
+    args = Args("titanic.ipynb", html=False, out="SomeReports")
     return helper(args)
 
 
 if __name__ == "__main__":
-    main()
+    html_no()
