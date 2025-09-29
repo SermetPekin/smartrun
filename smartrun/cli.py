@@ -178,7 +178,9 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--html", action="store_true", help="Generate HTML report")
     parser.add_argument("--exc", help="Exclude packages")
     parser.add_argument("--inc", help="Include packages")
-    parser.add_argument("--out", help="Output folder for HTML report", type="str", default=None)
+    parser.add_argument(
+        "--out", help="Output folder for HTML report", type=str, default=None
+    )
     parser.add_argument("-V", "--version", action="version", version="smartrun 0.2.12")
     return parser
 
