@@ -85,10 +85,13 @@ class NBOptions:
 """
         return t
 
+
 from smartrun.options import Options
 
 
-def run_and_save_notebook(nb_opts: NBOptions, opts: Options = None, output_suffix="_executed"):
+def run_and_save_notebook(
+    nb_opts: NBOptions, opts: Options = None, output_suffix="_executed"
+):
     notebook_path = Path(nb_opts.file_name)
     nb = nbformat.read(notebook_path.open(encoding="utf-8"), as_version=4)
     ep = ExecutePreprocessor(timeout=600, kernel_name="python3")
@@ -104,14 +107,17 @@ def change_ws(ws: str | Path) -> None:
     project_root = os.path.abspath(os.path.join(os.getcwd(), ws))
     os.chdir(project_root)
 
+
 from smartrun.options import Options
+
 
 def decide_output_dir(opts: Options) -> Path:
     if opts.out is not None:
         return Path(opts.out)
     return Path("./html_outputs")
 
-def convert(nb_options: NBOptions , opts: Options=None ) -> None:
+
+def convert(nb_options: NBOptions, opts: Options = None) -> None:
     """convert"""
     DEFAULT_RENDERER = (
         nb_options.renderer
@@ -121,7 +127,7 @@ def convert(nb_options: NBOptions , opts: Options=None ) -> None:
     change_ws(nb_options.workspace)
     # --- paths -------------------------------------------------
     NOTEBOOK = nb_options.file_name
-    OUTPUT_DIR =  decide_output_dir(opts) if opts else nb_options.output_dir
+    OUTPUT_DIR = decide_output_dir(opts) if opts else nb_options.output_dir
     # ensure output dir exists
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     # --- read notebook ----------------------------------------
@@ -134,7 +140,7 @@ def convert(nb_options: NBOptions , opts: Options=None ) -> None:
     # --- export to HTML ---------------------------------------
     html_exporter = HTMLExporter(template_name="lab")
     body, _ = html_exporter.from_notebook_node(nb)
-    
+
     nb_options.output_dir = OUTPUT_DIR
     outfile = nb_options.out_name_func(nb_options)
 

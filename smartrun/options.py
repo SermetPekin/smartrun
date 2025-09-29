@@ -21,7 +21,7 @@ class Options:
     help: bool = False
     lock: bool = False  # --lock (future)
     unlock: bool = False  # --unlock (future)
-    out: Path | None = None  # --out  
+    out: Path | None = None  # --out
     extra_args: tuple[str, ...] = ()
 
     # -------- convenience helpers -----------------------------------------

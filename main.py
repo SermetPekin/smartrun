@@ -17,6 +17,7 @@ class Args:
     inc: str | None = None
     out: str | None = None
 
+
 def helper(args):
     opts = Options(
         script=args.script,
@@ -41,12 +42,14 @@ def t2():
     args = Args("install", "pandas")
     return helper(args)
 
+
 def html():
-    args = Args("titanic.ipynb", html=True, out="SomeReports")
+    args = Args("titanic.ipynb", html=True, out="Output_folder")
     return helper(args)
 
+
 def html_no():
-    args = Args("titanic.ipynb", html=False, out="SomeReports")
+    args = Args("titanic.ipynb", html=False, out="Output_folder")
     return helper(args)
 
 

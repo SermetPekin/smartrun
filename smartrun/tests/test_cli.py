@@ -11,10 +11,17 @@ class Args:
     script: str
     second: str | None = None
     venv: bool = False
+    verbose: bool = False
     no_uv: bool = False
     html: bool = False
     exc: str | None = None
     inc: str | None = None
+    version: bool = False
+    help: bool = False
+    lock: bool = False
+    unlock: bool = False
+    out: str | None = None
+    extra_args: tuple = ()
 
 
 # @pytest.mark.skipif(in_ci(), reason="github")
@@ -26,10 +33,17 @@ def test_cli(capsys):
             script=args.script,
             second=args.second,
             venv=args.venv,
+            verbose=args.verbose,
             no_uv=args.no_uv,
             html=args.html,
             exc=args.exc,
             inc=args.inc,
+            version=args.version,
+            help=args.help,
+            lock=args.lock,
+            unlock=args.unlock,
+            out=args.out,
+            extra_args=args.extra_args,
         )
         CLI(opts).router()
 
@@ -43,10 +57,17 @@ def test_cli_json(capsys):
             script=args.script,
             second=args.second,
             venv=args.venv,
+            verbose=args.verbose,
             no_uv=args.no_uv,
             html=args.html,
             exc=args.exc,
             inc=args.inc,
+            version=args.version,
+            help=args.help,
+            lock=args.lock,
+            unlock=args.unlock,
+            out=args.out,
+            extra_args=args.extra_args,
         )
         CLI(opts).router()
 
@@ -59,9 +80,16 @@ def test_cli2(capsys):
             script=args.script,
             second=args.second,
             venv=args.venv,
+            verbose=args.verbose,
             no_uv=args.no_uv,
             html=args.html,
             exc=args.exc,
             inc=args.inc,
+            version=args.version,
+            help=args.help,
+            lock=args.lock,
+            unlock=args.unlock,
+            out=args.out,
+            extra_args=args.extra_args,
         )
         CLI(opts).router()

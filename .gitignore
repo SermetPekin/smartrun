@@ -16,6 +16,8 @@ env-*/
 myenv*/
 .venv*/
 
+Output_folder/
+
 
 ignore_*.*
 ignore*.*
