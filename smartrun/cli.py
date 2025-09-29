@@ -134,6 +134,7 @@ class CLI:
 
     def run(self) -> None:
         """Execute the provided script/notebook via smartrun workflow."""
+
         run_script(self.opts)
 
     def list_envs(self) -> None:
@@ -177,6 +178,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--html", action="store_true", help="Generate HTML report")
     parser.add_argument("--exc", help="Exclude packages")
     parser.add_argument("--inc", help="Include packages")
+    parser.add_argument("--out", help="Output folder for HTML report", type="str", default=None)
     parser.add_argument("-V", "--version", action="version", version="smartrun 0.2.12")
     return parser
 
@@ -193,6 +195,7 @@ def main(argv: Iterable[str] | None = None) -> None:
         html=args.html,
         exc=args.exc,
         inc=args.inc,
+        out=args.out,
         version=False,
         help=False,
     )
