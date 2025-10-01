@@ -21,16 +21,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         python -m venv .venv
-        .venv/bin/python -m pip install flake8 pytest rich uv nbformat ipykernel nbconvert matplotlib pandas scikit-learn
+        # Install the project in development mode with all dependencies
+        .venv/bin/python -m pip install -e ".[dev,jupyter]"
+        # Also install additional packages needed for tests
+        .venv/bin/python -m pip install matplotlib pandas scikit-learn seaborn
         if [ -f requirements.txt ]; then .venv/bin/pip install -r requirements.txt; fi
+
+    - name: Lint with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        .venv/bin/python -m flake8 smartrun --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        .venv/bin/python -m flake8 smartrun --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Test with pytest and examples
       run: |
-        .venv/bin/python -m pytest smartrun/tests  # ✅ Exit Code: 0
+        # Run tests individually to avoid rich import conflicts
+        .venv/bin/python -m pytest smartrun/tests/test_nbf.py -v
+        .venv/bin/python -m pytest smartrun/tests/test_cli3.py -v
+        .venv/bin/python -m pytest smartrun/tests/test_scan.py -v
+        .venv/bin/python -m pytest smartrun/tests/test_utils.py -v
+        .venv/bin/python test_runner.py
