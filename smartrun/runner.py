@@ -63,7 +63,7 @@ def install_packages_smartrun_smartfiles(
     all_packages.update(in_pkgs)
     all_packages.update(extra_pkgs)
     if verbose:
-        print("🔍 Combined package list:", sorted(all_packages))
+        print("Combined package list:", sorted(all_packages))
     # final install call
     install_packages_smart(opts, sorted(all_packages), verbose=verbose)
 
@@ -84,7 +84,7 @@ def run_script_in_venv(opts: Options):
     python_path = get_bin_path(venv_path, "python")
     if not python_path.exists():
         print(
-            f"[bold red]❌ Python executable not found in venv: {python_path}[/bold red]"
+            f"[bold red]ERROR: Python executable not found in venv: {python_path}[/bold red]"
         )
         return
     subprocess.run([str(python_path), script_path])
@@ -92,10 +92,10 @@ def run_script_in_venv(opts: Options):
 
 def check_script_file(script_path: Path):
     if not script_path.exists():
-        print(f"[bold red]❌ File not found:[/bold red] {script_path}")
+        print(f"[bold red]ERROR: File not found:[/bold red] {script_path}")
         return False
     print(
-        f"[bold cyan]🚀 Running {script_path} with automatic environment setup[/bold cyan]"
+        f"[bold cyan]Running {script_path} with automatic environment setup[/bold cyan]"
     )
     return True
 
@@ -106,8 +106,8 @@ def run_script(opts: Options, run: bool = True):
         return
     packages = scan_imports_file(script_path, opts=opts)
     packages = [str(x) for x in packages]
-    print(f"[green]🔍 Detected imports:[/green] {', '.join(packages)}")
-    print(f"[green]📦 Resolved packages:[/green] {', '.join(packages)}")
+    print(f"[green]Detected imports:[/green] {', '.join(packages)}")
+    print(f"[green]Resolved packages:[/green] {', '.join(packages)}")
     # ============================= Create envir ==================
     venv_path = create_venv_path_or_get_active(opts)
     # ============================= Check envir  ==================
@@ -117,7 +117,7 @@ def run_script(opts: Options, run: bool = True):
 
         # In CI environments, automatically proceed without prompting
         if in_ci():
-            print("[yellow]⚠️  No environment active, continuing in CI mode[/yellow]")
+            print("[yellow]WARNING: No environment active, continuing in CI mode[/yellow]")
         else:
             msg = """It looks like environment is not active.
               If you want to continue with python base environment or if any environment is active type yes"""

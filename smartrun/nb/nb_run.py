@@ -148,4 +148,4 @@ def convert(nb_options: NBOptions, opts: Options = None) -> None:
 
     with open(outfile, "w", encoding="utf-8") as f:
         f.write(body)
-    print(f"✅ Saved executed notebook as {outfile}")
+    print(f"Saved executed notebook as {outfile}")

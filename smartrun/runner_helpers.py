@@ -100,7 +100,7 @@ def is_any_env_active(opts: Options) -> bool:
 
 
 def create_venv(venv_path: Path) -> None:
-    print(f"[bold yellow]🔧 Creating virtual environment at:[/bold yellow] {venv_path}")
+    print(f"[bold yellow]Creating virtual environment at:[/bold yellow] {venv_path}")
     builder = venv.EnvBuilder(with_pip=True)
     builder.create(venv_path)
     return
@@ -108,7 +108,7 @@ def create_venv(venv_path: Path) -> None:
     pip_path = get_bin_path(venv_path, "pip")
     # 💥 If pip doesn't exist, fix it manually
     if not pip_path.exists():
-        print("[red]⚠️ pip not found! Trying to fix using ensurepip...[/red]")
+        print("[red]WARNING: pip not found! Trying to fix using ensurepip...[/red]")
         subprocess.run([str(python_path), "-m", "ensurepip", "--upgrade"], check=True)
         subprocess.run(
             [

@@ -45,7 +45,7 @@ This directory contains GitHub Actions workflows for automated testing, building
 
 3. **Publish-to-pypi job:**
    - Downloads verified distributions
-   - Publishes to PyPI using trusted publishing (no API token needed!)
+   - Publishes to PyPI using trusted publishing (no API token needed)
 
 **Key features:**
 - UV-based building (faster than pip)
@@ -129,10 +129,10 @@ uv pip install --system pkg    # System-wide installation
 
 | Workflow | Push to main | Pull Request | Git Tag | Manual |
 |----------|-------------|--------------|---------|--------|
-| test.yml | ✅ | ✅ | ❌ | ❌ |
-| build.yml | ❌ | ❌ | ✅ (v*) | ❌ |
-| lint.yml | ✅ | ✅ | ❌ | ❌ |
-| smoke-test.yml | ✅ | ✅ | ❌ | ✅ |
+| test.yml | Yes | Yes | No | No |
+| build.yml | No | No | Yes (v*) | No |
+| lint.yml | Yes | Yes | No | No |
+| smoke-test.yml | Yes | Yes | No | Yes |
 
 ---
 
@@ -193,11 +193,11 @@ You can safely delete the old workflow files after verifying the new ones work c
 - **Total: ~4-5 minutes**
 
 **New workflow (UV):**
-- Install dependencies: ~10-20 seconds (with cache: ~5 seconds!)
+- Install dependencies: ~10-20 seconds (with cache: ~5 seconds)
 - Run tests: ~1-2 minutes
 - **Total: ~1.5-2.5 minutes**
 
-**Speed improvement: 2-3x faster!**
+**Speed improvement: 2-3x faster**
 
 ---
 
@@ -229,8 +229,8 @@ If `uv build` fails:
 ## Future Improvements
 
 Potential enhancements:
-- [ ] Add coverage reporting with codecov
-- [ ] Add security scanning (e.g., bandit, safety)
-- [ ] Add documentation building and publishing
-- [ ] Add benchmarking workflow
-- [ ] Add release notes generation
+- Add coverage reporting with codecov
+- Add security scanning (e.g., bandit, safety)
+- Add documentation building and publishing
+- Add benchmarking workflow
+- Add release notes generation
