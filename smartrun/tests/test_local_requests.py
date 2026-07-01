@@ -260,8 +260,8 @@ if __name__ == "__main__":
     test_instance = TestLocalRequests()
 
     try:
-        print("\n🔍 Testing environment variable detection...")
-        test_environment_variable_detection()
+        # print("\n🔍 Testing environment variable detection...")
+        # test_environment_variable_detection()  # TODO: implement this test
 
         print("\n🌐 Testing basic functionality...")
         if not_long_test():

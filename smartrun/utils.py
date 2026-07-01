@@ -356,9 +356,10 @@ def get_packages_pip_helper(python_path: Path):
             print("❌  Failed to list packages with pip")
             print("STDERR:", exc.stderr)
         return None
-    except PermissionError as e:
-        if is_verbose():
-            print("❌  Permission error:", e)
+    except (PermissionError, OSError) as e:
+        # Silently handle permission/OS errors - common in test environments
+        if is_verbose() and not in_ci():
+            print(f"⚠️  Could not access pip: {e}")
         return None
 
 

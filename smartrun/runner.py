@@ -113,14 +113,18 @@ def run_script(opts: Options, run: bool = True):
     # ============================= Check envir  ==================
     env_check = check_env_before(opts)
     if not env_check:
-        msg = """It looks like environment is not active. 
-              If you want to continue with python base environment or if any environment is active type yes"""
-        print(msg)
-        from smartrun.utils import get_input
+        from smartrun.utils import get_input, in_ci
 
-        ans = get_input("")
-        if not str(ans).lower() in {"yes", "y"}:
-            return
+        # In CI environments, automatically proceed without prompting
+        if in_ci():
+            print("[yellow]⚠️  No environment active, continuing in CI mode[/yellow]")
+        else:
+            msg = """It looks like environment is not active.
+              If you want to continue with python base environment or if any environment is active type yes"""
+            print(msg)
+            ans = get_input("")
+            if not str(ans).lower() in {"yes", "y"}:
+                return
     # Some environment is active now
     # ============================= Install Packages ==================
     # install_packages(venv_path, packages)

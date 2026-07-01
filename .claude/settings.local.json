@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(uv run pytest:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(uv run flake8:*)"
     ]
   }
 }
