@@ -126,9 +126,7 @@ class TestHtmlNotebookExecution:
 
     @patch("smartrun.runner.convert")
     @patch("smartrun.runner.run_and_save_notebook")
-    def test_html_true_calls_convert(
-        self, mock_run_and_save, mock_convert
-    ):
+    def test_html_true_calls_convert(self, mock_run_and_save, mock_convert):
         """Test that html=True calls convert function (HTML generation)."""
         from smartrun.runner import run_notebook_in_venv
 
@@ -147,9 +145,7 @@ class TestHtmlNotebookExecution:
 
     @patch("smartrun.runner.convert")
     @patch("smartrun.runner.run_and_save_notebook")
-    def test_html_false_calls_run_and_save(
-        self, mock_run_and_save, mock_convert
-    ):
+    def test_html_false_calls_run_and_save(self, mock_run_and_save, mock_convert):
         """Test that html=False calls run_and_save_notebook (no HTML)."""
         from smartrun.runner import run_notebook_in_venv
 

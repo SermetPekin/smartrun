@@ -37,7 +37,7 @@ jobs:
 
       - name: Test basic script execution
         run: |
-          echo "import rich; print('✅ Hello from smartrun workflow')" > hello.py
+          echo "import rich; print('Hello from smartrun workflow')" > hello.py
           smartrun hello.py
 
       - name: Test package installation
@@ -57,7 +57,7 @@ jobs:
 
           # Create a minimal notebook
           nb = nbf.v4.new_notebook()
-          nb.cells.append(nbf.v4.new_code_cell("print('✅ Notebook execution successful')"))
+          nb.cells.append(nbf.v4.new_code_cell("print('Notebook execution successful')"))
 
           # Save notebook
           path = pathlib.Path("demo.ipynb")
@@ -80,7 +80,7 @@ jobs:
 
           # Create a simple notebook without matplotlib dependency
           nb = nbf.v4.new_notebook()
-          nb.cells.append(nbf.v4.new_code_cell("import sys\nprint(f'Python version: {sys.version}')\nprint('✅ HTML generation successful')"))
+          nb.cells.append(nbf.v4.new_code_cell("import sys\nprint(f'Python version: {sys.version}')\nprint('HTML generation successful')"))
 
           # Save notebook
           path = pathlib.Path("plot_demo.ipynb")
