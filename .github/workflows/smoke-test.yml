@@ -1,0 +1,92 @@
+name: PyPI Smoke Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  smoke-test:
+    name: Smoke test on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout (optional for notebook test)
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install latest smartrun from PyPI
+        run: |
+          uv pip install --system "smartrun[jupyter]"
+
+      - name: Show versions
+        run: |
+          python -V
+          smartrun --version
+
+      - name: Test basic script execution
+        run: |
+          echo "import rich; print('✅ Hello from smartrun workflow')" > hello.py
+          smartrun hello.py
+
+      - name: Test package installation
+        run: |
+          smartrun install pandas,rich
+
+      - name: Test adding packages
+        run: |
+          smartrun add requests
+
+      - name: Test notebook execution
+        run: |
+          python - <<'PY'
+          import nbformat as nbf
+          import subprocess
+          import pathlib
+
+          # Create a minimal notebook
+          nb = nbf.v4.new_notebook()
+          nb.cells.append(nbf.v4.new_code_cell("print('✅ Notebook execution successful')"))
+
+          # Save notebook
+          path = pathlib.Path("demo.ipynb")
+          nbf.write(nb, path)
+
+          # Run with smartrun
+          subprocess.run(["smartrun", str(path)], check=True)
+          PY
+
+      - name: Test notebook with HTML output
+        run: |
+          python - <<'PY'
+          import nbformat as nbf
+          import subprocess
+          import pathlib
+
+          # Create a notebook with some output
+          nb = nbf.v4.new_notebook()
+          nb.cells.append(nbf.v4.new_code_cell("import matplotlib.pyplot as plt\nplt.plot([1,2,3])\nprint('Plot created')"))
+
+          # Save notebook
+          path = pathlib.Path("plot_demo.ipynb")
+          nbf.write(nb, path)
+
+          # Run with HTML generation
+          subprocess.run(["smartrun", str(path), "--html", "--out", "html_output"], check=True)
+          PY
+
+      - name: Test timeout parameter
+        run: |
+          echo "import time; print('Testing timeout'); time.sleep(1)" > timeout_test.py
+          smartrun timeout_test.py --timeout 5
