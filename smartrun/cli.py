@@ -178,6 +178,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--html", action="store_true", help="Generate HTML report")
     parser.add_argument("--exc", help="Exclude packages")
     parser.add_argument("--inc", help="Include packages")
+    parser.add_argument("--timeout" , help= "Timeout" , default=1200 )
     parser.add_argument(
         "--out", help="Output folder for HTML report", type=str, default=None
     )
@@ -200,6 +201,7 @@ def main(argv: Iterable[str] | None = None) -> None:
         out=args.out,
         version=False,
         help=False,
+        timeout=args.timeout 
     )
     CLI(opts).dispatch()
 
