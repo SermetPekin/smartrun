@@ -135,7 +135,7 @@ def convert(nb_options: NBOptions, opts: Options = None) -> None:
         nb = nbformat.read(f, as_version=4)
     # --- run notebook -----------------------------------------
     # Change kernel_name if you use a different kernel
-    ep = ExecutePreprocessor(timeout=opts.timeout, kernel_name=nb_options.kernel)
+    ep = ExecutePreprocessor(timeout=int(opts.timeout), kernel_name=nb_options.kernel)
     ep.preprocess(nb, {"metadata": {"path": os.path.dirname(NOTEBOOK) or "."}})
     # --- export to HTML ---------------------------------------
     html_exporter = HTMLExporter(template_name="lab")
