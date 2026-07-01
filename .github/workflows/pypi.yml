@@ -1,4 +1,4 @@
-name: smartrun‑pypi‑smoke‑test
+name: smartrun‑pypi‑smoke‑test1
 
 on:
   push:
