@@ -18,7 +18,6 @@ python -m pytest smartrun/tests/test_runner.py -v
 python -m pytest smartrun/tests/test_scan.py -v
 python -m pytest smartrun/tests/test_utils.py -v
 python -m pytest smartrun/tests/test_local_requests.py -v
-python -m pytest test_runner.py -v
 echo "✅ All tests passed!"
 
 echo "🧹 Removing dist/..."

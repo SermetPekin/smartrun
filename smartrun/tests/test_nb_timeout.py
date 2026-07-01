@@ -43,12 +43,12 @@ class TestNBOptionsTimeout:
 class TestConvertFunctionTimeout:
     """Test that convert function properly uses timeout from Options."""
 
-    @patch('smartrun.nb.nb_run.ExecutePreprocessor')
-    @patch('smartrun.nb.nb_run.HTMLExporter')
-    @patch('smartrun.nb.nb_run.nbformat')
-    @patch('builtins.open')
-    @patch('os.makedirs')
-    @patch('os.chdir')
+    @patch("smartrun.nb.nb_run.ExecutePreprocessor")
+    @patch("smartrun.nb.nb_run.HTMLExporter")
+    @patch("smartrun.nb.nb_run.nbformat")
+    @patch("builtins.open")
+    @patch("os.makedirs")
+    @patch("os.chdir")
     def test_convert_uses_opts_timeout(
         self,
         mock_chdir,
@@ -66,7 +66,10 @@ class TestConvertFunctionTimeout:
         mock_execute_preprocessor.return_value = mock_ep_instance
         mock_html_exporter_instance = MagicMock()
         mock_html_exporter.return_value = mock_html_exporter_instance
-        mock_html_exporter_instance.from_notebook_node.return_value = ("<html></html>", {})
+        mock_html_exporter_instance.from_notebook_node.return_value = (
+            "<html></html>",
+            {},
+        )
 
         # Create test objects
         nb_opts = NBOptions(file_name="test.ipynb", timeout=600)
@@ -82,15 +85,15 @@ class TestConvertFunctionTimeout:
         # Verify ExecutePreprocessor was called with opts.timeout
         mock_execute_preprocessor.assert_called_once()
         call_kwargs = mock_execute_preprocessor.call_args[1]
-        assert 'timeout' in call_kwargs
-        assert call_kwargs['timeout'] == 2400
+        assert "timeout" in call_kwargs
+        assert call_kwargs["timeout"] == 2400
 
-    @patch('smartrun.nb.nb_run.ExecutePreprocessor')
-    @patch('smartrun.nb.nb_run.HTMLExporter')
-    @patch('smartrun.nb.nb_run.nbformat')
-    @patch('builtins.open')
-    @patch('os.makedirs')
-    @patch('os.chdir')
+    @patch("smartrun.nb.nb_run.ExecutePreprocessor")
+    @patch("smartrun.nb.nb_run.HTMLExporter")
+    @patch("smartrun.nb.nb_run.nbformat")
+    @patch("builtins.open")
+    @patch("os.makedirs")
+    @patch("os.chdir")
     def test_convert_with_default_cli_timeout(
         self,
         mock_chdir,
@@ -108,7 +111,10 @@ class TestConvertFunctionTimeout:
         mock_execute_preprocessor.return_value = mock_ep_instance
         mock_html_exporter_instance = MagicMock()
         mock_html_exporter.return_value = mock_html_exporter_instance
-        mock_html_exporter_instance.from_notebook_node.return_value = ("<html></html>", {})
+        mock_html_exporter_instance.from_notebook_node.return_value = (
+            "<html></html>",
+            {},
+        )
 
         # Create test objects with default timeout
         nb_opts = NBOptions(file_name="test.ipynb")
@@ -123,14 +129,14 @@ class TestConvertFunctionTimeout:
         # Verify ExecutePreprocessor was called with default timeout
         mock_execute_preprocessor.assert_called_once()
         call_kwargs = mock_execute_preprocessor.call_args[1]
-        assert call_kwargs['timeout'] == 1200
+        assert call_kwargs["timeout"] == 1200
 
-    @patch('smartrun.nb.nb_run.ExecutePreprocessor')
-    @patch('smartrun.nb.nb_run.HTMLExporter')
-    @patch('smartrun.nb.nb_run.nbformat')
-    @patch('builtins.open')
-    @patch('os.makedirs')
-    @patch('os.chdir')
+    @patch("smartrun.nb.nb_run.ExecutePreprocessor")
+    @patch("smartrun.nb.nb_run.HTMLExporter")
+    @patch("smartrun.nb.nb_run.nbformat")
+    @patch("builtins.open")
+    @patch("os.makedirs")
+    @patch("os.chdir")
     def test_convert_timeout_zero(
         self,
         mock_chdir,
@@ -148,7 +154,10 @@ class TestConvertFunctionTimeout:
         mock_execute_preprocessor.return_value = mock_ep_instance
         mock_html_exporter_instance = MagicMock()
         mock_html_exporter.return_value = mock_html_exporter_instance
-        mock_html_exporter_instance.from_notebook_node.return_value = ("<html></html>", {})
+        mock_html_exporter_instance.from_notebook_node.return_value = (
+            "<html></html>",
+            {},
+        )
 
         # Create test objects with timeout=0
         nb_opts = NBOptions(file_name="test.ipynb")
@@ -163,15 +172,15 @@ class TestConvertFunctionTimeout:
         # Verify ExecutePreprocessor was called with timeout=0
         mock_execute_preprocessor.assert_called_once()
         call_kwargs = mock_execute_preprocessor.call_args[1]
-        assert call_kwargs['timeout'] == 0
+        assert call_kwargs["timeout"] == 0
 
 
 class TestRunAndSaveNotebookTimeout:
     """Test run_and_save_notebook function timeout handling."""
 
-    @patch('smartrun.nb.nb_run.ExecutePreprocessor')
-    @patch('smartrun.nb.nb_run.nbformat')
-    @patch('pathlib.Path.open')
+    @patch("smartrun.nb.nb_run.ExecutePreprocessor")
+    @patch("smartrun.nb.nb_run.nbformat")
+    @patch("pathlib.Path.open")
     def test_run_and_save_uses_nb_opts_timeout(
         self,
         mock_path_open,
@@ -202,9 +211,9 @@ class TestRunAndSaveNotebookTimeout:
             timeout=1200, kernel_name="python3"
         )
 
-    @patch('smartrun.nb.nb_run.ExecutePreprocessor')
-    @patch('smartrun.nb.nb_run.nbformat')
-    @patch('pathlib.Path.open')
+    @patch("smartrun.nb.nb_run.ExecutePreprocessor")
+    @patch("smartrun.nb.nb_run.nbformat")
+    @patch("pathlib.Path.open")
     def test_run_and_save_uses_opts_timeout(
         self,
         mock_path_open,
@@ -236,9 +245,9 @@ class TestRunAndSaveNotebookTimeout:
             timeout=2400, kernel_name="python3"
         )
 
-    @patch('smartrun.nb.nb_run.ExecutePreprocessor')
-    @patch('smartrun.nb.nb_run.nbformat')
-    @patch('pathlib.Path.open')
+    @patch("smartrun.nb.nb_run.ExecutePreprocessor")
+    @patch("smartrun.nb.nb_run.nbformat")
+    @patch("pathlib.Path.open")
     def test_run_and_save_default_nb_opts_timeout(
         self,
         mock_path_open,
@@ -279,11 +288,11 @@ class TestIntegrationWithCLI:
         captured = {}
 
         def fake_convert(nb_options, opts):
-            captured['timeout'] = opts.timeout if opts else None
-            captured['nb_timeout'] = nb_options.timeout
+            captured["timeout"] = opts.timeout if opts else None
+            captured["nb_timeout"] = nb_options.timeout
 
         # Patch convert function
-        monkeypatch.setattr('smartrun.runner.convert', fake_convert)
+        monkeypatch.setattr("smartrun.runner.convert", fake_convert)
         # Patch other heavy operations
         monkeypatch.setattr(cli_mod, "install_packages_smart", lambda *a, **k: None)
         monkeypatch.setattr(

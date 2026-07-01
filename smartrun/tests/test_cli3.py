@@ -17,7 +17,7 @@ from pathlib import Path
 from dataclasses import dataclass
 from unittest.mock import patch, MagicMock
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from smartrun.options import Options
 from smartrun.cli import CLI
@@ -79,7 +79,7 @@ def execute_cli_test(args, description: str = ""):
         # MockArgs object
         opts = create_options_from_args(args)
         script_name = str(args.script)
-    
+
     cli = CLI(opts)
 
     try:
@@ -136,7 +136,7 @@ def html_no():
 
 def test_iris_notebook():
     """Test that CLI properly handles iris.ipynb file"""
-    options = Options(script=Path('iris.ipynb'))
+    options = Options(script=Path("iris.ipynb"))
     # We're testing that the CLI can process the options correctly
     # The actual notebook execution failure is not a test failure
     try:
@@ -148,7 +148,12 @@ def test_iris_notebook():
         # Expected: notebook execution might fail, but CLI should process the request
         # Only fail if it's a fundamental CLI/options processing error
         error_msg = str(e).lower()
-        expected_errors = ['nonetype', 'callable', 'template', 'error occurred while executing']
+        expected_errors = [
+            "nonetype",
+            "callable",
+            "template",
+            "error occurred while executing",
+        ]
         if any(err in error_msg for err in expected_errors):
             # This is expected - notebook execution issue, not CLI issue
             assert True
@@ -159,7 +164,7 @@ def test_iris_notebook():
 
 def test_iris_notebook_html():
     """Test that CLI properly handles iris.ipynb with --html flag"""
-    options = Options(script=Path('iris.ipynb'), html=True)
+    options = Options(script=Path("iris.ipynb"), html=True)
     # Test that the HTML flag is properly processed by the CLI
     assert options.html == True  # Verify HTML flag is set
 
@@ -171,7 +176,12 @@ def test_iris_notebook_html():
     except Exception as e:
         # Expected: notebook execution might fail, but CLI should process the HTML request
         error_msg = str(e).lower()
-        expected_errors = ['nonetype', 'callable', 'template', 'error occurred while executing']
+        expected_errors = [
+            "nonetype",
+            "callable",
+            "template",
+            "error occurred while executing",
+        ]
         if any(err in error_msg for err in expected_errors):
             # This is expected - notebook execution issue, not HTML flag processing issue
             assert True
@@ -182,7 +192,7 @@ def test_iris_notebook_html():
 
 def test_sample_notebook():
     """Test that CLI properly handles scripts/sample.ipynb file"""
-    options = Options(script=Path('scripts/sample.ipynb'))
+    options = Options(script=Path("scripts/sample.ipynb"))
     # We're testing that the CLI can process the file path correctly
     try:
         cli = CLI(options)
@@ -192,7 +202,12 @@ def test_sample_notebook():
     except Exception as e:
         # Expected: notebook execution might fail, but CLI should process the request
         error_msg = str(e).lower()
-        expected_errors = ['nonetype', 'callable', 'template', 'error occurred while executing']
+        expected_errors = [
+            "nonetype",
+            "callable",
+            "template",
+            "error occurred while executing",
+        ]
         if any(err in error_msg for err in expected_errors):
             # This is expected - notebook execution issue, not CLI issue
             assert True
@@ -204,48 +219,48 @@ def test_sample_notebook():
 def test_package_operations():
     """Test package-related operations"""
     # Test install command
-    options = Options(script=Path('install'))
+    options = Options(script=Path("install"))
     assert execute_cli_test(options) == True
-    
+
     # Test install with second parameter
-    options = Options(script=Path('install'), second='numpy')
+    options = Options(script=Path("install"), second="numpy")
     assert execute_cli_test(options) == True
 
 
 def test_environment_operations():
     """Test environment-related operations"""
     # Test venv command
-    options = Options(script=Path('venv'), second='test_env')
+    options = Options(script=Path("venv"), second="test_env")
     assert execute_cli_test(options) == True
-    
+
     # Test verbose mode with script
-    options = Options(script=Path('example.py'), verbose=True)
+    options = Options(script=Path("example.py"), verbose=True)
     assert execute_cli_test(options) == True
 
 
 def test_options_validation():
     """Test various options combinations"""
     # Test with no_uv option
-    options = Options(script=Path('example.py'), no_uv=True)
+    options = Options(script=Path("example.py"), no_uv=True)
     assert execute_cli_test(options) == True
-    
+
     # Test with inc (include) option
-    options = Options(script=Path('example.py'), inc='matplotlib,numpy')
+    options = Options(script=Path("example.py"), inc="matplotlib,numpy")
     assert execute_cli_test(options) == True
-    
+
     # Test with exc (exclude) option
-    options = Options(script=Path('example.py'), exc='test_package')
+    options = Options(script=Path("example.py"), exc="test_package")
     assert execute_cli_test(options) == True
 
 
 def test_advanced_features():
     """Test advanced features"""
     # Test with output file
-    options = Options(script=Path('example.py'), out=Path('test_output.txt'))
+    options = Options(script=Path("example.py"), out=Path("test_output.txt"))
     assert execute_cli_test(options) == True
-    
+
     # Test list command
-    options = Options(script=Path('list'))
+    options = Options(script=Path("list"))
     assert execute_cli_test(options) == True
 
 

@@ -201,7 +201,7 @@ def main(argv: Iterable[str] | None = None) -> None:
         out=args.out,
         version=False,
         help=False,
-        timeout=args.timeout 
+        timeout=args.timeout,
     )
     CLI(opts).dispatch()
 

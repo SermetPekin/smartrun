@@ -7,7 +7,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 from smartrun.utils import in_ci
-import pytest 
+import pytest
 
 
 # --------------------------------------------------------------------------- #
