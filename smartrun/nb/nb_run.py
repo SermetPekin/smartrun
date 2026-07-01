@@ -94,7 +94,9 @@ def run_and_save_notebook(
 ):
     notebook_path = Path(nb_opts.file_name)
     nb = nbformat.read(notebook_path.open(encoding="utf-8"), as_version=4)
-    ep = ExecutePreprocessor(timeout=600, kernel_name="python3")
+    # Use timeout from opts if provided, otherwise use nb_opts.timeout
+    timeout = int(opts.timeout) if opts else nb_opts.timeout
+    ep = ExecutePreprocessor(timeout=timeout, kernel_name="python3")
     ep.preprocess(nb, {"metadata": {"path": notebook_path.parent}})
     output_path = notebook_path.with_name(notebook_path.stem + output_suffix + ".ipynb")
     nbformat.write(nb, output_path.open("w", encoding="utf-8"))
