@@ -23,6 +23,7 @@ class Options:
     unlock: bool = False  # --unlock (future)
     out: Path | None = None  # --out
     extra_args: tuple[str, ...] = ()
+    timeout: int = 1200 
 
     # -------- convenience helpers -----------------------------------------
     @property
